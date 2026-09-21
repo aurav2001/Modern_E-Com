@@ -233,8 +233,6 @@ ul { margin: 0; padding: 0; list-style: none; }
 .hero__faces { display: flex; }
 .hero__faces span { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--paper); background: var(--ink); color: var(--lime); display: grid; place-items: center; font-size: 11px; font-weight: 700; margin-left: -8px; }
 .hero__faces span:first-child { margin-left: 0; }
-.hero__face { overflow: hidden; padding: 0; }
-.hero__face img { width: 100%; height: 100%; object-fit: cover; }
 .hero__proof b { color: var(--ink); }
 
 .collage { position: relative; aspect-ratio: 1/0.95; max-width: 620px; margin-inline: auto; width: 100%; }
@@ -242,7 +240,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 @keyframes blob { to { border-radius: 54% 46% 48% 52% / 44% 56% 44% 56%; transform: rotate(6deg) scale(1.02); } }
 .collage__card { position: absolute; border-radius: 18px; overflow: hidden; background: #fff; box-shadow: var(--shadow-lg); transition: transform 0.5s var(--ease); }
 .collage__card img { width: 100%; height: 100%; object-fit: cover; }
-.collage__card--a { left: 6%; top: 8%; width: 54%; aspect-ratio: 1; transform: rotate(-4deg); z-index: 1; }
+.collage__card--a { left: 6%; top: 2%; width: 56%; aspect-ratio: 4/5; transform: rotate(-4deg); z-index: 1; }
 .collage__card--b { right: 0; top: 6%; width: 36%; aspect-ratio: 4/5; transform: rotate(6deg); }
 .collage__card--c { right: 4%; bottom: 0; width: 42%; aspect-ratio: 4/5; transform: rotate(-3deg); z-index: 2; }
 .collage:hover .collage__card--a { transform: rotate(-5deg) translateY(-6px); }
@@ -708,7 +706,6 @@ ul { margin: 0; padding: 0; list-style: none; }
 @media (min-width: 900px) { .auth__media { display: block; } }
 .auth__media .split__stack { position: absolute; inset: 12% 10%; aspect-ratio: auto; }
 .auth__media .split__stack img { width: 52%; }
-.auth__media .split__stack img:first-child { aspect-ratio: 1; }
 .auth__media div.cap { position: absolute; left: 40px; bottom: 40px; right: 40px; color: #fff; }
 .auth__media h2 { font-size: clamp(36px, 4vw, 60px); color: #fff; }
 .auth__panel { display: grid; place-items: center; padding: 40px var(--gutter); }
@@ -762,7 +759,6 @@ ul { margin: 0; padding: 0; list-style: none; }
 .about-hero { position: relative; border-radius: var(--radius-lg); overflow: hidden; background: var(--ink); color: #fff; padding: clamp(28px, 5vw, 64px); min-height: 380px; display: flex; flex-direction: column; justify-content: flex-end; }
 .about-hero h1 { font-size: clamp(40px, 7vw, 96px); color: #fff; max-width: 10ch; line-height: 0.9; }
 .about-hero .split__stack { position: absolute; right: 4%; top: 6%; width: 38%; aspect-ratio: 1; }
-.about-hero .split__stack img:first-child { aspect-ratio: 1; }
 @media (max-width: 720px) { .about-hero .split__stack { display: none; } }
 .values { display: grid; gap: 14px; }
 @media (min-width: 720px) { .values { grid-template-columns: repeat(3, 1fr); gap: 18px; } }

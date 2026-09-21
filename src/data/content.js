@@ -7,19 +7,17 @@ export const BRAND = {
 }
 
 // Hero collage: three hero products + floating tags
-export const FOUNDER_IMG = '/img/face.jpg'
-
 export const HERO = {
   kicker: 'New season drop is live',
   headline: ['Made for', 'the game.'],
   text: 'Cricket whites that breathe, tights that never sag, helmets pros trust. 280+ styles across cricket, training, running and shooting — shipped anywhere in India.',
   cards: [
-    { img: '/img/face.jpg', to: '/about', person: true },
+    { img: P + 'TYKA-Jacket-Resistant-Black-F.webp', to: '/product/resistant-jacket' },
     { img: P + 'helmet.webp', to: '/product/tyka-atlas-youth-ms-grill' },
     { img: P + 'TYKA-Shoe-Speed-BlackBlue-L.webp', to: '/product/speed-550-shoe' },
   ],
   tags: [
-    { label: 'Team KRIDA', sub: 'Player tested, always' },
+    { label: 'Resistant Jacket', sub: '₹1,895 · New' },
     { label: 'Speed 550', sub: 'Runner favourite' },
     { label: '4.8 ★', sub: '12k+ reviews' },
   ],
@@ -28,7 +26,7 @@ export const HERO = {
 export const MARQUEE = ['Cricket', 'Training', 'Running', 'Football', 'Shooting', 'Recovery', 'Team kits']
 
 export const CATEGORY_TILES = [
-  { slug: 'men', name: 'Men', sub: '135+ styles · polos, tracksuits, lowers', img: '/img/face.jpg', size: 'xl', pos: 'center' },
+  { slug: 'men', name: 'Men', sub: '135+ styles · polos, tracksuits, lowers', img: P + 'TYKA-Tracksuit-Forward-Charcoal-F.webp', size: 'xl' },
   { slug: 'women', name: 'Women', sub: '40+ styles · tights, tees, tracksuits', img: P + 'TYKA-Polo-Bron-Airforceblue-F-webp.webp', size: 'wide' },
   { slug: 'cricket', name: 'Cricket', sub: 'Helmets · balls · whites', img: P + 'helmet.webp' },
   { slug: 'accessories', name: 'Accessories', sub: 'Bags · caps · socks', img: P + 'TYKA-Bag-Legend-Wheelie-Black-L.webp' },

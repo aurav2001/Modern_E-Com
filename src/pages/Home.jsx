@@ -26,7 +26,7 @@ function Hero() {
             <Link to="/c/cricket" className="btn btn--outline btn--lg">Cricket gear</Link>
           </div>
           <div className="hero__proof">
-            <div className="hero__faces"><span className="hero__face"><img src="/img/face.jpg" alt="" /></span>{['R', 'A', 'V'].map((c) => <span key={c}>{c}</span>)}</div>
+            <div className="hero__faces">{['R', 'A', 'V', 'S'].map((c) => <span key={c}>{c}</span>)}</div>
             <span><b>12,400+</b> athletes shopped this month</span>
           </div>
         </div>
@@ -34,7 +34,7 @@ function Hero() {
           <div className="collage__blob" />
           {HERO.cards.map((c, i) => (
             <Link to={c.to} className={cx('collage__card', `collage__card--${'abc'[i]}`)} key={i} tabIndex={-1}>
-              <img src={c.img} alt="" loading={i === 0 ? 'eager' : 'lazy'} style={c.person ? { objectPosition: 'center' } : undefined} />
+              <img src={c.img} alt="" loading={i === 0 ? 'eager' : 'lazy'} />
             </Link>
           ))}
           {HERO.tags.map((t, i) => (

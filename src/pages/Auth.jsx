@@ -3,7 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
 
 const P = 'https://tyka.premierhostings.com/backend/storage/products/'
-const IMGS = ['/img/face.jpg', P + 'TYKA-Shoe-Strike320L-WhiteBlue-L.webp']
+const IMGS = [P + 'elite-women-black-3.webp', P + 'TYKA-Shoe-Strike320L-WhiteBlue-L.webp']
 
 export function Login() {
   const { login } = useStore()

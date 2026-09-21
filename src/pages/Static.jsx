@@ -37,7 +37,7 @@ export function About() {
     <div className="container">
       <div className="page-head"><Crumbs items={[{ label: 'About' }]} /></div>
       <div className="about-hero">
-        <div className="split__stack"><img src="/img/face.jpg" alt="" /><img src={P + 'TYKA-Shoe-Speed-BlackBlue-L.webp'} alt="" /></div>
+        <div className="split__stack"><img src={P + 'align-cricket-fl01.webp'} alt="" /><img src={P + 'TYKA-Shoe-Speed-BlackBlue-L.webp'} alt="" /></div>
         <span className="eyebrow" style={{ color: '#b8bcc4' }}>Since 2019</span>
         <h1>Made for the game</h1>
       </div>
@@ -50,7 +50,7 @@ export function About() {
             <p>Today the store carries 280+ styles across cricket, training, running and shooting — every one of them worn, washed and tested by our community before it is listed. If it sags, fades or fails, it does not make the cut.</p>
             <p>We ship from Gurugram to every pincode in India, and kit out academies, clubs and office leagues with custom team orders.</p>
           </div>
-          <div className="founder"><img src="/img/face.jpg" alt="Founder of KRIDA" /><div className="founder__cap"><b>Founder, KRIDA</b><span>"If it would not survive a season in my own kit bag, it does not go on the site."</span></div></div>
+          <div className="split__stack"><img src={P + 'TYKA-Tracksuit-Forward-Charcoal-F.webp'} alt="" /><img src={P + 'helmet.webp'} alt="" /></div>
         </div>
       </section>
       <section className="section section--bg" id="values" style={{ borderRadius: 'var(--radius-lg)' }}>
