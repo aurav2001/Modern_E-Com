@@ -1,0 +1,291 @@
+[
+ {
+  "name": "Men",
+  "slug": "men",
+  "groups": [
+   {
+    "name": "Shop by Category",
+    "items": [
+     {
+      "name": "Tops",
+      "slug": "tops",
+      "count": 13
+     },
+     {
+      "name": "Polos",
+      "slug": "polos",
+      "count": 28
+     },
+     {
+      "name": "Sleeveless",
+      "slug": "sleeveless",
+      "count": 8
+     },
+     {
+      "name": "Long Sleevess",
+      "slug": "long-sleevess",
+      "count": 3
+     },
+     {
+      "name": "Jacket and Hoodies",
+      "slug": "jacket-and-hoodies",
+      "count": 16
+     },
+     {
+      "name": "Shorts",
+      "slug": "shorts",
+      "count": 13
+     },
+     {
+      "name": "Pants and Leggings",
+      "slug": "pants-and-leggings",
+      "count": 16
+     },
+     {
+      "name": "Tracksuits",
+      "slug": "tracksuits",
+      "count": 13
+     }
+    ]
+   },
+   {
+    "name": "Shop by Sport",
+    "items": [
+     {
+      "name": "Cricket",
+      "slug": "cricket",
+      "count": 12
+     },
+     {
+      "name": "Football",
+      "slug": "football",
+      "count": 1
+     },
+     {
+      "name": "Shooting",
+      "slug": "shooting",
+      "count": 7
+     },
+     {
+      "name": "Training",
+      "slug": "training",
+      "count": 4
+     },
+     {
+      "name": "India Merchandise",
+      "slug": "india-merchandise",
+      "count": 0
+     },
+     {
+      "name": "Shop Outlet",
+      "slug": "shop-outlet",
+      "count": 1
+     }
+    ]
+   },
+   {
+    "name": "Accessories",
+    "items": [
+     {
+      "name": "Compression and Baselayers",
+      "slug": "compression-and-baselayers-2",
+      "count": 4
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Women",
+  "slug": "women",
+  "groups": [
+   {
+    "name": "Shop By Category",
+    "items": [
+     {
+      "name": "Tops",
+      "slug": "tops-1",
+      "count": 7
+     },
+     {
+      "name": "Polos",
+      "slug": "polos-1",
+      "count": 7
+     },
+     {
+      "name": "Tanks and Sports Bra",
+      "slug": "tanks-and-sports-bra",
+      "count": 5
+     },
+     {
+      "name": "Long Sleeves",
+      "slug": "long-sleeves",
+      "count": 3
+     },
+     {
+      "name": "Jacket and Hoodies",
+      "slug": "jacket-and-hoodies-1",
+      "count": 2
+     },
+     {
+      "name": "Shorts and Skirts",
+      "slug": "shorts-and-skirts",
+      "count": 5
+     },
+     {
+      "name": "Pants and Leggings",
+      "slug": "pants-and-leggings-1",
+      "count": 7
+     },
+     {
+      "name": "Tracksuits",
+      "slug": "tracksuits-1",
+      "count": 3
+     }
+    ]
+   },
+   {
+    "name": "Shop By Sport",
+    "items": [
+     {
+      "name": "Shooting",
+      "slug": "shooting-1",
+      "count": 0
+     },
+     {
+      "name": "Training",
+      "slug": "training-1",
+      "count": 0
+     },
+     {
+      "name": "Running",
+      "slug": "running",
+      "count": 0
+     },
+     {
+      "name": "India Merchandise",
+      "slug": "india-merchandise-1",
+      "count": 0
+     },
+     {
+      "name": "Shop Outlet",
+      "slug": "shop-outlet-1",
+      "count": 0
+     }
+    ]
+   },
+   {
+    "name": "Accessories",
+    "items": [
+     {
+      "name": "Bags and Duffles",
+      "slug": "bags-and-duffles-1",
+      "count": 0
+     },
+     {
+      "name": "Compression and Baselayers",
+      "slug": "compression-and-baselayers",
+      "count": 3
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Cricket",
+  "slug": "cricket",
+  "groups": [
+   {
+    "name": "Shop Cricket",
+    "items": [
+     {
+      "name": "Cricket Helmets",
+      "slug": "cricket-helmets",
+      "count": 8
+     },
+     {
+      "name": "Clothing",
+      "slug": "clothing",
+      "count": 16
+     },
+     {
+      "name": "Cricket Balls",
+      "slug": "cricket-balls",
+      "count": 7
+     },
+     {
+      "name": "Bags and Duffles",
+      "slug": "bags-and-duffles-2",
+      "count": 9
+     },
+     {
+      "name": "Accessories",
+      "slug": "accessories",
+      "count": 4
+     },
+     {
+      "name": "Shoes",
+      "slug": "shoes-1",
+      "count": 9
+     },
+     {
+      "name": "Shop Outlet",
+      "slug": "shop-outlet-2",
+      "count": 0
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Accessories",
+  "slug": "accessories",
+  "groups": [
+   {
+    "name": "Shop Accessories",
+    "items": [
+     {
+      "name": "Bags and Duffles",
+      "slug": "bags-and-duffles-3",
+      "count": 20
+     },
+     {
+      "name": "Hats and Caps",
+      "slug": "hats-and-caps-1",
+      "count": 11
+     },
+     {
+      "name": "Socks",
+      "slug": "socks-1",
+      "count": 18
+     },
+     {
+      "name": "Supporters",
+      "slug": "supporters-1",
+      "count": 3
+     },
+     {
+      "name": "Compression and Baselayers",
+      "slug": "compression-and-baselayers-1",
+      "count": 7
+     },
+     {
+      "name": "Shoes",
+      "slug": "shoes-2",
+      "count": 17
+     },
+     {
+      "name": "RECOVERY Foam Rollers",
+      "slug": "recovery-foam-rollers",
+      "count": 10
+     },
+     {
+      "name": "Loop Bands and Support",
+      "slug": "loop-bands-and-support",
+      "count": 4
+     }
+    ]
+   }
+  ]
+ }
+]
