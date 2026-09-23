@@ -1,8 +1,8 @@
-import rawProducts from '../data/products.json'
-import menu from '../data/menu.json'
+import { getProducts, getMenu } from './db'
 
-// 'UN' = universal/one-size: treat as no size selection; cap gallery for a tidy PDP
-const products = rawProducts.map((p) => ({ ...p, sizes: p.sizes.filter((s) => s !== 'UN'), gallery: p.gallery.slice(0, 6) }))
+// Live catalogue: base data in src/data, overridden by anything saved from the admin panel.
+const products = getProducts().map((p) => ({ ...p, sizes: (p.sizes || []).filter((s) => s !== 'UN'), gallery: (p.gallery || [p.image]).slice(0, 6) }))
+const menu = getMenu()
 export const PRODUCTS = products
 export const MENU = menu
 

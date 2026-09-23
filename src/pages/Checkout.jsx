@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
 import { formatPrice, cx } from '../lib/utils'
-import { COD_FEE } from '../data/content'
+import { getSettings } from '../lib/db'
+
+const COD_FEE = getSettings().codFee
 import { OrderSummary } from './Cart'
 import { Crumbs } from '../components/Shared'
 import { CreditCard, Wallet, Cash, Lock, Plus, Trash } from '../components/Icons'

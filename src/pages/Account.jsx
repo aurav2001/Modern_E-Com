@@ -8,10 +8,15 @@ import { PRODUCTS } from '../lib/catalog'
 import { Package, User, MapPin, Heart, LogOut, Trash } from '../components/Icons'
 
 const STAGES = ['Placed', 'Packed', 'Shipped', 'Out for delivery', 'Delivered']
+const CANCELLED = 'Cancelled'
 const PAY = { upi: 'UPI', card: 'Card', cod: 'COD' }
 
 // Simulate progress based on order age
-const stageIndex = (o) => Math.min(STAGES.length - 1, Math.floor((Date.now() - o.placedAt) / (1000 * 60 * 60 * 18)))
+const stageIndex = (o) => {
+  const i = STAGES.indexOf(o.status)
+  if (i > 0) return i
+  return Math.min(STAGES.length - 1, Math.floor((Date.now() - o.placedAt) / (1000 * 60 * 60 * 18)))
+}
 
 export default function Account() {
   const { user, logout, orders, addresses, removeAddress, updateUser, toast, wishlist } = useStore()
@@ -107,7 +112,7 @@ export function OrderCard({ o }) {
         <div><b>Placed</b>{new Date(o.placedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
         <div><b>Total</b>{formatPrice(o.total)} · {PAY[o.payment]}</div>
         <div><b>Deliver to</b>{o.address.name}, {o.address.city}</div>
-        <span className="status">{STAGES[idx]}</span>
+        <span className="status" style={o.status === CANCELLED ? { background: 'var(--sale-soft)', color: 'var(--sale)' } : undefined}>{o.status === CANCELLED ? CANCELLED : STAGES[idx]}</span>
       </div>
       <div className="order__items">
         {o.items.map((l) => (

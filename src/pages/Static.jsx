@@ -91,8 +91,8 @@ export function About() {
 }
 
 export function CustomKits() {
-  const { toast } = useStore()
-  const [f, setF] = useState({ name: '', phone: '', org: '', product: 'Sublimated Jerseys', qty: '15', message: '' })
+  const { toast, submitEnquiry } = useStore()
+  const [f, setF] = useState({ name: '', phone: '', org: '', product: 'Sublimated Jerseys', qty: '11–25', message: '' })
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value })
   const enquiry = `Hi Rishikar Sports!%0AName: ${f.name}%0ATeam/Company: ${f.org}%0AProduct: ${f.product}%0AQuantity: ${f.qty}%0A${f.message}`
   return (
@@ -127,7 +127,7 @@ export function CustomKits() {
           </div>
         </div>
 
-        <form className="block" onSubmit={(e) => { e.preventDefault(); toast('Enquiry noted. We will call you within one working day.'); setF({ ...f, name: '', org: '', phone: '', message: '' }) }}>
+        <form className="block" onSubmit={(e) => { e.preventDefault(); submitEnquiry({ type: 'Bulk quote', ...f }); toast('Enquiry noted. We will call you within one working day.'); setF({ ...f, name: '', org: '', phone: '', message: '' }) }}>
           <h3>Get a bulk quote</h3>
           <div className="form-grid">
             <div className="field"><label>Your name</label><input className="input" required value={f.name} onChange={set('name')} /></div>
@@ -156,7 +156,7 @@ export function CustomKits() {
 }
 
 export function Contact() {
-  const { toast } = useStore()
+  const { toast, submitEnquiry } = useStore()
   const [f, setF] = useState({ name: '', email: '', topic: 'Bulk / team order', message: '' })
   return (
     <div className="container">
@@ -169,7 +169,7 @@ export function Contact() {
           <div className="contact__card"><Clock /><div><b>Bulk & team orders</b><span>Minimum {BRAND.moq} pieces for custom printed kits. <Link to="/custom" style={{ textDecoration: 'underline' }}>Get a quote →</Link></span></div></div>
           <a className="btn btn--accent" style={{ marginTop: 18 }} href={waLink('Hi Rishikar Sports, I have an enquiry.')} target="_blank" rel="noreferrer"><WhatsApp width={16} height={16} /> Chat on WhatsApp</a>
         </div>
-        <form className="block" onSubmit={(e) => { e.preventDefault(); toast('Message sent. We will get back to you soon.'); setF({ name: '', email: '', topic: 'Bulk / team order', message: '' }) }}>
+        <form className="block" onSubmit={(e) => { e.preventDefault(); submitEnquiry({ type: 'Contact', ...f }); toast('Message sent. We will get back to you soon.'); setF({ name: '', email: '', topic: 'Bulk / team order', message: '' }) }}>
           <h3>Send us a message</h3>
           <div className="form-grid">
             <div className="field"><label>Name</label><input className="input" required value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} /></div>

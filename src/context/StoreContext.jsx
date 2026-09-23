@@ -1,6 +1,10 @@
 import { createContext, useContext, useEffect, useMemo, useReducer, useState, useCallback } from 'react'
 import { loadLS, saveLS, uid } from '../lib/utils'
-import { COUPONS, FREE_SHIP_ABOVE, SHIPPING_FEE, COD_FEE } from '../data/content'
+import { getCoupons, getSettings, addEnquiry as dbAddEnquiry } from '../lib/db'
+
+const COUPONS = getCoupons()
+const SETTINGS = getSettings()
+const { freeShipAbove: FREE_SHIP_ABOVE, shippingFee: SHIPPING_FEE, codFee: COD_FEE } = SETTINGS
 
 const StoreContext = createContext(null)
 
@@ -190,6 +194,9 @@ export function StoreProvider({ children }) {
         return order
       },
       markViewed: (slug) => dispatch({ type: 'VIEWED', slug }),
+      submitEnquiry: (e) => dbAddEnquiry(e),
+      settings: SETTINGS,
+      coupons: COUPONS,
     }),
     [state, totals, toasts, cartOpen, searchOpen, menuOpen, toast]
   )

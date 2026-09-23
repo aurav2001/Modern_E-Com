@@ -34,7 +34,12 @@ npm run preview    # serve the build
 - **Static** — About, Contact (real address, phone, email), FAQ, Size guide, policies, 404
 - Floating WhatsApp button wired to the business number
 
-Cart, wishlist, user, addresses and orders persist in `localStorage`.
+- **Admin panel** (`/admin`, PIN **1234**) — dashboard with revenue chart and stats, order
+  management with status updates, product CRUD with inline price/stock editing, bulk-quote
+  enquiries with follow-up status, customers, and settings for contact details, shipping
+  rules, coupons and the admin PIN
+
+Cart, wishlist, user, addresses, orders, enquiries and admin edits persist in `localStorage`.
 
 ## Structure
 
@@ -44,11 +49,11 @@ public/
   products/             product photos (jersey, polo, jacket, hoodie, pants, shorts, bag, cap, bottle)
 src/
   data/       products.json, menu.json, content.js (brand, hero, FAQs, policies, coupons)
-  lib/        catalog.js (querying/filtering), utils.js
+  lib/        db.js (local data store shared with the admin), catalog.js, utils.js
   context/    StoreContext.jsx (cart, wishlist, auth, orders, toasts)
   components/ Header, Footer, ProductCard, QuickAdd, CartDrawer, SearchOverlay, Shared, Icons
-  pages/      Home, Listing, Product, Cart, Checkout, OrderSuccess, Account, Auth, Static
-  styles/     global.css (design tokens + all component styles)
+  pages/      Home, Listing, Product, Cart, Checkout, OrderSuccess, Account, Auth, Static, Admin
+  styles/     global.css (design tokens + storefront), admin.css
 ```
 
 ## Changing content
@@ -60,3 +65,6 @@ src/
 | Products, prices, colours, sizes | `src/data/products.json` |
 | Menu and sub-categories | `src/data/menu.json` |
 | Colours and typography | `:root` tokens at the top of `src/styles/global.css` |
+
+Most of the above can also be changed from the admin panel at `/admin` without touching code —
+those edits are saved per browser. "Reset catalogue" in Settings restores the shipped products.

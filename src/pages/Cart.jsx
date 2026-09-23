@@ -2,7 +2,10 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
 import { formatPrice } from '../lib/utils'
-import { COUPONS, FREE_SHIP_ABOVE } from '../data/content'
+import { getCoupons, getSettings } from '../lib/db'
+
+const COUPONS = getCoupons()
+const FREE_SHIP_ABOVE = getSettings().freeShipAbove
 import { Crumbs, Qty, Rail } from '../components/Shared'
 import { Bag, Lock, Heart } from '../components/Icons'
 import { bestSellers, PRODUCTS } from '../lib/catalog'

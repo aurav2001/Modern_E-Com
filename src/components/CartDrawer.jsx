@@ -2,7 +2,9 @@ import { useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
 import { formatPrice } from '../lib/utils'
-import { FREE_SHIP_ABOVE } from '../data/content'
+import { getSettings } from '../lib/db'
+
+const FREE_SHIP_ABOVE = getSettings().freeShipAbove
 import { Bag, X } from './Icons'
 import { Qty } from './Shared'
 

@@ -60,6 +60,7 @@ export default function Footer() {
               <li><Link to="/policies/privacy">Privacy policy</Link></li>
               <li><Link to="/policies/terms">Terms & conditions</Link></li>
               <li><Link to="/policies/shipping-returns">Return policy</Link></li>
+              <li><Link to="/admin">Admin panel</Link></li>
             </ul>
           </div>
         </div>
