@@ -1,14 +1,14 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { HERO, MARQUEE, PROMO_CARDS, CATEGORY_TILES, USPS, TESTIMONIALS } from '../data/content'
-import { newArrivals, bestSellers, onSale, queryProducts, SPORTS, getProduct } from '../lib/catalog'
+import { BRAND, HERO, MARQUEE, MANUFACTURE, PROMO_CARDS, CATEGORY_TILES, USPS, PROCESS, TESTIMONIALS } from '../data/content'
+import { newArrivals, bestSellers, onSale, queryProducts, getProduct, PRODUCTS } from '../lib/catalog'
 import { SectionHead, Rail, Stars, Reveal } from '../components/Shared'
 import ProductCard from '../components/ProductCard'
 import { Newsletter } from '../components/Footer'
-import { ArrowRight, Truck, Refresh, Shield, Flag } from '../components/Icons'
+import { ArrowRight, Truck, Refresh, Shield, Zap, WhatsApp } from '../components/Icons'
 import { cx, formatPrice } from '../lib/utils'
 
-const ICONS = { truck: Truck, refresh: Refresh, shield: Shield, flag: Flag }
+const ICONS = { truck: Truck, refresh: Refresh, shield: Shield, zap: Zap }
 
 function Hero() {
   return (
@@ -22,12 +22,12 @@ function Hero() {
           </h1>
           <p className="hero__text">{HERO.text}</p>
           <div className="hero__cta">
-            <Link to="/shop" className="btn btn--primary btn--lg">Shop all <ArrowRight width={16} height={16} /></Link>
-            <Link to="/c/cricket" className="btn btn--outline btn--lg">Cricket gear</Link>
+            <Link to="/custom" className="btn btn--accent btn--lg">Get a bulk quote <ArrowRight width={16} height={16} /></Link>
+            <Link to="/shop" className="btn btn--outline btn--lg">Shop products</Link>
           </div>
           <div className="hero__proof">
-            <div className="hero__faces">{['R', 'A', 'V', 'S'].map((c) => <span key={c}>{c}</span>)}</div>
-            <span><b>12,400+</b> athletes shopped this month</span>
+            <div className="hero__faces">{['R', 'S', 'A', 'V'].map((c) => <span key={c}>{c}</span>)}</div>
+            <span><b>400+</b> clubs, academies and schools kitted</span>
           </div>
         </div>
         <div className="collage" aria-hidden="true">
@@ -53,9 +53,9 @@ function Hero() {
 
 const TABS = [
   { key: 'all', label: 'All' },
-  { key: 'men', label: 'Men' },
-  { key: 'women', label: 'Women' },
-  { key: 'cricket', label: 'Cricket' },
+  { key: 'jerseys', label: 'Jerseys' },
+  { key: 'tshirts', label: 'T-Shirts & Polos' },
+  { key: 'teamwear', label: 'Teamwear' },
   { key: 'accessories', label: 'Accessories' },
 ]
 
@@ -63,10 +63,12 @@ export default function Home() {
   const [tab, setTab] = useState('all')
   const trending = useMemo(() => (tab === 'all' ? bestSellers(8) : queryProducts({ category: tab, sort: 'popular' }).slice(0, 8)), [tab])
   const sale = useMemo(() => onSale(8), [])
-  const arrivals = useMemo(() => newArrivals(12), [])
-  const drop = useMemo(() => ['tyka-force-match-titanium-grill', 'legacy-team-wheelie', 'gravix-ball-pro-145-gm', 'cricket-shoes-velocity-rubber-stud'].map(getProduct).filter(Boolean), [])
-  const dropHero = getProduct('strike-320-l-shoe') || drop[0]
-  const sportCounts = useMemo(() => Object.fromEntries(SPORTS.map((s) => [s.slug, queryProducts({ sport: s.slug }).length])), [])
+  const arrivals = useMemo(() => {
+    const n = newArrivals(12)
+    return n.length >= 4 ? n : [...n, ...PRODUCTS.filter((p) => !n.includes(p))].slice(0, 8)
+  }, [])
+  const kit = useMemo(() => ['rs-pro-sublimated-jersey', 'rs-pro-tracksuit', 'zipper-hoodie', 'rs-duffle-kit-bag'].map(getProduct).filter(Boolean), [])
+  const kitHero = getProduct('custom-team-jersey-set-of-11') || kit[0]
 
   return (
     <>
@@ -80,12 +82,12 @@ export default function Home() {
 
       <section className="section" style={{ paddingTop: 20 }}>
         <div className="container">
-          <SectionHead eyebrow="Collections" title="Pick your lane" text="Four collections, one standard: gear that performs when it matters." />
+          <SectionHead eyebrow="What we make" title="Sportswear, made to order" text="Everything is cut, printed and stitched in our own unit in Chapra — so quality and delivery stay in our hands." />
           <div className="bento">
             {CATEGORY_TILES.map((t) => (
               <Link to={`/c/${t.slug}`} className={cx('tile', t.size === 'xl' && 'tile--xl', t.size === 'wide' && 'tile--wide')} key={t.slug}>
-                <img src={t.img} alt={t.name} loading="lazy" style={t.pos ? { objectPosition: t.pos } : undefined} />
-                <span className="tile__pill">{t.slug === 'men' ? 'Most shopped' : t.slug === 'cricket' ? 'In season' : 'Collection'}</span>
+                <img src={t.img} alt={t.name} loading="lazy" />
+                <span className="tile__pill">{t.slug === 'jerseys' ? 'Most ordered' : t.slug === 'teamwear' ? 'Season pick' : 'Collection'}</span>
                 <div className="tile__cap"><div><h3>{t.name}</h3><span>{t.sub}</span></div><span className="arrow"><ArrowRight /></span></div>
               </Link>
             ))}
@@ -95,19 +97,19 @@ export default function Home() {
 
       <section className="section section--tight" style={{ paddingTop: 0 }}>
         <div className="container">
-          <Rail items={arrivals} eyebrow="Just landed" title="New arrivals" to="/new" />
+          <Rail items={arrivals} eyebrow="Ready to order" title="Popular right now" to="/shop" />
         </div>
       </section>
 
       <section className="section section--bg">
         <div className="container">
-          <SectionHead eyebrow="Shop by sport" title="What do you play?" />
+          <SectionHead eyebrow="Our range" title="We manufacture" />
           <div className="sports">
-            {SPORTS.map((s, i) => (
-              <Link to={`/sport/${s.slug}`} className="sport" key={s.slug}>
+            {MANUFACTURE.map((s, i) => (
+              <Link to={s.to} className="sport" key={s.name}>
                 <span className="sport__num">0{i + 1}</span>
                 <div className="sport__img"><img src={s.img} alt="" loading="lazy" /></div>
-                <div><b>{s.name}</b><br /><small>{sportCounts[s.slug]} products</small></div>
+                <div><b>{s.name}</b><br /><small>{s.sub}</small></div>
               </Link>
             ))}
           </div>
@@ -117,40 +119,58 @@ export default function Home() {
       <section className="section">
         <div className="container">
           <SectionHead
-            eyebrow="Most wanted"
-            title="Trending this week"
+            eyebrow="Best sellers"
+            title="Ordered again and again"
             action={<div className="tabs">{TABS.map((t) => <button key={t.key} className={cx('tab', tab === t.key && 'active')} onClick={() => setTab(t.key)}>{t.label}</button>)}</div>}
           />
           <div className="grid">{trending.map((p) => <ProductCard key={p.slug} p={p} />)}</div>
-          <div className="load-more"><Link to={tab === 'all' ? '/shop' : `/c/${tab}`} className="btn btn--outline">Shop all {tab === 'all' ? 'products' : tab}</Link></div>
+          <div className="load-more"><Link to={tab === 'all' ? '/shop' : `/c/${tab}`} className="btn btn--outline">Shop all products</Link></div>
         </div>
       </section>
 
       <section className="section section--ink">
         <div className="container drop">
           <div className="drop__media">
-            <img src={dropHero?.image} alt="" loading="lazy" />
-            <span className="badge badge--new">Cricket edit</span>
+            <img src={kitHero?.image} alt="" loading="lazy" />
+            <span className="badge badge--new">Team order</span>
           </div>
           <div>
-            <span className="eyebrow">Featured drop</span>
-            <h2 style={{ marginTop: 12 }}>The 22-yard<br />starter kit</h2>
-            <p>Everything a serious weekend cricketer needs before the first ball: pro-grade helmet, match balls, whites that move and a wheelie that carries it all.</p>
+            <span className="eyebrow">Custom kits</span>
+            <h2 style={{ marginTop: 12 }}>Your logo.<br />Your colours.</h2>
+            <p>Send us your club logo and colours — we send back a free 3D mock-up, then produce and deliver the full squad kit in 10–12 working days. Minimum {BRAND.moq} pieces.</p>
             <div className="drop__list">
-              {drop.map((p) => (
+              {kit.map((p) => (
                 <Link to={`/product/${p.slug}`} className="drop__row" key={p.slug}>
                   <img src={p.image} alt="" loading="lazy" />
-                  <div><b>{p.name}</b><span>{p.colors.length} colour{p.colors.length === 1 ? '' : 's'} · ★ {p.rating}</span></div>
+                  <div><b>{p.name}</b><span>{p.colors.length} colours · ★ {p.rating}</span></div>
                   <em>{formatPrice(p.price)}</em>
                 </Link>
               ))}
             </div>
-            <Link to="/c/cricket" className="btn btn--accent" style={{ marginTop: 22 }}>Shop the full cricket range <ArrowRight width={16} height={16} /></Link>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 22 }}>
+              <Link to="/custom" className="btn btn--accent">Start a custom order <ArrowRight width={16} height={16} /></Link>
+              <a href={`https://wa.me/${BRAND.phoneIntl.replace('+', '')}`} className="btn btn--white" target="_blank" rel="noreferrer"><WhatsApp width={16} height={16} /> WhatsApp us</a>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="section section--tight">
+      <section className="section">
+        <div className="container">
+          <SectionHead eyebrow="How it works" title="Idea to delivery in four steps" center />
+          <div className="steps-grid">
+            {PROCESS.map((s) => (
+              <Reveal key={s.n} className="step">
+                <b>{s.n}</b>
+                <h3>{s.title}</h3>
+                <p>{s.text}</p>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section section--tight" style={{ paddingTop: 0 }}>
         <div className="container">
           <div className="promos">
             {PROMO_CARDS.map((b) => (
@@ -168,14 +188,14 @@ export default function Home() {
       {sale.length > 0 && (
         <section className="section">
           <div className="container">
-            <Rail items={sale} eyebrow="Limited time" title="Season sale" text="Best prices of the season on pro-grade kit." to="/sale" linkText="All deals" />
+            <Rail items={sale} eyebrow="Limited time" title="Current offers" text="Season rates on our most-ordered pieces." to="/sale" linkText="All offers" />
           </div>
         </section>
       )}
 
       <section className="section section--bg">
         <div className="container">
-          <SectionHead eyebrow="Athlete reviews" title="Trusted on the field" center />
+          <SectionHead eyebrow="Customer reviews" title="Trusted on the ground" center />
           <div className="quotes">
             {TESTIMONIALS.map((t) => (
               <Reveal key={t.name} className="quote">

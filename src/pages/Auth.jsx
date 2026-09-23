@@ -2,8 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
 
-const P = 'https://tyka.premierhostings.com/backend/storage/products/'
-const IMGS = [P + 'elite-women-black-3.webp', P + 'TYKA-Shoe-Strike320L-WhiteBlue-L.webp']
+const IMGS = ['/products/polo.png', '/products/bag.png']
 
 export function Login() {
   const { login } = useStore()
@@ -25,7 +24,7 @@ export function Login() {
         <div className="field"><label>Password</label><input className="input" type="password" required value={f.password} onChange={(e) => setF({ ...f, password: e.target.value })} autoComplete="current-password" /></div>
         <button className="btn btn--primary btn--lg btn--block">Log in</button>
       </form>
-      <p className="auth__alt">New to KRIDA? <Link to={`/signup${sp.get('next') ? `?next=${sp.get('next')}` : ''}`}>Create an account</Link></p>
+      <p className="auth__alt">New to Rishikar Sports? <Link to={`/signup${sp.get('next') ? `?next=${sp.get('next')}` : ''}`}>Create an account</Link></p>
       <p className="auth__alt small">Demo store: accounts are stored only in this browser.</p>
     </AuthShell>
   )
@@ -46,7 +45,7 @@ export function Signup() {
     nav(sp.get('next') || '/account')
   }
   return (
-    <AuthShell title="Join the squad" sub="Create your account for order tracking, wishlists and member-only drops.">
+    <AuthShell title="Join the squad" sub="Create an account to track orders, save designs and reorder team kits faster.">
       <form onSubmit={submit}>
         {err && <div className="alert alert--error">{err}</div>}
         <div className="field"><label>Full name</label><input className="input" required minLength={2} value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} autoComplete="name" /></div>
@@ -66,7 +65,7 @@ function AuthShell({ title, sub, children }) {
     <div className="auth">
       <div className="auth__media">
         <div className="split__stack">{IMGS.map((s) => <img key={s} src={s} alt="" />)}</div>
-        <div className="cap"><span className="eyebrow" style={{ color: '#b8bcc4' }}>KRIDA</span><h2>Made for the game</h2></div>
+        <div className="cap"><span className="eyebrow" style={{ color: '#b8bcc4' }}>Rishikar Sports</span><h2>We make every player look confident</h2></div>
       </div>
       <div className="auth__panel">
         <div className="auth__card">

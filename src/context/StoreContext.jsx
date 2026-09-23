@@ -5,14 +5,14 @@ import { COUPONS, FREE_SHIP_ABOVE, SHIPPING_FEE, COD_FEE } from '../data/content
 const StoreContext = createContext(null)
 
 const initial = () => ({
-  cart: loadLS('krida.cart', []),
-  wishlist: loadLS('krida.wishlist', []),
-  user: loadLS('krida.user', null),
-  users: loadLS('krida.users', []),
-  orders: loadLS('krida.orders', []),
-  addresses: loadLS('krida.addresses', []),
-  coupon: loadLS('krida.coupon', null),
-  recent: loadLS('krida.recent', []),
+  cart: loadLS('rs.cart', []),
+  wishlist: loadLS('rs.wishlist', []),
+  user: loadLS('rs.user', null),
+  users: loadLS('rs.users', []),
+  orders: loadLS('rs.orders', []),
+  addresses: loadLS('rs.addresses', []),
+  coupon: loadLS('rs.coupon', null),
+  recent: loadLS('rs.recent', []),
 })
 
 const lineKey = (slug, color, size) => `${slug}__${color || '-'}__${size || '-'}`
@@ -84,14 +84,14 @@ export function StoreProvider({ children }) {
   const [searchOpen, setSearchOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
-  useEffect(() => saveLS('krida.cart', state.cart), [state.cart])
-  useEffect(() => saveLS('krida.wishlist', state.wishlist), [state.wishlist])
-  useEffect(() => saveLS('krida.user', state.user), [state.user])
-  useEffect(() => saveLS('krida.users', state.users), [state.users])
-  useEffect(() => saveLS('krida.orders', state.orders), [state.orders])
-  useEffect(() => saveLS('krida.addresses', state.addresses), [state.addresses])
-  useEffect(() => saveLS('krida.coupon', state.coupon), [state.coupon])
-  useEffect(() => saveLS('krida.recent', state.recent), [state.recent])
+  useEffect(() => saveLS('rs.cart', state.cart), [state.cart])
+  useEffect(() => saveLS('rs.wishlist', state.wishlist), [state.wishlist])
+  useEffect(() => saveLS('rs.user', state.user), [state.user])
+  useEffect(() => saveLS('rs.users', state.users), [state.users])
+  useEffect(() => saveLS('rs.orders', state.orders), [state.orders])
+  useEffect(() => saveLS('rs.addresses', state.addresses), [state.addresses])
+  useEffect(() => saveLS('rs.coupon', state.coupon), [state.coupon])
+  useEffect(() => saveLS('rs.recent', state.recent), [state.recent])
 
   const toast = useCallback((message, opts = {}) => {
     const id = uid()

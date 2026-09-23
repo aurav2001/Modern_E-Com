@@ -37,8 +37,8 @@ export default function Product() {
     setSize(p.sizes.length === 1 ? p.sizes[0] : null)
     setQtyV(1); setImg(0); setErr(''); setPinMsg('')
     markViewed(p.slug)
-    document.title = `${p.name} – KRIDA`
-    return () => { document.title = 'KRIDA – Made for the game' }
+    document.title = `${p.name} – Rishikar Sports`
+    return () => { document.title = 'Rishikar Sports – Quality You Trust, Performance You Deserve' }
   }, [slug]) // eslint-disable-line
 
   const gallery = useMemo(() => {
@@ -168,14 +168,14 @@ export default function Product() {
               {pinMsg && <div><MapPin /> <span>{pinMsg}</span></div>}
               <div><Truck /> <span>Order in the next few hours for dispatch tomorrow. Expected by <b>{deliveryDate(5)}</b>.</span></div>
               <div><Refresh /> <span>7-day easy returns & free size exchange</span></div>
-              <div><Shield /> <span>100% genuine product · Secure checkout</span></div>
+              <div><Shield /> <span>Made in our own unit · Bulk rates from 11 pieces</span></div>
             </div>
 
             <Accordion items={details} />
 
             <div className="pinfo__trust">
-              <span><Check /> Made in India</span>
-              <span><Check /> Athlete tested</span>
+              <span><Check /> Made in Bihar, India</span>
+              <span><Check /> Custom logo & numbering</span>
               <span><Check /> Colour-fast sublimation</span>
             </div>
           </div>

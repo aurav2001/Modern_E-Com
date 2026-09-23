@@ -1,7 +1,10 @@
-# KRIDA Store – React e-commerce (sportswear, inspired by tyka.com but with its own brand & layout)
+# Rishikar Sports — e-commerce site (React + Vite)
 
-Performance sportswear store: Men · Women · Cricket · Accessories.
-280 real products (names, prices, colours, sizes, images) pulled from TYKA's public catalogue.
+Sportswear manufacturing store for **Rishikar Sports**, Chapra, Bihar.
+Custom jerseys, tracksuits, hoodies, polos, tees and kit bags — team kits from 11 pieces.
+
+> Demo build: catalogue and orders are local (no backend). Product photos are cropped from the
+> brand flyer — swap them in `public/products/` when real shoot images are ready.
 
 ## Run
 
@@ -12,26 +15,35 @@ npm run build      # production build in dist/
 npm run preview    # serve the build
 ```
 
-## What works
+## What's in it
 
-- Home: typographic hero with product collage + marquee, bento category grid, new arrivals rail, shop-by-sport cards, trending tabs, dark "featured drop" section, promo cards, reviews, newsletter
-- Mega menu (desktop) + drawer menu (mobile), search overlay (Ctrl/Cmd + K) with live results
-- Listing pages: `/shop`, `/c/men`, `/c/men/polos`, `/sport/running`, `/new`, `/sale`, `/search?q=…`
-  - filters (sub-category, price, colour, size) kept in the URL, sorting, load more, mobile filter drawer
-- Product page: gallery with hover zoom, colour swatches switch photos, size picker + size guide, qty, add to bag, buy now, wishlist, pincode check, details accordion, reviews, related products, sticky mobile buy bar
-- Quick add from any product card
-- Bag drawer + bag page, coupons (`KRIDA10`, `FLAT200`, `WELCOME15`), free-shipping progress
-- Checkout: address book with validation, UPI / card / COD (demo, no real payment), order summary
-- Order confirmation, account area (overview, orders with tracking timeline, addresses, wishlist), login / signup
-- About, Contact, FAQ, Size guide, Shipping/Returns, Privacy, Terms, 404
+- **Home** — typographic hero with product collage, marquee, USP strip, bento category grid,
+  "we manufacture" cards, best sellers with tabs, dark custom-kit section, 4-step process,
+  promo cards, offers rail, reviews, newsletter
+- **Catalogue** — 22 products across Jerseys · T-Shirts & Polos · Teamwear · Accessories,
+  with colour and size variants
+- **Listing pages** — `/shop`, `/c/jerseys`, `/c/teamwear/tracksuits`, `/sale`, `/search?q=…`
+  with URL-based filters (sub-category, price, colour, size), sorting and load-more
+- **Product page** — gallery with zoom, colour swatches, size picker + size guide, qty,
+  add to bag, buy now, wishlist, pincode check, details accordion, reviews, related products
+- **Custom Kits page** (`/custom`) — process steps, what's included, bulk enquiry form that can
+  hand off to WhatsApp with the enquiry pre-filled
+- **Cart & checkout** — bag drawer, coupons (`RS10`, `TEAM500`, `WELCOME15`), free-shipping
+  progress, address book with validation, UPI / card / COD (demo — no real payment)
+- **Account** — order confirmation, orders with tracking timeline, addresses, profile, wishlist
+- **Static** — About, Contact (real address, phone, email), FAQ, Size guide, policies, 404
+- Floating WhatsApp button wired to the business number
 
-Cart, wishlist, user, addresses and orders persist in `localStorage` (demo – no backend). Coupons: `KRIDA10`, `FLAT200`, `WELCOME15`.
+Cart, wishlist, user, addresses and orders persist in `localStorage`.
 
 ## Structure
 
 ```
+public/
+  logo.png              brand mark used in header, footer and favicon
+  products/             product photos (jersey, polo, jacket, hoodie, pants, shorts, bag, cap, bottle)
 src/
-  data/       products.json, menu.json, content.js (banners, FAQs, policies, coupons)
+  data/       products.json, menu.json, content.js (brand, hero, FAQs, policies, coupons)
   lib/        catalog.js (querying/filtering), utils.js
   context/    StoreContext.jsx (cart, wishlist, auth, orders, toasts)
   components/ Header, Footer, ProductCard, QuickAdd, CartDrawer, SearchOverlay, Shared, Icons
@@ -39,4 +51,12 @@ src/
   styles/     global.css (design tokens + all component styles)
 ```
 
-Product catalogue (280 items) and images are pulled from TYKA's public catalogue for the demo; swap `image` / `gallery` URLs in `products.json` for your own.
+## Changing content
+
+| What | Where |
+|---|---|
+| Phone, email, address, MOQ | `BRAND` in `src/data/content.js` |
+| Hero text, banners, FAQs, policies, coupons | `src/data/content.js` |
+| Products, prices, colours, sizes | `src/data/products.json` |
+| Menu and sub-categories | `src/data/menu.json` |
+| Colours and typography | `:root` tokens at the top of `src/styles/global.css` |

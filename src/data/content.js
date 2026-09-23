@@ -1,103 +1,127 @@
-const P = 'https://tyka.premierhostings.com/backend/storage/products/'
+const P = '/products/'
 
 export const BRAND = {
-  name: 'KRIDA',
-  tagline: 'Made for the game',
-  about: 'KRIDA is a performance sportswear store for athletes across India — cricket whites and helmets, training kit, footwear and recovery gear, picked and tested by people who actually play.',
+  name: 'RISHIKAR SPORTS',
+  short: 'RISHIKAR',
+  tagline: 'Quality You Trust, Performance You Deserve',
+  about:
+    'Rishikar Sports is a sportswear manufacturing unit in Chapra, Bihar. We make jerseys, tracksuits, hoodies, tees and kit bags for clubs, academies, schools and companies — with your logo, your colours, your numbers.',
+  phone: '6299094402',
+  phoneIntl: '+916299094402',
+  email: 'rishikarsports@gmail.com',
+  address: 'CN137, Plot No 602, Tari, Near Atithee Vihar, Dahiawan Tola, Chapra, Saran, Bihar 841301',
+  addressShort: 'Dahiawan Tola, Tari, Chapra, Bihar 841301',
+  hours: 'Mon–Sat, 9am–7pm',
+  moq: 11,
 }
 
-// Hero collage: three hero products + floating tags
 export const HERO = {
-  kicker: 'New season drop is live',
-  headline: ['Made for', 'the game.'],
-  text: 'Cricket whites that breathe, tights that never sag, helmets pros trust. 280+ styles across cricket, training, running and shooting — shipped anywhere in India.',
+  kicker: 'Custom team kits from 11 pieces',
+  headline: ['We make every player', 'look confident.'],
+  text:
+    'Sportswear manufacturing from our own unit in Chapra, Bihar. Full-sublimation jerseys, tracksuits, hoodies and kit bags — your logo, your colours, delivered across India.',
   cards: [
-    { img: P + 'TYKA-Jacket-Resistant-Black-F.webp', to: '/product/resistant-jacket' },
-    { img: P + 'helmet.webp', to: '/product/tyka-atlas-youth-ms-grill' },
-    { img: P + 'TYKA-Shoe-Speed-BlackBlue-L.webp', to: '/product/speed-550-shoe' },
+    { img: P + 'polo.png', to: '/product/rs-pro-polo' },
+    { img: P + 'jersey.png', to: '/product/rs-pro-sublimated-jersey' },
+    { img: P + 'bag.png', to: '/product/rs-duffle-kit-bag' },
   ],
   tags: [
-    { label: 'Resistant Jacket', sub: '₹1,895 · New' },
-    { label: 'Speed 550', sub: 'Runner favourite' },
-    { label: '4.8 ★', sub: '12k+ reviews' },
+    { label: 'RS PRO Polo', sub: '₹699 · Best seller' },
+    { label: 'Custom kits', sub: 'From 11 pieces' },
+    { label: '10–12 days', sub: 'Design to delivery' },
   ],
 }
 
-export const MARQUEE = ['Cricket', 'Training', 'Running', 'Football', 'Shooting', 'Recovery', 'Team kits']
+export const MARQUEE = ['T-Shirts', 'Tracksuits', 'Shorts', 'Hoodies', 'Jerseys', 'Kit Bags', 'Custom Printing', 'Embroidery']
+
+export const MANUFACTURE = [
+  { name: 'Jerseys', sub: 'Football · Cricket · Basketball', to: '/c/jerseys', img: P + 'jersey.png' },
+  { name: 'Polos & Tees', sub: 'Dry-fit, corporate, training', to: '/c/tshirts', img: P + 'polo.png' },
+  { name: 'Tracksuits', sub: 'Summer and winter sets', to: '/c/teamwear/tracksuits', img: P + 'jacket.png' },
+  { name: 'Hoodies', sub: 'Zipper and pullover', to: '/c/teamwear/hoodies', img: P + 'hoodie.png' },
+  { name: 'Kit Bags', sub: 'Duffles and team bags', to: '/c/accessories/kit-bags', img: P + 'bag.png' },
+]
 
 export const CATEGORY_TILES = [
-  { slug: 'men', name: 'Men', sub: '135+ styles · polos, tracksuits, lowers', img: P + 'TYKA-Tracksuit-Forward-Charcoal-F.webp', size: 'xl' },
-  { slug: 'women', name: 'Women', sub: '40+ styles · tights, tees, tracksuits', img: P + 'TYKA-Polo-Bron-Airforceblue-F-webp.webp', size: 'wide' },
-  { slug: 'cricket', name: 'Cricket', sub: 'Helmets · balls · whites', img: P + 'helmet.webp' },
-  { slug: 'accessories', name: 'Accessories', sub: 'Bags · caps · socks', img: P + 'TYKA-Bag-Legend-Wheelie-Black-L.webp' },
+  { slug: 'jerseys', name: 'Jerseys', sub: 'Full sublimation · your design', img: P + 'jersey.png', size: 'xl' },
+  { slug: 'tshirts', name: 'T-Shirts & Polos', sub: 'Dry-fit, corporate, training', img: P + 'polo.png', size: 'wide' },
+  { slug: 'teamwear', name: 'Teamwear', sub: 'Tracksuits · hoodies · lowers', img: P + 'jacket.png' },
+  { slug: 'accessories', name: 'Accessories', sub: 'Bags · caps · bottles', img: P + 'bag.png' },
 ]
 
 export const PROMO_CARDS = [
-  { tone: 'lime', kicker: 'Cricket season', title: 'Spikes that grip', to: '/c/cricket/shoes-1', img: P + 'spkies-pro-orange-1.webp', cta: 'Shop cricket shoes' },
-  { tone: 'forest', kicker: 'Recovery', title: 'Roll it out', to: '/c/accessories/recovery-foam-rollers', img: P + 'teollstrandardsoft.webp', cta: 'Shop foam rollers' },
+  { tone: 'orange', kicker: 'Team orders', title: 'Your logo on every piece', to: '/custom', img: P + 'hoodie.png', cta: 'Get a bulk quote' },
+  { tone: 'navy', kicker: 'Academies & schools', title: 'Kit the whole squad', to: '/c/teamwear/tracksuits', img: P + 'jacket.png', cta: 'Shop teamwear' },
 ]
 
 export const USPS = [
-  { icon: 'truck', title: 'Free shipping', text: 'On all orders above ₹999' },
-  { icon: 'refresh', title: '7-day easy returns', text: 'Free size exchanges' },
-  { icon: 'shield', title: 'Secure payments', text: 'UPI · Cards · COD' },
-  { icon: 'flag', title: 'Ships pan-India', text: '2–7 working days' },
+  { icon: 'shield', title: 'Premium quality', text: 'Own unit, checked piece by piece' },
+  { icon: 'refresh', title: 'Comfort & durability', text: 'Fabric that survives the season' },
+  { icon: 'zap', title: 'Custom designs', text: 'Free mock-up before production' },
+  { icon: 'truck', title: 'On-time delivery', text: '10–12 days, shipped pan-India' },
+]
+
+export const PROCESS = [
+  { n: '01', title: 'Share your idea', text: 'Send your logo, colours and quantity on WhatsApp or the enquiry form.' },
+  { n: '02', title: 'Free design mock-up', text: 'Our designer sends a 3D mock-up. Change it as many times as you like.' },
+  { n: '03', title: 'Approve & produce', text: 'Once you approve, we cut, print, stitch and quality-check in our own unit.' },
+  { n: '04', title: 'Delivered to you', text: 'Packed set-wise with names and numbers, shipped anywhere in India.' },
 ]
 
 export const TESTIMONIALS = [
-  { name: 'Rohit S.', role: 'Club cricketer, Pune', text: 'The Force helmet is the lightest I have worn. Grill visibility is excellent and it survived a full season of nets.', rating: 5 },
-  { name: 'Ananya M.', role: 'Marathon runner', text: 'Elite tights fit perfectly and the fabric does not sag even after long runs. Ordered a second pair the same week.', rating: 5 },
-  { name: 'Coach Vikram', role: 'Academy owner, Delhi', text: 'We kit out 60 kids every year through KRIDA. Consistent sizing, quick delivery and the team uniforms hold colour wash after wash.', rating: 4 },
+  { name: 'Ranjan K.', role: 'Football club secretary, Chapra', text: 'Ordered 22 sublimated jerseys with names and numbers. Print quality is sharp and the delivery came two days before the tournament.', rating: 5 },
+  { name: 'Aditi S.', role: 'School sports teacher, Patna', text: 'We kit out 120 students every year. Sizing stays consistent batch after batch and the colours do not fade after washing.', rating: 5 },
+  { name: 'Coach Imran', role: 'Cricket academy, Siwan', text: 'The tracksuits are warm without feeling heavy, and the team logo embroidery is neat. Good rate for bulk too.', rating: 4 },
 ]
 
 export const FAQS = [
-  { q: 'How long does delivery take?', a: 'Metro cities: 2–4 working days. Rest of India: 4–7 working days. You will receive tracking details by SMS and email as soon as your order ships.' },
-  { q: 'What is your return policy?', a: 'Unused items with tags can be returned within 7 days of delivery for a full refund or exchange. Helmets and innerwear are non-returnable for hygiene reasons.' },
-  { q: 'How do I pick the right size?', a: 'Every product page has a Size Guide link with chest, waist and length measurements in inches. If you are between sizes, we recommend sizing up for tops and down for compression wear.' },
-  { q: 'Do you offer team / bulk orders?', a: 'Yes. We supply academies, clubs and corporate teams with customised kits. Write to teams@krida.in with your requirement and quantities.' },
-  { q: 'Is Cash on Delivery available?', a: 'COD is available on orders up to ₹10,000 across most pincodes. A ₹49 handling fee applies to COD orders.' },
-  { q: 'How do I track my order?', a: 'Log in and open My Orders. Every order shows live status: Placed → Packed → Shipped → Out for delivery → Delivered.' },
+  { q: 'What is the minimum order quantity?', a: 'For custom printed or sublimated kits the minimum is 11 pieces per design. Plain stock items such as polos, caps and bottles can be ordered from a single piece.' },
+  { q: 'How long does a custom order take?', a: 'Design mock-up within 24 hours, and production plus delivery in 10–12 working days after you approve the design. Urgent orders can be arranged — call us to check.' },
+  { q: 'Can you match our club colours exactly?', a: 'Yes. Send us the colour code or a sample and we match it in sublimation. You get a mock-up for approval before we cut any fabric.' },
+  { q: 'Do you do printing and embroidery both?', a: 'Both. Sublimation and screen printing for large graphics, embroidery for logos on polos, caps and jackets.' },
+  { q: 'Do you ship outside Bihar?', a: 'We ship across India. Delivery is 2–4 working days for metros and 4–7 working days elsewhere after dispatch.' },
+  { q: 'What if a size does not fit?', a: 'Plain stock items can be exchanged within 7 days. Customised kits with names and numbers cannot be returned, so we always send a size chart and sample sizes before bulk production.' },
 ]
 
 export const POLICIES = {
   'shipping-returns': {
     title: 'Shipping & Returns',
     sections: [
-      ['Shipping', 'Orders are dispatched within 24–48 hours from our Gurugram warehouse. Free shipping applies to orders above ₹999; a flat ₹79 fee applies below that. Delivery timelines are 2–4 working days for metros and 4–7 working days for the rest of India.'],
-      ['Returns', 'You may return unused, unwashed products with original tags within 7 days of delivery. Pick-up is arranged free of cost for the first return on an order. Refunds are processed to the original payment method within 5–7 working days after quality check.'],
-      ['Exchanges', 'Size exchanges are free. Choose Exchange from My Orders and the replacement ships as soon as the pick-up is confirmed.'],
-      ['Non-returnable items', 'Helmets, innerwear, socks and customised team kits cannot be returned unless damaged or defective on arrival.'],
+      ['Shipping', 'Stock items are dispatched within 24–48 hours from our unit in Chapra, Bihar. Custom orders ship 10–12 working days after design approval. Free shipping on orders above ₹999; a flat ₹79 fee applies below that.'],
+      ['Returns', 'Unused stock items with tags can be returned within 7 days of delivery. Pick-up for the first return on an order is free and refunds are processed within 5–7 working days after quality check.'],
+      ['Custom orders', 'Kits printed with your logo, player names or numbers cannot be returned or exchanged unless there is a manufacturing defect. We send a mock-up and size chart for approval before production to avoid this.'],
+      ['Damaged in transit', 'If a parcel arrives damaged, send us photos on WhatsApp within 48 hours and we replace the pieces at no cost.'],
     ],
   },
   privacy: {
     title: 'Privacy Policy',
     sections: [
       ['What we collect', 'Name, contact details, delivery addresses and order history — only what is needed to fulfil your order and support you afterwards.'],
-      ['How we use it', 'To process orders, send transactional updates, personalise recommendations and, if you opt in, share offers. We never sell personal data.'],
-      ['Payments', 'Card and UPI details are handled by PCI-DSS compliant payment partners. KRIDA never stores full card numbers.'],
-      ['Your rights', 'You can request a copy or deletion of your data any time by emailing privacy@krida.in.'],
+      ['Your designs', 'Logos and artwork you send us are used only to produce your order. We never resell or reuse a club design for another customer.'],
+      ['Payments', 'Card and UPI details are handled by PCI-DSS compliant payment partners. Rishikar Sports never stores full card numbers.'],
+      ['Your rights', 'Write to rishikarsports@gmail.com any time to get a copy of your data or ask us to delete it.'],
     ],
   },
   terms: {
     title: 'Terms & Conditions',
     sections: [
-      ['Pricing', 'All prices are in Indian Rupees and inclusive of GST. We reserve the right to correct pricing errors before dispatch.'],
-      ['Order acceptance', 'An order is confirmed only when you receive the confirmation email. We may cancel orders due to stock unavailability or suspected fraud with a full refund.'],
-      ['Intellectual property', 'KRIDA, the K mark and site content are property of KRIDA Retail. Product names and images belong to their respective brands.'],
-      ['Governing law', 'These terms are governed by the laws of India; courts in Gurugram, Haryana have exclusive jurisdiction.'],
+      ['Pricing', 'All prices are in Indian Rupees and inclusive of GST. Bulk rates depend on quantity and design; the quote we send is valid for 15 days.'],
+      ['Custom orders', 'Production starts only after you approve the mock-up and pay the agreed advance. Changes requested after approval may affect price and delivery date.'],
+      ['Intellectual property', 'You keep ownership of your logo and artwork. The Rishikar Sports name and RS mark belong to Rishikar Sports LLP.'],
+      ['Governing law', 'These terms are governed by the laws of India; courts in Saran, Bihar have exclusive jurisdiction.'],
     ],
   },
 }
 
 export const SIZE_CHART = {
-  tops: { title: 'Tops, polos, jackets', unit: 'inches', cols: ['Size', 'Chest', 'Length', 'Shoulder'], rows: [['XS', '36', '26', '16'], ['S', '38', '27', '17'], ['M', '40', '28', '18'], ['L', '42', '29', '19'], ['XL', '44', '30', '20'], ['XXL', '46', '31', '21'], ['XXXL', '48', '32', '22']] },
-  bottoms: { title: 'Shorts, lowers, tights', unit: 'inches', cols: ['Size', 'Waist', 'Hip', 'Inseam'], rows: [['XS', '28', '36', '29'], ['S', '30', '38', '30'], ['M', '32', '40', '30'], ['L', '34', '42', '31'], ['XL', '36', '44', '31'], ['XXL', '38', '46', '32'], ['XXXL', '40', '48', '32']] },
-  shoes: { title: 'Footwear', unit: 'UK / EU / cm', cols: ['UK', 'EU', 'Foot length (cm)'], rows: [['5', '38', '24'], ['6', '39', '24.8'], ['7', '40.5', '25.7'], ['8', '42', '26.5'], ['9', '43', '27.3'], ['10', '44.5', '28.1'], ['11', '45.5', '29']] },
+  tops: { title: 'Jerseys, tees, polos, hoodies', unit: 'inches', cols: ['Size', 'Chest', 'Length', 'Shoulder'], rows: [['XS', '36', '26', '16'], ['S', '38', '27', '17'], ['M', '40', '28', '18'], ['L', '42', '29', '19'], ['XL', '44', '30', '20'], ['XXL', '46', '31', '21'], ['XXXL', '48', '32', '22']] },
+  bottoms: { title: 'Lowers, track pants, shorts', unit: 'inches', cols: ['Size', 'Waist', 'Hip', 'Inseam'], rows: [['XS', '28', '36', '29'], ['S', '30', '38', '30'], ['M', '32', '40', '30'], ['L', '34', '42', '31'], ['XL', '36', '44', '31'], ['XXL', '38', '46', '32'], ['XXXL', '40', '48', '32']] },
+  kids: { title: 'Junior sizes (age)', unit: 'inches', cols: ['Size', 'Age', 'Chest', 'Length'], rows: [['20', '5–6 yrs', '20', '18'], ['22', '7–8 yrs', '22', '20'], ['24', '9–10 yrs', '24', '22'], ['26', '11–12 yrs', '26', '24'], ['28', '13–14 yrs', '28', '25']] },
 }
 
 export const COUPONS = {
-  KRIDA10: { type: 'pct', value: 10, min: 999, label: '10% off on orders above ₹999' },
-  FLAT200: { type: 'flat', value: 200, min: 1999, label: '₹200 off on orders above ₹1,999' },
+  RS10: { type: 'pct', value: 10, min: 999, label: '10% off on orders above ₹999' },
+  TEAM500: { type: 'flat', value: 500, min: 4999, label: '₹500 off on team orders above ₹4,999' },
   WELCOME15: { type: 'pct', value: 15, min: 1499, label: '15% off on orders above ₹1,499' },
 }
 

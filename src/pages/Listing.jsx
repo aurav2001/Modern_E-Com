@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams, useSearchParams, useLocation } from 'react-router-dom'
-import { queryProducts, facets, subsForCategory, subMeta, CATEGORY_META, SPORTS, sortSizes } from '../lib/catalog'
+import { queryProducts, facets, subsForCategory, subMeta, CATEGORY_META } from '../lib/catalog'
 import { Crumbs } from '../components/Shared'
 import ProductCard from '../components/ProductCard'
 import { Filter, X, ChevronDown } from '../components/Icons'
@@ -16,7 +16,7 @@ const SORTS = [
 ]
 
 export default function Listing({ mode }) {
-  const { cat, sub, sport } = useParams()
+  const { cat, sub } = useParams()
   const [sp, setSp] = useSearchParams()
   const loc = useLocation()
   const [drawer, setDrawer] = useState(false)
@@ -29,8 +29,8 @@ export default function Listing({ mode }) {
   const minP = sp.get('min') ? +sp.get('min') : null
   const maxP = sp.get('max') ? +sp.get('max') : null
 
-  const base = useMemo(() => queryProducts({ category: cat, sub, sport, q, onlyNew: mode === 'new', onlySale: mode === 'sale' }), [cat, sub, sport, q, mode])
-  const list = useMemo(() => queryProducts({ category: cat, sub, sport, q, onlyNew: mode === 'new', onlySale: mode === 'sale', colors, sizes, minPrice: minP, maxPrice: maxP, sort }), [cat, sub, sport, q, mode, colors.join(), sizes.join(), minP, maxP, sort])
+  const base = useMemo(() => queryProducts({ category: cat, sub, q, onlyNew: mode === 'new', onlySale: mode === 'sale' }), [cat, sub, q, mode])
+  const list = useMemo(() => queryProducts({ category: cat, sub, q, onlyNew: mode === 'new', onlySale: mode === 'sale', colors, sizes, minPrice: minP, maxPrice: maxP, sort }), [cat, sub, q, mode, colors.join(), sizes.join(), minP, maxP, sort])
   const f = useMemo(() => facets(base), [base])
 
   useEffect(() => setLimit(PAGE), [loc.pathname, loc.search])
@@ -48,12 +48,10 @@ export default function Listing({ mode }) {
 
   // Title / crumbs
   const subInfo = sub ? subMeta(sub) : null
-  const sportInfo = sport ? SPORTS.find((s) => s.slug === sport) : null
-  let title = 'All products', text = 'Every style in one place.', crumbs = [{ label: 'Shop', to: '/shop' }]
+  let title = 'All products', text = 'Everything we manufacture, in one place.', crumbs = [{ label: 'Shop', to: '/shop' }]
   if (mode === 'new') { title = 'New arrivals'; text = 'Fresh drops, straight from the design floor.'; crumbs = [{ label: 'New arrivals' }] }
   else if (mode === 'sale') { title = 'Sale'; text = 'Season-best prices on pro-grade kit. While stocks last.'; crumbs = [{ label: 'Sale' }] }
   else if (q) { title = `Results for “${q}”`; text = `${list.length} product${list.length === 1 ? '' : 's'} found`; crumbs = [{ label: 'Search' }] }
-  else if (sportInfo) { title = sportInfo.name; text = `Everything you need for ${sportInfo.name.toLowerCase()} — apparel, footwear and accessories.`; crumbs = [{ label: 'Sport' }, { label: sportInfo.name }] }
   else if (subInfo) { title = subInfo.name; text = `${subInfo.categoryName} · ${subInfo.group}`; crumbs = [{ label: subInfo.categoryName, to: `/c/${subInfo.category}` }, { label: subInfo.name }] }
   else if (cat) { title = CATEGORY_META[cat]?.name || titleCase(cat); text = CATEGORY_META[cat]?.tagline; crumbs = [{ label: title }] }
 

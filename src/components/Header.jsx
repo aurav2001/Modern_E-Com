@@ -2,23 +2,24 @@ import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
 import { MENU, PRODUCTS } from '../lib/catalog'
-import { Bag, Heart, Search, User, Menu as MenuIcon, X, ChevronDown, KMark, Home, Package, Info, Phone, Ruler } from './Icons'
+import { Bag, Heart, Search, User, Menu as MenuIcon, X, ChevronDown, Home, Package, Info, Phone, Ruler, Scissors } from './Icons'
 import { cx } from '../lib/utils'
 
-const ANNOUNCEMENTS = ['Free shipping on orders above ₹999', 'Use code KRIDA10 for 10% off', 'Easy 7-day returns & exchanges', 'Team & academy kits — bulk pricing']
+const ANNOUNCEMENTS = ['Custom team kits from 11 pieces', 'Free shipping on orders above ₹999', 'Use code RS10 for 10% off', 'Free design mock-up before production', 'Made in our own unit — Chapra, Bihar']
 
+const feat = (slug, title, text) => ({ img: PRODUCTS.find((p) => p.slug === slug)?.image, title, text, to: '/product/' + slug })
 const FEATURE = {
-  men: { img: PRODUCTS.find((p) => p.slug === 'resistant-jacket')?.image, title: 'Resistant Jacket', text: 'New season layering', to: '/product/resistant-jacket' },
-  women: { img: PRODUCTS.find((p) => p.slug === 'elite-tights-women')?.image, title: 'Elite Tights', text: 'Squat-proof, second skin', to: '/product/elite-tights-women' },
-  cricket: { img: PRODUCTS.find((p) => p.slug === 'tyka-force-match-titanium-grill')?.image, title: 'Force Titanium', text: 'Pro-grade protection', to: '/product/tyka-force-match-titanium-grill' },
-  accessories: { img: PRODUCTS.find((p) => p.slug === 'legend-wheelie-150')?.image, title: 'Legend Wheelie', text: 'Carry the whole kit', to: '/product/legend-wheelie-150' },
+  jerseys: feat('rs-pro-sublimated-jersey', 'RS PRO Jersey', 'Full sublimation, your design'),
+  tshirts: feat('rs-pro-polo', 'RS PRO Polo', 'Best seller for teams'),
+  teamwear: feat('rs-pro-tracksuit', 'RS PRO Tracksuit', 'Jacket + pant set'),
+  accessories: feat('rs-duffle-kit-bag', 'RS Duffle Kit Bag', 'Carries the full kit'),
 }
 
 export function Logo({ className }) {
   return (
-    <Link to="/" className={cx('logo', className)} aria-label="KRIDA home">
-      <span className="logo__mark"><KMark /></span>
-      KRIDA
+    <Link to="/" className={cx('logo', className)} aria-label="Rishikar Sports home">
+      <span className="logo__mark"><img src="/logo.png" alt="" /></span>
+      <span className="logo__text"><b>RISHIKAR</b><span>SPORTS</span></span>
     </Link>
   )
 }
@@ -76,8 +77,8 @@ export default function Header() {
                 </div>
               </div>
             ))}
-            <div className="nav__item"><NavLink to="/new" className={({ isActive }) => cx('nav__link', isActive && 'active')}>New</NavLink></div>
-            <div className="nav__item"><NavLink to="/sale" className={({ isActive }) => cx('nav__link nav__link--hot', isActive && 'active')}>Sale</NavLink></div>
+            <div className="nav__item"><NavLink to="/custom" className={({ isActive }) => cx('nav__link', isActive && 'active')}>Custom Kits</NavLink></div>
+            <div className="nav__item"><NavLink to="/sale" className={({ isActive }) => cx('nav__link nav__link--hot', isActive && 'active')}>Offers</NavLink></div>
           </nav>
           <div className="header__actions">
             <button className="header__search-btn" onClick={() => setSearchOpen(true)}>
@@ -135,14 +136,15 @@ export function MobileNav() {
               </div>
             </div>
           ))}
-          <div className="mnav__cat"><Link to="/new" style={{ display: 'block', padding: '16px 0', fontFamily: 'var(--font-head)', fontSize: 22, fontWeight: 700 }}>NEW ARRIVALS</Link></div>
-          <div className="mnav__cat"><Link to="/sale" style={{ display: 'block', padding: '16px 0', fontFamily: 'var(--font-head)', fontSize: 22, fontWeight: 700, color: 'var(--sale)' }}>SALE</Link></div>
+          <div className="mnav__cat"><Link to="/custom" style={{ display: 'block', padding: '16px 0', fontFamily: 'var(--font-head)', fontSize: 22, fontWeight: 800 }}>CUSTOM KITS</Link></div>
+          <div className="mnav__cat"><Link to="/sale" style={{ display: 'block', padding: '16px 0', fontFamily: 'var(--font-head)', fontSize: 22, fontWeight: 800, color: 'var(--sale)' }}>OFFERS</Link></div>
           <div className="mnav__links">
             <Link to="/"><Home /> Home</Link>
             <Link to={user ? '/account' : '/login'}><User /> {user ? 'My account' : 'Login / Sign up'}</Link>
             <Link to="/account/orders"><Package /> Track order</Link>
             <Link to="/size-chart"><Ruler /> Size guide</Link>
-            <Link to="/about"><Info /> About KRIDA</Link>
+            <Link to="/custom"><Scissors /> Bulk / custom order</Link>
+            <Link to="/about"><Info /> About Rishikar Sports</Link>
             <Link to="/contact"><Phone /> Contact us</Link>
           </div>
         </div>

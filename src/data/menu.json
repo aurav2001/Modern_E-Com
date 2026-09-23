@@ -1,237 +1,87 @@
 [
  {
-  "name": "Men",
-  "slug": "men",
+  "name": "Jerseys",
+  "slug": "jerseys",
   "groups": [
    {
-    "name": "Shop by Category",
+    "name": "Shop Jerseys",
     "items": [
      {
-      "name": "Tops",
-      "slug": "tops",
-      "count": 13
-     },
-     {
-      "name": "Polos",
-      "slug": "polos",
-      "count": 28
-     },
-     {
-      "name": "Sleeveless",
-      "slug": "sleeveless",
-      "count": 8
-     },
-     {
-      "name": "Long Sleevess",
-      "slug": "long-sleevess",
+      "name": "Custom Sublimation",
+      "slug": "sublimation-jerseys",
       "count": 3
      },
      {
-      "name": "Jacket and Hoodies",
-      "slug": "jacket-and-hoodies",
-      "count": 16
+      "name": "Football Jerseys",
+      "slug": "football-jerseys",
+      "count": 3
+     },
+     {
+      "name": "Cricket Jerseys",
+      "slug": "cricket-jerseys",
+      "count": 1
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "T-Shirts & Polos",
+  "slug": "tshirts",
+  "groups": [
+   {
+    "name": "Shop T-Shirts & Polos",
+    "items": [
+     {
+      "name": "Polo T-Shirts",
+      "slug": "polo-tshirts",
+      "count": 3
+     },
+     {
+      "name": "Round Neck Tees",
+      "slug": "round-neck-tees",
+      "count": 1
+     },
+     {
+      "name": "Sleeveless Tees",
+      "slug": "sleeveless-tees",
+      "count": 1
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Teamwear",
+  "slug": "teamwear",
+  "groups": [
+   {
+    "name": "Shop Teamwear",
+    "items": [
+     {
+      "name": "Tracksuits",
+      "slug": "tracksuits",
+      "count": 2
+     },
+     {
+      "name": "Track Jackets",
+      "slug": "track-jackets",
+      "count": 1
+     },
+     {
+      "name": "Hoodies",
+      "slug": "hoodies",
+      "count": 2
+     },
+     {
+      "name": "Lowers & Pants",
+      "slug": "lowers",
+      "count": 1
      },
      {
       "name": "Shorts",
       "slug": "shorts",
-      "count": 13
-     },
-     {
-      "name": "Pants and Leggings",
-      "slug": "pants-and-leggings",
-      "count": 16
-     },
-     {
-      "name": "Tracksuits",
-      "slug": "tracksuits",
-      "count": 13
-     }
-    ]
-   },
-   {
-    "name": "Shop by Sport",
-    "items": [
-     {
-      "name": "Cricket",
-      "slug": "cricket",
-      "count": 12
-     },
-     {
-      "name": "Football",
-      "slug": "football",
       "count": 1
-     },
-     {
-      "name": "Shooting",
-      "slug": "shooting",
-      "count": 7
-     },
-     {
-      "name": "Training",
-      "slug": "training",
-      "count": 4
-     },
-     {
-      "name": "India Merchandise",
-      "slug": "india-merchandise",
-      "count": 0
-     },
-     {
-      "name": "Shop Outlet",
-      "slug": "shop-outlet",
-      "count": 1
-     }
-    ]
-   },
-   {
-    "name": "Accessories",
-    "items": [
-     {
-      "name": "Compression and Baselayers",
-      "slug": "compression-and-baselayers-2",
-      "count": 4
-     }
-    ]
-   }
-  ]
- },
- {
-  "name": "Women",
-  "slug": "women",
-  "groups": [
-   {
-    "name": "Shop By Category",
-    "items": [
-     {
-      "name": "Tops",
-      "slug": "tops-1",
-      "count": 7
-     },
-     {
-      "name": "Polos",
-      "slug": "polos-1",
-      "count": 7
-     },
-     {
-      "name": "Tanks and Sports Bra",
-      "slug": "tanks-and-sports-bra",
-      "count": 5
-     },
-     {
-      "name": "Long Sleeves",
-      "slug": "long-sleeves",
-      "count": 3
-     },
-     {
-      "name": "Jacket and Hoodies",
-      "slug": "jacket-and-hoodies-1",
-      "count": 2
-     },
-     {
-      "name": "Shorts and Skirts",
-      "slug": "shorts-and-skirts",
-      "count": 5
-     },
-     {
-      "name": "Pants and Leggings",
-      "slug": "pants-and-leggings-1",
-      "count": 7
-     },
-     {
-      "name": "Tracksuits",
-      "slug": "tracksuits-1",
-      "count": 3
-     }
-    ]
-   },
-   {
-    "name": "Shop By Sport",
-    "items": [
-     {
-      "name": "Shooting",
-      "slug": "shooting-1",
-      "count": 0
-     },
-     {
-      "name": "Training",
-      "slug": "training-1",
-      "count": 0
-     },
-     {
-      "name": "Running",
-      "slug": "running",
-      "count": 0
-     },
-     {
-      "name": "India Merchandise",
-      "slug": "india-merchandise-1",
-      "count": 0
-     },
-     {
-      "name": "Shop Outlet",
-      "slug": "shop-outlet-1",
-      "count": 0
-     }
-    ]
-   },
-   {
-    "name": "Accessories",
-    "items": [
-     {
-      "name": "Bags and Duffles",
-      "slug": "bags-and-duffles-1",
-      "count": 0
-     },
-     {
-      "name": "Compression and Baselayers",
-      "slug": "compression-and-baselayers",
-      "count": 3
-     }
-    ]
-   }
-  ]
- },
- {
-  "name": "Cricket",
-  "slug": "cricket",
-  "groups": [
-   {
-    "name": "Shop Cricket",
-    "items": [
-     {
-      "name": "Cricket Helmets",
-      "slug": "cricket-helmets",
-      "count": 8
-     },
-     {
-      "name": "Clothing",
-      "slug": "clothing",
-      "count": 16
-     },
-     {
-      "name": "Cricket Balls",
-      "slug": "cricket-balls",
-      "count": 7
-     },
-     {
-      "name": "Bags and Duffles",
-      "slug": "bags-and-duffles-2",
-      "count": 9
-     },
-     {
-      "name": "Accessories",
-      "slug": "accessories",
-      "count": 4
-     },
-     {
-      "name": "Shoes",
-      "slug": "shoes-1",
-      "count": 9
-     },
-     {
-      "name": "Shop Outlet",
-      "slug": "shop-outlet-2",
-      "count": 0
      }
     ]
    }
@@ -245,44 +95,19 @@
     "name": "Shop Accessories",
     "items": [
      {
-      "name": "Bags and Duffles",
-      "slug": "bags-and-duffles-3",
-      "count": 20
+      "name": "Kit Bags",
+      "slug": "kit-bags",
+      "count": 2
      },
      {
-      "name": "Hats and Caps",
-      "slug": "hats-and-caps-1",
-      "count": 11
+      "name": "Caps",
+      "slug": "caps",
+      "count": 1
      },
      {
-      "name": "Socks",
-      "slug": "socks-1",
-      "count": 18
-     },
-     {
-      "name": "Supporters",
-      "slug": "supporters-1",
-      "count": 3
-     },
-     {
-      "name": "Compression and Baselayers",
-      "slug": "compression-and-baselayers-1",
-      "count": 7
-     },
-     {
-      "name": "Shoes",
-      "slug": "shoes-2",
-      "count": 17
-     },
-     {
-      "name": "RECOVERY Foam Rollers",
-      "slug": "recovery-foam-rollers",
-      "count": 10
-     },
-     {
-      "name": "Loop Bands and Support",
-      "slug": "loop-bands-and-support",
-      "count": 4
+      "name": "Bottles",
+      "slug": "bottles",
+      "count": 2
      }
     ]
    }

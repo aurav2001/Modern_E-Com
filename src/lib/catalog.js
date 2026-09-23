@@ -10,10 +10,10 @@ const bySlug = new Map(products.map((p) => [p.slug, p]))
 export const getProduct = (slug) => bySlug.get(slug)
 
 export const CATEGORY_META = {
-  men: { name: 'Men', tagline: 'Built for the grind' },
-  women: { name: 'Women', tagline: 'Move without limits' },
-  cricket: { name: 'Cricket', tagline: 'Gear for the 22 yards' },
-  accessories: { name: 'Accessories', tagline: 'Finish the fit' },
+  jerseys: { name: 'Jerseys', tagline: 'Full sublimation, your design' },
+  tshirts: { name: 'T-Shirts & Polos', tagline: 'Dry-fit tops for team and office' },
+  teamwear: { name: 'Teamwear', tagline: 'Tracksuits, hoodies and lowers' },
+  accessories: { name: 'Accessories', tagline: 'Bags, caps and bottles' },
 }
 
 export function subMeta(subSlug) {
@@ -30,31 +30,12 @@ export function subsForCategory(catSlug) {
   return cat.groups.flatMap((g) => g.items.filter((i) => i.count > 0))
 }
 
-// Sport tags are inferred from sub-category membership + product names
-const SPORT_RULES = {
-  cricket: (p) => p.categories.includes('cricket') || /cricket|helmet|grill|gravix|spikes|stud|pullover|trouser/i.test(p.name),
-  football: (p) => p.subs.includes('football') || /football|argentina|brazil|stud/i.test(p.name),
-  training: (p) => p.subs.some((s) => s.startsWith('training')) || /tee|tank|shorts|lower|tights|jogger|compression|roll|band/i.test(p.name),
-  running: (p) => p.subs.includes('running') || /run|speed|pace|swift|flow|gt 180|sneaker|step shoe|bottom/i.test(p.name),
-  shooting: (p) => p.subs.some((s) => s.startsWith('shooting')) || /shooting/i.test(p.name),
-}
-const S = 'https://tyka.premierhostings.com/backend/storage/products/'
-export const SPORTS = [
-  { slug: 'cricket', name: 'Cricket', img: S + 'gravix-white-145-1.webp' },
-  { slug: 'football', name: 'Football', img: S + 'TYKA-Shoe-Argentina-BlackYellow-S1.webp' },
-  { slug: 'training', name: 'Training', img: S + 'black-front.webp' },
-  { slug: 'running', name: 'Running', img: S + 'TYKA-Shoe-Speed-BlackBlue-L.webp' },
-  { slug: 'shooting', name: 'Shooting', img: S + 'TYKA-TwillCap-White-F.webp' },
-]
-export const productSports = (p) => Object.keys(SPORT_RULES).filter((k) => SPORT_RULES[k](p))
-
 const pct = (p) => (p.mrp && p.mrp > p.price ? (p.mrp - p.price) / p.mrp : 0)
 
-export function queryProducts({ category, sub, sport, q, colors = [], sizes = [], minPrice, maxPrice, sort = 'popular', onlyNew, onlySale } = {}) {
+export function queryProducts({ category, sub, q, colors = [], sizes = [], minPrice, maxPrice, sort = 'popular', onlyNew, onlySale } = {}) {
   let list = products
   if (category) list = list.filter((p) => p.categories.includes(category))
   if (sub) list = list.filter((p) => p.subs.includes(sub))
-  if (sport) list = list.filter((p) => SPORT_RULES[sport]?.(p))
   if (onlyNew) list = list.filter((p) => p.isNew)
   if (onlySale) list = list.filter((p) => p.mrp && p.mrp > p.price)
   if (q) {
@@ -98,7 +79,7 @@ export const COLOR_FAMILIES = [
   ['Red', '#e0313f'], ['Green', '#2e8b3d'], ['Orange', '#f58941'], ['Purple', '#8a63c9'], ['Other', '#c9a27e'],
 ]
 
-const SIZE_ORDER = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', 'UN']
+const SIZE_ORDER = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL']
 export function sortSizes(sizes) {
   return [...sizes].sort((a, b) => {
     const ia = SIZE_ORDER.indexOf(a), ib = SIZE_ORDER.indexOf(b)
@@ -125,12 +106,11 @@ export const related = (p, n = 8) => {
 }
 
 export const newArrivals = (n = 12) => products.filter((p) => p.isNew).sort((a, b) => b.id - a.id).slice(0, n)
-export const bestSellers = (n = 8) => queryProducts({ sort: 'popular' }).filter((p) => p.gallery.length > 1).slice(0, n)
+export const bestSellers = (n = 8) => queryProducts({ sort: 'popular' }).slice(0, n)
 export const onSale = (n = 8) => queryProducts({ onlySale: true, sort: 'discount' }).slice(0, n)
 
 // Which size-chart applies to a product
 export function sizeChartKey(p) {
-  if (p.sizes.some((s) => /^UK/i.test(s))) return 'shoes'
-  if (/lower|pant|trouser|tights|shorts|jogger|bottom|skirt|legging/i.test(p.name)) return 'bottoms'
+  if (/lower|pant|trouser|shorts|jogger|bottom/i.test(p.name)) return 'bottoms'
   return 'tops'
 }

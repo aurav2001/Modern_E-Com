@@ -13,6 +13,10 @@ export default function Footer() {
           <div>
             <Logo />
             <p className="footer__about">{BRAND.about}</p>
+            <p className="footer__about" style={{ marginTop: 10 }}>
+              <a href={'tel:' + BRAND.phoneIntl}>{BRAND.phone}</a> · <a href={'mailto:' + BRAND.email}>{BRAND.email}</a><br />
+              {BRAND.addressShort}
+            </p>
             <div className="footer__social">
               <a href="#" aria-label="Instagram"><Instagram /></a>
               <a href="#" aria-label="Facebook"><Facebook /></a>
@@ -23,12 +27,12 @@ export default function Footer() {
           <div>
             <h4>Shop</h4>
             <ul className="footer__links">
-              <li><Link to="/c/men">Men</Link></li>
-              <li><Link to="/c/women">Women</Link></li>
-              <li><Link to="/c/cricket">Cricket</Link></li>
+              <li><Link to="/c/jerseys">Jerseys</Link></li>
+              <li><Link to="/c/tshirts">T-Shirts & Polos</Link></li>
+              <li><Link to="/c/teamwear">Teamwear</Link></li>
               <li><Link to="/c/accessories">Accessories</Link></li>
-              <li><Link to="/new">New arrivals</Link></li>
-              <li><Link to="/sale">Sale</Link></li>
+              <li><Link to="/custom">Custom kits</Link></li>
+              <li><Link to="/sale">Offers</Link></li>
             </ul>
           </div>
           <div>
@@ -44,10 +48,10 @@ export default function Footer() {
           <div>
             <h4>Company</h4>
             <ul className="footer__links">
-              <li><Link to="/about">About KRIDA</Link></li>
-              <li><Link to="/contact">Team & bulk orders</Link></li>
-              <li><Link to="/contact">Sell on KRIDA</Link></li>
-              <li><Link to="/about#values">Our values</Link></li>
+              <li><Link to="/about">About us</Link></li>
+              <li><Link to="/custom">Team & bulk orders</Link></li>
+              <li><Link to="/about#values">How we work</Link></li>
+              <li><Link to="/contact">Visit our unit</Link></li>
             </ul>
           </div>
           <div>
@@ -60,12 +64,12 @@ export default function Footer() {
           </div>
         </div>
         <div className="footer__bottom">
-          <span>© {new Date().getFullYear()} KRIDA Retail. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} Rishikar Sports LLP · Chapra, Bihar. All rights reserved.</span>
           <div className="footer__pay">
             {['UPI', 'VISA', 'MC', 'RuPay', 'COD'].map((p) => <span key={p}>{p}</span>)}
           </div>
         </div>
-        <div className="footer__word" aria-hidden="true">KRIDA</div>
+        <div className="footer__word" aria-hidden="true">RISHIKAR</div>
       </div>
     </footer>
   )
@@ -81,7 +85,7 @@ export function Newsletter() {
           <div>
             <span className="eyebrow">Join the squad</span>
             <h2 style={{ marginTop: 10 }}>Get 15% off your first order</h2>
-            <p>Early access to drops, training tips and members-only offers. No spam, unsubscribe any time.</p>
+            <p>New arrivals, bulk-rate updates and offers for clubs and academies. No spam, unsubscribe any time.</p>
           </div>
           <form onSubmit={(e) => { e.preventDefault(); if (email) { toast('You are on the list. Use WELCOME15 at checkout.'); setEmail('') } }}>
             <input className="input" type="email" required placeholder="Your email address" value={email} onChange={(e) => setEmail(e.target.value)} aria-label="Email" />
