@@ -78,7 +78,6 @@ export default function Header() {
               </div>
             ))}
             <div className="nav__item"><NavLink to="/custom" className={({ isActive }) => cx('nav__link', isActive && 'active')}>Custom Kits</NavLink></div>
-            <div className="nav__item"><NavLink to="/rate-list" className={({ isActive }) => cx('nav__link', isActive && 'active')}>Rate List 📋</NavLink></div>
             <div className="nav__item"><NavLink to="/sale" className={({ isActive }) => cx('nav__link nav__link--hot', isActive && 'active')}>Offers</NavLink></div>
           </nav>
           <div className="header__actions">
@@ -138,7 +137,6 @@ export function MobileNav() {
             </div>
           ))}
           <div className="mnav__cat"><Link to="/custom" style={{ display: 'block', padding: '16px 0', fontFamily: 'var(--font-head)', fontSize: 22, fontWeight: 800 }}>CUSTOM KITS</Link></div>
-          <div className="mnav__cat"><Link to="/rate-list" style={{ display: 'block', padding: '16px 0', fontFamily: 'var(--font-head)', fontSize: 22, fontWeight: 800, color: 'var(--accent)' }}>RATE LIST (EXCEL 📋)</Link></div>
           <div className="mnav__cat"><Link to="/sale" style={{ display: 'block', padding: '16px 0', fontFamily: 'var(--font-head)', fontSize: 22, fontWeight: 800, color: 'var(--sale)' }}>OFFERS</Link></div>
           <div className="mnav__links">
             <Link to="/"><Home /> Home</Link>
