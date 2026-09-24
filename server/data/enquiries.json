@@ -1,0 +1,16 @@
+[
+  {
+    "id": "ENQ-101",
+    "createdAt": "2026-09-23T15:09:41.845Z",
+    "name": "Coach Arvind Sharma",
+    "phone": "9431200000",
+    "email": "arvind.cricket@gmail.com",
+    "sport": "Cricket",
+    "teamName": "Saran Youth Cricket Club",
+    "quantity": 22,
+    "fabricPreference": "4-Way Lycra & Dotknit Combo",
+    "budgetPerPiece": "₹800 - ₹1,200",
+    "notes": "Need 22 full kits with trousers and embroidered caps before state tournament next month.",
+    "status": "Quote Sent"
+  }
+]

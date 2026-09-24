@@ -16,42 +16,42 @@ export const BRAND = {
 }
 
 export const HERO = {
-  kicker: 'Custom team kits from 11 pieces',
+  kicker: 'Custom team kits from 11 pieces · Direct Factory Rates',
   headline: ['We make every player', 'look confident.'],
   text:
-    'Sportswear manufacturing from our own unit in Chapra, Bihar. Full-sublimation jerseys, tracksuits, hoodies and kit bags — your logo, your colours, delivered across India.',
+    'Sportswear manufacturing from our own unit in Chapra, Bihar. Full-sublimation cricket jerseys, tracksuits, polos, hoodies and kit bags — crafted to official rate specifications.',
   cards: [
-    { img: P + 'polo.png', to: '/product/rs-pro-polo' },
-    { img: P + 'jersey.png', to: '/product/rs-pro-sublimated-jersey' },
-    { img: P + 'bag.png', to: '/product/rs-duffle-kit-bag' },
+    { img: '/products/rs/rs-prod-09.jpg', to: '/product/rs-construction-athletic-polo' },
+    { img: '/products/rs/rs-prod-35.jpg', to: '/product/rs-pro-sublimated-jersey' },
+    { img: '/products/rs/rs-prod-25.jpg', to: '/product/rs-heavy-duty-kit-bag' },
   ],
   tags: [
-    { label: 'RS PRO Polo', sub: '₹699 · Best seller' },
+    { label: 'RS Sublimation Jersey', sub: 'From ₹300 · Excel Rate' },
     { label: 'Custom kits', sub: 'From 11 pieces' },
     { label: '10–12 days', sub: 'Design to delivery' },
   ],
 }
 
-export const MARQUEE = ['T-Shirts', 'Tracksuits', 'Shorts', 'Hoodies', 'Jerseys', 'Kit Bags', 'Custom Printing', 'Embroidery']
+export const MARQUEE = ['Sublimation Jerseys', 'Cricket Whites', 'Tracksuits', 'Shorts', 'Hoodies', 'RS Construction Polos', 'Kit Bags', 'BCA Caps', 'Custom Teamwear']
 
 export const MANUFACTURE = [
-  { name: 'Jerseys', sub: 'Football · Cricket · Basketball', to: '/c/jerseys', img: P + 'jersey.png' },
-  { name: 'Polos & Tees', sub: 'Dry-fit, corporate, training', to: '/c/tshirts', img: P + 'polo.png' },
-  { name: 'Tracksuits', sub: 'Summer and winter sets', to: '/c/teamwear/tracksuits', img: P + 'jacket.png' },
-  { name: 'Hoodies', sub: 'Zipper and pullover', to: '/c/teamwear/hoodies', img: P + 'hoodie.png' },
-  { name: 'Kit Bags', sub: 'Duffles and team bags', to: '/c/accessories/kit-bags', img: P + 'bag.png' },
+  { name: 'Jerseys', sub: 'Cricket · Football · Multi-Sport', to: '/c/jerseys', img: '/products/rs/rs-prod-35.jpg' },
+  { name: 'Polos & Tees', sub: 'RS Construction & Dry-Fit', to: '/c/tshirts', img: '/products/rs/rs-prod-09.jpg' },
+  { name: 'Tracksuits', sub: 'Pro Jacket + Pant Sets', to: '/c/teamwear/tracksuits', img: '/products/rs/rs-prod-43.jpg' },
+  { name: 'Hoodies & Sweaters', sub: 'Winter Training Warmers', to: '/c/teamwear/hoodies', img: '/products/rs/rs-prod-30.jpg' },
+  { name: 'Kit Bags & Caps', sub: 'Player Duffles & BCA Caps', to: '/c/accessories', img: '/products/rs/rs-prod-25.jpg' },
 ]
 
 export const CATEGORY_TILES = [
-  { slug: 'jerseys', name: 'Jerseys', sub: 'Full sublimation · your design', img: P + 'jersey.png', size: 'xl' },
-  { slug: 'tshirts', name: 'T-Shirts & Polos', sub: 'Dry-fit, corporate, training', img: P + 'polo.png', size: 'wide' },
-  { slug: 'teamwear', name: 'Teamwear', sub: 'Tracksuits · hoodies · lowers', img: P + 'jacket.png' },
-  { slug: 'accessories', name: 'Accessories', sub: 'Bags · caps · bottles', img: P + 'bag.png' },
+  { slug: 'jerseys', name: 'Jerseys & Full Kits', sub: 'Full sublimation · from ₹300', img: '/products/rs/rs-prod-15.jpg', size: 'xl' },
+  { slug: 'tshirts', name: 'Polos & T-Shirts', sub: 'RS Construction 17 designs · from ₹270', img: '/products/rs/rs-prod-09.jpg', size: 'wide' },
+  { slug: 'teamwear', name: 'Teamwear & Lowers', sub: 'Tracksuits · lowers · shorts', img: '/products/rs/rs-prod-43.jpg' },
+  { slug: 'accessories', name: 'Kit Bags & Caps', sub: 'Heavy bags · BCA caps · socks', img: '/products/rs/rs-prod-25.jpg' },
 ]
 
 export const PROMO_CARDS = [
-  { tone: 'orange', kicker: 'Team orders', title: 'Your logo on every piece', to: '/custom', img: P + 'hoodie.png', cta: 'Get a bulk quote' },
-  { tone: 'navy', kicker: 'Academies & schools', title: 'Kit the whole squad', to: '/c/teamwear/tracksuits', img: P + 'jacket.png', cta: 'Shop teamwear' },
+  { tone: 'orange', kicker: 'Official Rate List', title: 'Factory Rates for Clubs & Academies', to: '/rate-list', img: '/products/rs/rs-prod-35.jpg', cta: 'View Excel Rate Card 📋' },
+  { tone: 'navy', kicker: 'Tournament Match Kits', title: 'Complete Uniforms (Jersey + Lower + Cap)', to: '/product/rs-sublimated-cricket-full-kit', img: '/products/rs/rs-prod-15.jpg', cta: 'Explore Match Kits' },
 ]
 
 export const USPS = [

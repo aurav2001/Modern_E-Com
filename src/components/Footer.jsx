@@ -32,6 +32,7 @@ export default function Footer() {
               <li><Link to="/c/teamwear">Teamwear</Link></li>
               <li><Link to="/c/accessories">Accessories</Link></li>
               <li><Link to="/custom">Custom kits</Link></li>
+              <li><Link to="/rate-list" style={{ color: 'var(--accent)', fontWeight: 600 }}>Rate List (Excel) 📋</Link></li>
               <li><Link to="/sale">Offers</Link></li>
             </ul>
           </div>

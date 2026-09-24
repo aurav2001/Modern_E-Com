@@ -24,6 +24,7 @@ export default function Product() {
   const { addToCart, isWished, toggleWish, markViewed, toast } = useStore()
   const [color, setColor] = useState(null)
   const [size, setSize] = useState(null)
+  const [selectedFabric, setSelectedFabric] = useState(null)
   const [qty, setQtyV] = useState(1)
   const [img, setImg] = useState(0)
   const [err, setErr] = useState('')
@@ -35,6 +36,7 @@ export default function Product() {
     if (!p) return
     setColor(p.colors[0]?.name || null)
     setSize(p.sizes.length === 1 ? p.sizes[0] : null)
+    setSelectedFabric(p.fabricOptions?.[0] || null)
     setQtyV(1); setImg(0); setErr(''); setPinMsg('')
     markViewed(p.slug)
     document.title = `${p.name} – Rishikar Sports`
@@ -50,7 +52,8 @@ export default function Product() {
   useEffect(() => setImg(0), [color])
 
   if (!p) return <NotFound />
-  const pct = discountPct(p)
+  const currentPrice = selectedFabric ? selectedFabric.rate : p.price
+  const pct = discountPct({ ...p, price: currentPrice })
   const cat = p.subs.map(subMeta).find(Boolean)
   const wished = isWished(p.slug)
   const rel = related(p, 8)
@@ -58,8 +61,8 @@ export default function Product() {
   const tone = (k) => (k === 'cricket' ? 'the crease' : 'the field')
 
   const validate = () => { if (p.sizes.length && !size) { setErr('Please select a size'); return false } return true }
-  const add = () => { if (!validate()) return; addToCart(p, color, size, qty) }
-  const buyNow = () => { if (!validate()) return; addToCart(p, color, size, qty, { open: false }); nav('/checkout') }
+  const add = () => { if (!validate()) return; addToCart(p, color, size, qty, { fabric: selectedFabric?.name, price: currentPrice }) }
+  const buyNow = () => { if (!validate()) return; addToCart(p, color, size, qty, { open: false, fabric: selectedFabric?.name, price: currentPrice }); nav('/checkout') }
   const checkPin = (e) => { e.preventDefault(); if (!/^\d{6}$/.test(pin)) return setPinMsg('Enter a valid 6-digit pincode'); setPinMsg(`Delivery by ${deliveryDate(+pin[0] <= 4 ? 4 : 6)} · COD available`) }
 
   const reviews = Array.from({ length: Math.min(4, Math.max(2, Math.round(p.reviews / 30))) }).map((_, i) => ({
@@ -126,11 +129,36 @@ export default function Product() {
             </div>
             <div className="pinfo__price">
               <div className="price">
-                <b>{formatPrice(p.price)}</b>
-                {pct > 0 && <><s>{formatPrice(p.mrp)}</s><em>{pct}% off</em></>}
+                <b>{formatPrice(currentPrice)}</b>
+                {pct > 0 && <><s>{formatPrice(Math.round(currentPrice * (p.mrp / p.price)))}</s><em>{pct}% off</em></>}
               </div>
-              <div className="pinfo__tax">Inclusive of all taxes · Free shipping above ₹999</div>
+              <div className="pinfo__tax">
+                Inclusive of GST · Free shipping above ₹999 · <Link to="/rate-list" style={{ color: 'var(--accent)', textDecoration: 'underline', fontWeight: 600 }}>View Excel Rate List</Link>
+              </div>
             </div>
+
+            {p.fabricOptions?.length > 0 && (
+              <div className="opt">
+                <div className="opt__head">
+                  <b>Fabric / Quality: <span style={{ color: 'var(--accent)' }}>{selectedFabric?.name}</span></b>
+                  <Link to="/rate-list" style={{ fontSize: '0.85rem', color: 'var(--muted)', textDecoration: 'underline' }}>Rate Sheet</Link>
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 8 }}>
+                  {p.fabricOptions.map((f) => (
+                    <button
+                      key={f.name}
+                      type="button"
+                      className={cx('btn btn--sm', selectedFabric?.name === f.name ? 'btn--primary' : 'btn--outline')}
+                      style={{ padding: '6px 12px', fontSize: '0.82rem', borderRadius: 6, display: 'inline-flex', alignItems: 'center', gap: 6 }}
+                      onClick={() => setSelectedFabric(f)}
+                    >
+                      <span>{f.name}</span>
+                      <span style={{ opacity: 0.85, fontWeight: 700 }}>₹{f.rate || f.price}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {p.colors.length > 0 && (
               <div className="opt">
@@ -155,7 +183,7 @@ export default function Product() {
 
             <div className="buy">
               <Qty value={qty} onChange={setQtyV} />
-              <button className="btn btn--primary btn--lg" onClick={add} disabled={p.stock === 0}>Add to bag · {formatPrice(p.price * qty)}</button>
+              <button className="btn btn--primary btn--lg" onClick={add} disabled={p.stock === 0}>Add to bag · {formatPrice(currentPrice * qty)}</button>
               <button className={cx('icon-btn', wished && 'on')} onClick={() => toggleWish(p.slug, p.name)} aria-label="Wishlist">{wished ? <HeartFill /> : <Heart />}</button>
             </div>
             <button className="btn btn--accent btn--lg btn--block" onClick={buyNow} disabled={p.stock === 0}><Zap width={18} height={18} /> Buy it now</button>

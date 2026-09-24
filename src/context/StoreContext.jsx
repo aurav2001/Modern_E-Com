@@ -19,13 +19,14 @@ const initial = () => ({
   recent: loadLS('rs.recent', []),
 })
 
-const lineKey = (slug, color, size) => `${slug}__${color || '-'}__${size || '-'}`
+const lineKey = (slug, color, size, fabric) => `${slug}__${color || '-'}__${size || '-'}__${fabric || '-'}`
 
 function reducer(state, action) {
   switch (action.type) {
     case 'ADD': {
-      const { product, color, size, qty = 1 } = action
-      const key = lineKey(product.slug, color, size)
+      const { product, color, size, qty = 1, fabric, price } = action
+      const unitPrice = price != null ? price : product.price
+      const key = lineKey(product.slug, color, size, fabric)
       const existing = state.cart.find((l) => l.key === key)
       const cart = existing
         ? state.cart.map((l) => (l.key === key ? { ...l, qty: Math.min(10, l.qty + qty) } : l))
@@ -34,12 +35,13 @@ function reducer(state, action) {
             {
               key,
               slug: product.slug,
-              name: product.name,
-              price: product.price,
+              name: fabric ? `${product.name} (${fabric})` : product.name,
+              price: unitPrice,
               mrp: product.mrp,
               image: product.colors.find((c) => c.name === color)?.image || product.image,
               color,
               size,
+              fabric,
               qty,
             },
           ]
@@ -126,10 +128,10 @@ export function StoreProvider({ children }) {
       toasts,
       cartOpen, setCartOpen, searchOpen, setSearchOpen, menuOpen, setMenuOpen,
       toast,
-      addToCart(product, color, size, qty = 1, { open = true } = {}) {
-        dispatch({ type: 'ADD', product, color, size, qty })
+      addToCart(product, color, size, qty = 1, { open = true, fabric, price } = {}) {
+        dispatch({ type: 'ADD', product, color, size, qty, fabric, price })
         if (open) setCartOpen(true)
-        else toast(`${product.name} added to bag`)
+        else toast(`${product.name}${fabric ? ` (${fabric})` : ''} added to bag`)
       },
       setQty: (key, qty) => dispatch({ type: 'SET_QTY', key, qty }),
       removeLine: (key) => dispatch({ type: 'REMOVE', key }),
@@ -191,10 +193,48 @@ export function StoreProvider({ children }) {
           email: state.user?.email || address.email,
         }
         dispatch({ type: 'PLACE_ORDER', order })
+
+        // Asynchronously sync with Node.js backend
+        fetch('/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            customer: {
+              name: address.name,
+              phone: address.phone,
+              email: address.email || state.user?.email || '',
+              address: address.line1 + (address.line2 ? ', ' + address.line2 : ''),
+              city: address.city || 'Chapra',
+              state: address.state || 'Bihar',
+              pincode: address.pin || '',
+            },
+            items: state.cart.map((it) => ({
+              id: it.id,
+              slug: it.slug,
+              name: it.name,
+              color: it.color,
+              size: it.size,
+              fabric: it.fabric || 'Standard',
+              price: it.price,
+              qty: it.qty,
+              image: it.image,
+            })),
+            paymentMethod: payment ? payment.toUpperCase() : 'COD',
+            couponCode: totals.discount ? state.coupon : null,
+          }),
+        }).catch((err) => console.warn('Node backend sync error:', err))
+
         return order
       },
       markViewed: (slug) => dispatch({ type: 'VIEWED', slug }),
-      submitEnquiry: (e) => dbAddEnquiry(e),
+      submitEnquiry: (e) => {
+        dbAddEnquiry(e)
+        fetch('/api/enquiries', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(e),
+        }).catch(() => {})
+      },
       settings: SETTINGS,
       coupons: COUPONS,
     }),

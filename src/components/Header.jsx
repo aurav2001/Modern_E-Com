@@ -10,9 +10,9 @@ const ANNOUNCEMENTS = ['Custom team kits from 11 pieces', 'Free shipping on orde
 const feat = (slug, title, text) => ({ img: PRODUCTS.find((p) => p.slug === slug)?.image, title, text, to: '/product/' + slug })
 const FEATURE = {
   jerseys: feat('rs-pro-sublimated-jersey', 'RS PRO Jersey', 'Full sublimation, your design'),
-  tshirts: feat('rs-pro-polo', 'RS PRO Polo', 'Best seller for teams'),
-  teamwear: feat('rs-pro-tracksuit', 'RS PRO Tracksuit', 'Jacket + pant set'),
-  accessories: feat('rs-duffle-kit-bag', 'RS Duffle Kit Bag', 'Carries the full kit'),
+  tshirts: feat('rs-construction-athletic-polo', 'RS Athletic Polo', 'Best seller for teams'),
+  teamwear: feat('rs-pro-athletic-tracksuit', 'RS PRO Tracksuit', 'Jacket + pant set'),
+  accessories: feat('rs-heavy-duty-kit-bag', 'RS Heavy-Duty Kit Bag', 'Carries the full kit'),
 }
 
 export function Logo({ className }) {
@@ -78,6 +78,7 @@ export default function Header() {
               </div>
             ))}
             <div className="nav__item"><NavLink to="/custom" className={({ isActive }) => cx('nav__link', isActive && 'active')}>Custom Kits</NavLink></div>
+            <div className="nav__item"><NavLink to="/rate-list" className={({ isActive }) => cx('nav__link', isActive && 'active')}>Rate List 📋</NavLink></div>
             <div className="nav__item"><NavLink to="/sale" className={({ isActive }) => cx('nav__link nav__link--hot', isActive && 'active')}>Offers</NavLink></div>
           </nav>
           <div className="header__actions">
@@ -137,6 +138,7 @@ export function MobileNav() {
             </div>
           ))}
           <div className="mnav__cat"><Link to="/custom" style={{ display: 'block', padding: '16px 0', fontFamily: 'var(--font-head)', fontSize: 22, fontWeight: 800 }}>CUSTOM KITS</Link></div>
+          <div className="mnav__cat"><Link to="/rate-list" style={{ display: 'block', padding: '16px 0', fontFamily: 'var(--font-head)', fontSize: 22, fontWeight: 800, color: 'var(--accent)' }}>RATE LIST (EXCEL 📋)</Link></div>
           <div className="mnav__cat"><Link to="/sale" style={{ display: 'block', padding: '16px 0', fontFamily: 'var(--font-head)', fontSize: 22, fontWeight: 800, color: 'var(--sale)' }}>OFFERS</Link></div>
           <div className="mnav__links">
             <Link to="/"><Home /> Home</Link>

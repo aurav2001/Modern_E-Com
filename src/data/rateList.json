@@ -1,0 +1,306 @@
+{
+  "title": "RISHIKAR SPORTS - SPORTSWEAR RATE LIST",
+  "jerseys": {
+    "ROUND NECK HALF SLEEVE": [
+      {
+        "fabric": "SUPERPOLY",
+        "rate": 300
+      },
+      {
+        "fabric": "PMC",
+        "rate": 320
+      },
+      {
+        "fabric": "DOTKNIT",
+        "rate": 350
+      },
+      {
+        "fabric": "4 WAY LYCRA",
+        "rate": 390
+      },
+      {
+        "fabric": "FUSION",
+        "rate": 390
+      },
+      {
+        "fabric": "AIRMESH",
+        "rate": 420
+      },
+      {
+        "fabric": "JACQUARD",
+        "rate": 450
+      },
+      {
+        "fabric": "JACQUARD LITE",
+        "rate": 480
+      }
+    ],
+    "ROUND NECK FULL SLEEVE": [
+      {
+        "fabric": "SUPERPOLY",
+        "rate": 320
+      },
+      {
+        "fabric": "PMC",
+        "rate": 340
+      },
+      {
+        "fabric": "DOTKNIT",
+        "rate": 370
+      },
+      {
+        "fabric": "4 WAY LYCRA",
+        "rate": 410
+      },
+      {
+        "fabric": "FUSION",
+        "rate": 410
+      },
+      {
+        "fabric": "AIRMESH",
+        "rate": 440
+      },
+      {
+        "fabric": "JACQUARD",
+        "rate": 470
+      },
+      {
+        "fabric": "JACQUARD LITE",
+        "rate": 500
+      }
+    ],
+    "COLLAR HALF SLEEVE": [
+      {
+        "fabric": "SUPERPOLY",
+        "rate": 350
+      },
+      {
+        "fabric": "PMC",
+        "rate": 400
+      },
+      {
+        "fabric": "DOTKNIT",
+        "rate": 420
+      },
+      {
+        "fabric": "4 WAY LYCRA",
+        "rate": 450
+      },
+      {
+        "fabric": "FUSION",
+        "rate": 450
+      },
+      {
+        "fabric": "AIRMESH",
+        "rate": 500
+      },
+      {
+        "fabric": "JACQUARD",
+        "rate": 550
+      },
+      {
+        "fabric": "JACQUARD LITE",
+        "rate": 600
+      }
+    ],
+    "COLLAR FULL SLEEVE": [
+      {
+        "fabric": "SUPERPOLY",
+        "rate": 370
+      },
+      {
+        "fabric": "PMC",
+        "rate": 420
+      },
+      {
+        "fabric": "DOTKNIT",
+        "rate": 450
+      },
+      {
+        "fabric": "4 WAY LYCRA",
+        "rate": 470
+      },
+      {
+        "fabric": "FUSION",
+        "rate": 470
+      },
+      {
+        "fabric": "AIRMESH",
+        "rate": 530
+      },
+      {
+        "fabric": "JACQUARD",
+        "rate": 580
+      },
+      {
+        "fabric": "JACQUARD LITE",
+        "rate": 620
+      }
+    ]
+  },
+  "comboJerseys": [
+    {
+      "fabric": "PMC + FUSION",
+      "roundNeckHalf": 350,
+      "roundNeckFull": 400,
+      "collarHalf": 420,
+      "collarFull": 450
+    },
+    {
+      "fabric": "PMC + AIRMESH",
+      "roundNeckHalf": 400,
+      "roundNeckFull": 450,
+      "collarHalf": 500,
+      "collarFull": 550
+    },
+    {
+      "fabric": "PMC + JACQUARD",
+      "roundNeckHalf": 450,
+      "roundNeckFull": 480,
+      "collarHalf": 550,
+      "collarFull": 600
+    }
+  ],
+  "bottoms": {
+    "plainShorts": [
+      {
+        "fabric": "SUPERPOLY",
+        "rate": 200
+      },
+      {
+        "fabric": "PMC",
+        "rate": 230
+      },
+      {
+        "fabric": "DOTKNIT",
+        "rate": 250
+      },
+      {
+        "fabric": "AIRMESH",
+        "rate": 300
+      },
+      {
+        "fabric": "4 WAY LYCRA",
+        "rate": 320
+      }
+    ],
+    "sublimationShorts": [
+      {
+        "fabric": "SUPERPOLY",
+        "rate": 250
+      },
+      {
+        "fabric": "PMC",
+        "rate": 280
+      },
+      {
+        "fabric": "DOTKNIT",
+        "rate": 300
+      },
+      {
+        "fabric": "AIRMESH",
+        "rate": 350
+      },
+      {
+        "fabric": "4 WAY LYCRA",
+        "rate": 400
+      }
+    ],
+    "plainLower": [
+      {
+        "fabric": "4 WAY DIAGONAL",
+        "rate": 400
+      },
+      {
+        "fabric": "WAFFLE",
+        "rate": 400
+      }
+    ],
+    "sublimationLower": [
+      {
+        "fabric": "4 WAY",
+        "rate": 550
+      },
+      {
+        "fabric": "DIAGONAL",
+        "rate": 550
+      },
+      {
+        "fabric": "WAFFLE",
+        "rate": 550
+      }
+    ]
+  },
+  "otherDetails": [
+    {
+      "item": "CAP WITH LOGO",
+      "rate": 300,
+      "category": "caps"
+    },
+    {
+      "item": "CAP WITH NAME",
+      "rate": 300,
+      "category": "caps"
+    },
+    {
+      "item": "CAP WITH NAME NO.",
+      "rate": 320,
+      "category": "caps"
+    },
+    {
+      "item": "HAT WITH LOGO",
+      "rate": 310,
+      "category": "caps"
+    },
+    {
+      "item": "HAT WITH NAME",
+      "rate": 310,
+      "category": "caps"
+    },
+    {
+      "item": "HAT WITH NAME NO.",
+      "rate": 330,
+      "category": "caps"
+    },
+    {
+      "item": "SOCKS (SHOCKS)",
+      "rate": 250,
+      "category": "accessories"
+    },
+    {
+      "item": "HALF SWEATER",
+      "rate": 1100,
+      "category": "teamwear"
+    },
+    {
+      "item": "HALF SWEATER WOLLEN",
+      "rate": 1400,
+      "category": "teamwear"
+    },
+    {
+      "item": "TRACKSUIT (TRACSUIT)",
+      "rate": 1700,
+      "category": "teamwear"
+    },
+    {
+      "item": "HOODIES",
+      "rate": 1300,
+      "category": "teamwear"
+    },
+    {
+      "item": "BACKPACK (BAG PACK)",
+      "rate": 1500,
+      "category": "accessories"
+    },
+    {
+      "item": "KIT BAG",
+      "rate": 4500,
+      "category": "accessories"
+    }
+  ],
+  "terms": [
+    "Transport charges and GST will be charged separately and are not included in the above mentioned rates.",
+    "GST at 5% will be applicable on all apparel items, while GST at 18% will be applicable on Kit Bag.",
+    "Transportation charges will depend on the delivery location."
+  ]
+}

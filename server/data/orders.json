@@ -1,0 +1,120 @@
+[
+  {
+    "id": "RS-ORD-5475",
+    "orderNumber": "5475",
+    "createdAt": "2026-09-24T09:12:07.869Z",
+    "customer": {
+      "name": "Aman Kumar",
+      "phone": "9876500000",
+      "email": "",
+      "address": "Station Road, Chapra",
+      "city": "Chapra",
+      "state": "Bihar",
+      "pincode": ""
+    },
+    "items": [
+      {
+        "id": 1001,
+        "slug": "rs-pro-sublimated-jersey",
+        "name": "RS PRO Sublimated Match Jersey",
+        "color": "",
+        "size": "",
+        "fabric": "Dotknit",
+        "price": 420,
+        "qty": 12,
+        "image": ""
+      }
+    ],
+    "subtotal": 5040,
+    "discount": 0,
+    "shippingFee": 0,
+    "codFee": 0,
+    "tax": 252,
+    "total": 5040,
+    "paymentMethod": "UPI",
+    "paymentStatus": "Paid",
+    "status": "Placed",
+    "notes": "",
+    "timeline": [
+      {
+        "title": "Order Placed",
+        "time": "2026-09-24T09:12:07.869Z",
+        "desc": "Order confirmed and registered in production system."
+      }
+    ]
+  },
+  {
+    "id": "RS-ORD-8941",
+    "orderNumber": "8941",
+    "createdAt": "2026-09-22T09:09:41.833Z",
+    "customer": {
+      "name": "Vikram Singh",
+      "phone": "9876543210",
+      "email": "vikram.singh@gmail.com",
+      "address": "Near Gandhi Chowk, Siwan Road",
+      "city": "Chapra",
+      "state": "Bihar",
+      "pincode": "841301"
+    },
+    "items": [
+      {
+        "id": 1001,
+        "slug": "rs-pro-sublimated-jersey",
+        "name": "RS PRO Sublimated Match Jersey",
+        "color": "Navy & Orange",
+        "size": "L",
+        "fabric": "Dotknit",
+        "price": 420,
+        "qty": 15,
+        "image": "/products/rs/rs-prod-35.jpg"
+      }
+    ],
+    "subtotal": 6300,
+    "discount": 500,
+    "shippingFee": 0,
+    "codFee": 0,
+    "tax": 315,
+    "total": 6115,
+    "paymentMethod": "COD",
+    "paymentStatus": "Pending",
+    "status": "In Production",
+    "notes": "Team Name: Chapra Super Kings (Print back numbers 1 to 15)"
+  },
+  {
+    "id": "RS-ORD-8942",
+    "orderNumber": "8942",
+    "createdAt": "2026-09-24T04:09:41.845Z",
+    "customer": {
+      "name": "Rajnish Kumar",
+      "phone": "9123456789",
+      "email": "rajnish.bca@gmail.com",
+      "address": "Boring Road, Anandpuri",
+      "city": "Patna",
+      "state": "Bihar",
+      "pincode": "800001"
+    },
+    "items": [
+      {
+        "id": 1014,
+        "slug": "bihar-cricket-association-cap",
+        "name": "Bihar Cricket Association (BCA) Official Cap",
+        "color": "BCA Royal Blue & Gold",
+        "size": "Adjustable",
+        "fabric": "Standard Heavy Twill",
+        "price": 350,
+        "qty": 25,
+        "image": "/products/rs/rs-prod-05.jpg"
+      }
+    ],
+    "subtotal": 8750,
+    "discount": 500,
+    "shippingFee": 0,
+    "codFee": 0,
+    "tax": 437,
+    "total": 8687,
+    "paymentMethod": "UPI",
+    "paymentStatus": "Paid",
+    "status": "Dispatched",
+    "notes": "Ship via DTDC / Tirupati Courier to Patna office"
+  }
+]

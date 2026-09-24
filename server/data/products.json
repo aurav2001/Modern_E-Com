@@ -1,0 +1,2045 @@
+[
+  {
+    "id": 1001,
+    "name": "RS PRO Sublimated Match Jersey",
+    "slug": "rs-pro-sublimated-jersey",
+    "price": 420,
+    "mrp": 699,
+    "image": "/products/rs/rs-prod-35.jpg",
+    "gallery": [
+      "/products/rs/rs-prod-35.jpg",
+      "/products/rs/rs-prod-37.jpg",
+      "/products/rs/rs-prod-39.jpg",
+      "/products/rs/rs-prod-59.jpg",
+      "/products/rs/rs-prod-56.jpg"
+    ],
+    "colors": [
+      {
+        "name": "Navy & Orange",
+        "hex": "#0e2140",
+        "image": "/products/rs/rs-prod-35.jpg",
+        "images": [
+          "/products/rs/rs-prod-35.jpg"
+        ]
+      },
+      {
+        "name": "Royal Blue & Gold",
+        "hex": "#1e4fa3",
+        "image": "/products/rs/rs-prod-37.jpg",
+        "images": [
+          "/products/rs/rs-prod-37.jpg",
+          "/products/rs/rs-prod-39.jpg"
+        ]
+      },
+      {
+        "name": "Gold Wave Edition",
+        "hex": "#d97706",
+        "image": "/products/rs/rs-prod-59.jpg",
+        "images": [
+          "/products/rs/rs-prod-59.jpg",
+          "/products/rs/rs-prod-56.jpg"
+        ]
+      }
+    ],
+    "fabricOptions": [
+      {
+        "name": "Superpoly",
+        "rate": 350
+      },
+      {
+        "name": "PMC",
+        "rate": 400
+      },
+      {
+        "name": "Dotknit",
+        "rate": 420
+      },
+      {
+        "name": "4 Way Lycra",
+        "rate": 450
+      },
+      {
+        "name": "Fusion",
+        "rate": 450
+      },
+      {
+        "name": "Airmesh",
+        "rate": 500
+      },
+      {
+        "name": "Jacquard",
+        "rate": 550
+      },
+      {
+        "name": "Jacquard Lite",
+        "rate": 600
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL",
+      "XXXL"
+    ],
+    "stock": 228,
+    "categories": [
+      "jerseys"
+    ],
+    "subs": [
+      "sublimation-jerseys",
+      "cricket-jerseys",
+      "football-jerseys"
+    ],
+    "description": "Full-sublimation match jersey printed edge-to-edge. Fabric rates per Rishikar Sports Rate List. Breathable, sweat-wicking, with unlimited team colours, logos, player name and number.",
+    "fabric": "Dotknit / Micro Polyester (Optional upgrade to Jacquard / Airmesh / Lycra)",
+    "features": [
+      "Exact pricing according to Rishikar Sports Excel Rate List",
+      "Full digital sublimation — unlimited colours, player name & number included",
+      "Choice of 8 fabrics: Superpoly, PMC, Dotknit, 4 Way Lycra, Fusion, Airmesh, Jacquard, Jacquard Lite",
+      "Anti-bacterial, fast-drying, colour-fast durability"
+    ],
+    "rating": 4.8,
+    "reviews": 184,
+    "isNew": true,
+    "featured": true,
+    "topSelling": true,
+    "createdAt": null
+  },
+  {
+    "id": 1002,
+    "name": "RS Sublimated Cricket Full Kit (Jersey + Lower + Cap)",
+    "slug": "rs-sublimated-cricket-full-kit",
+    "price": 1220,
+    "mrp": 1799,
+    "image": "/products/rs/rs-prod-15.jpg",
+    "gallery": [
+      "/products/rs/rs-prod-15.jpg",
+      "/products/rs/rs-prod-10.jpg",
+      "/products/rs/rs-prod-14.jpg",
+      "/products/rs/rs-prod-16.jpg",
+      "/products/rs/rs-prod-12.jpg",
+      "/products/rs/rs-prod-13.jpg",
+      "/products/rs/rs-prod-11.jpg"
+    ],
+    "colors": [
+      {
+        "name": "Navy Blue & Orange",
+        "hex": "#1d3557",
+        "image": "/products/rs/rs-prod-15.jpg",
+        "images": [
+          "/products/rs/rs-prod-15.jpg"
+        ]
+      },
+      {
+        "name": "Black & Gold",
+        "hex": "#d4af37",
+        "image": "/products/rs/rs-prod-10.jpg",
+        "images": [
+          "/products/rs/rs-prod-10.jpg"
+        ]
+      },
+      {
+        "name": "Black & Red",
+        "hex": "#b91c1c",
+        "image": "/products/rs/rs-prod-14.jpg",
+        "images": [
+          "/products/rs/rs-prod-14.jpg"
+        ]
+      },
+      {
+        "name": "Sky Blue & Yellow",
+        "hex": "#38bdf8",
+        "image": "/products/rs/rs-prod-16.jpg",
+        "images": [
+          "/products/rs/rs-prod-16.jpg"
+        ]
+      },
+      {
+        "name": "Black & Neon Green",
+        "hex": "#22c55e",
+        "image": "/products/rs/rs-prod-12.jpg",
+        "images": [
+          "/products/rs/rs-prod-12.jpg"
+        ]
+      },
+      {
+        "name": "Charcoal & Pink",
+        "hex": "#ec4899",
+        "image": "/products/rs/rs-prod-13.jpg",
+        "images": [
+          "/products/rs/rs-prod-13.jpg"
+        ]
+      },
+      {
+        "name": "Brown & Grey",
+        "hex": "#5c4033",
+        "image": "/products/rs/rs-prod-11.jpg",
+        "images": [
+          "/products/rs/rs-prod-11.jpg"
+        ]
+      }
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL",
+      "XXXL"
+    ],
+    "stock": 195,
+    "categories": [
+      "jerseys",
+      "teamwear"
+    ],
+    "subs": [
+      "sublimation-jerseys",
+      "cricket-jerseys"
+    ],
+    "description": "Complete 3-piece cricket match combo: Full-sleeve collar sublimated jersey (₹370+), Sublimation Track Lower (₹550), and matching RS Embroidered Cap (₹300). Built strictly to Rishikar Sports factory rate card.",
+    "fabric": "Full Sublimation Performance Poly + 4-Way Stretch Lower",
+    "features": [
+      "Includes Collar Full Sleeve Jersey, Sublimation Lower & Custom Cap",
+      "Full team customization with name, number and sponsor badge",
+      "Elastic waistband with inner drawcord on trousers",
+      "Tested for all-day cricket match performance"
+    ],
+    "rating": 4.9,
+    "reviews": 142,
+    "isNew": true,
+    "featured": true,
+    "topSelling": true,
+    "createdAt": null
+  },
+  {
+    "id": 1003,
+    "name": "RS Match Winner Full Sleeve Jersey & Trouser Kit",
+    "slug": "rs-match-winner-cricket-kit",
+    "price": 1020,
+    "mrp": 1499,
+    "image": "/products/rs/rs-prod-23.jpg",
+    "gallery": [
+      "/products/rs/rs-prod-23.jpg",
+      "/products/rs/rs-prod-21.jpg",
+      "/products/rs/rs-prod-26.jpg",
+      "/products/rs/rs-prod-27.jpg",
+      "/products/rs/rs-prod-29.jpg",
+      "/products/rs/rs-prod-30.jpg",
+      "/products/rs/rs-prod-32.jpg",
+      "/products/rs/rs-prod-24.jpg"
+    ],
+    "colors": [
+      {
+        "name": "Black & Grey Stealth",
+        "hex": "#334155",
+        "image": "/products/rs/rs-prod-23.jpg",
+        "images": [
+          "/products/rs/rs-prod-23.jpg"
+        ]
+      },
+      {
+        "name": "Red & Black Flare",
+        "hex": "#dc2626",
+        "image": "/products/rs/rs-prod-21.jpg",
+        "images": [
+          "/products/rs/rs-prod-21.jpg",
+          "/products/rs/rs-prod-22.jpg"
+        ]
+      },
+      {
+        "name": "Black & Blaze Orange",
+        "hex": "#ea580c",
+        "image": "/products/rs/rs-prod-26.jpg",
+        "images": [
+          "/products/rs/rs-prod-26.jpg"
+        ]
+      },
+      {
+        "name": "Navy & Gold Victory",
+        "hex": "#0e2140",
+        "image": "/products/rs/rs-prod-27.jpg",
+        "images": [
+          "/products/rs/rs-prod-27.jpg"
+        ]
+      },
+      {
+        "name": "Navy & Neon Pink",
+        "hex": "#f43f5e",
+        "image": "/products/rs/rs-prod-29.jpg",
+        "images": [
+          "/products/rs/rs-prod-29.jpg"
+        ]
+      },
+      {
+        "name": "Navy & Parrot Green",
+        "hex": "#84cc16",
+        "image": "/products/rs/rs-prod-30.jpg",
+        "images": [
+          "/products/rs/rs-prod-30.jpg",
+          "/products/rs/rs-prod-31.jpg"
+        ]
+      },
+      {
+        "name": "Forest Green & Black",
+        "hex": "#15803d",
+        "image": "/products/rs/rs-prod-24.jpg",
+        "images": [
+          "/products/rs/rs-prod-24.jpg"
+        ]
+      },
+      {
+        "name": "Cyan & Black Strike",
+        "hex": "#06b6d4",
+        "image": "/products/rs/rs-prod-19.jpg",
+        "images": [
+          "/products/rs/rs-prod-19.jpg"
+        ]
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL",
+      "XXXL"
+    ],
+    "stock": 210,
+    "categories": [
+      "jerseys",
+      "teamwear"
+    ],
+    "subs": [
+      "sublimation-jerseys",
+      "cricket-jerseys",
+      "football-jerseys"
+    ],
+    "description": "Premium full sleeve collar sublimated jersey with matching trousers. Collar detail, reinforced shoulder strip, lower logo and side panels with precision digital printing.",
+    "fabric": "Dotknit / 4-Way Lycra jersey + 4-Way Diagonal Lower",
+    "features": [
+      "Excel Rate: Full Sleeve Collar (₹470) + Sublimation Lower (₹550)",
+      "High grade moisture wicking yarn",
+      "Custom squad numbers (01-99) & player names included",
+      "Comfort fit engineered for running between wickets"
+    ],
+    "rating": 4.9,
+    "reviews": 167,
+    "isNew": true,
+    "featured": true,
+    "topSelling": true,
+    "createdAt": null
+  },
+  {
+    "id": 1004,
+    "name": "RS Royal Blue & Gold Championship Sublimated Kit",
+    "slug": "rs-championship-royal-blue-kit",
+    "price": 1020,
+    "mrp": 1499,
+    "image": "/products/rs/rs-prod-34.jpg",
+    "gallery": [
+      "/products/rs/rs-prod-34.jpg",
+      "/products/rs/rs-prod-33.jpg",
+      "/products/rs/rs-prod-36.jpg",
+      "/products/rs/rs-prod-49.jpg",
+      "/products/rs/rs-prod-17.jpg"
+    ],
+    "colors": [
+      {
+        "name": "Royal Blue & Gold",
+        "hex": "#1e40af",
+        "image": "/products/rs/rs-prod-34.jpg",
+        "images": [
+          "/products/rs/rs-prod-34.jpg",
+          "/products/rs/rs-prod-33.jpg",
+          "/products/rs/rs-prod-36.jpg"
+        ]
+      }
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL",
+      "XXXL"
+    ],
+    "stock": 160,
+    "categories": [
+      "jerseys",
+      "teamwear"
+    ],
+    "subs": [
+      "sublimation-jerseys",
+      "cricket-jerseys"
+    ],
+    "description": "Official real-life tournament photos! High dynamic motion graphics in rich Royal Blue with metallic gold accents. Complete collar jersey and lower combo.",
+    "fabric": "High-density Dotknit with 4-Way Lycra side vents",
+    "features": [
+      "Exact kit as photographed on active tournament cricket grounds",
+      "Breathable honeycomb micro-pores for temperature control",
+      "Includes printed pants with matching side flash",
+      "Pre-shrunk, colour-locked sublimation"
+    ],
+    "rating": 4.8,
+    "reviews": 98,
+    "isNew": false,
+    "featured": true,
+    "topSelling": true,
+    "createdAt": null
+  },
+  {
+    "id": 1005,
+    "name": "RS Premium Sublimation Half-Sleeve Match Kit (Set of 2)",
+    "slug": "rs-premium-sublimation-uniform-set",
+    "price": 950,
+    "mrp": 1399,
+    "image": "/products/rs/rs-prod-28.jpg",
+    "gallery": [
+      "/products/rs/rs-prod-28.jpg",
+      "/products/rs/rs-prod-47.jpg",
+      "/products/rs/rs-prod-48.jpg",
+      "/products/rs/rs-prod-50.jpg",
+      "/products/rs/rs-prod-51.jpg"
+    ],
+    "colors": [
+      {
+        "name": "Black & Gold Luxury",
+        "hex": "#18181b",
+        "image": "/products/rs/rs-prod-28.jpg",
+        "images": [
+          "/products/rs/rs-prod-28.jpg"
+        ]
+      },
+      {
+        "name": "Royal Blue & Gold Winning",
+        "hex": "#1e3a8a",
+        "image": "/products/rs/rs-prod-47.jpg",
+        "images": [
+          "/products/rs/rs-prod-47.jpg",
+          "/products/rs/rs-prod-48.jpg"
+        ]
+      },
+      {
+        "name": "Purple & Gold Champion",
+        "hex": "#6b21a8",
+        "image": "/products/rs/rs-prod-28.jpg",
+        "images": [
+          "/products/rs/rs-prod-28.jpg"
+        ]
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "stock": 175,
+    "categories": [
+      "jerseys",
+      "teamwear"
+    ],
+    "subs": [
+      "sublimation-jerseys",
+      "cricket-jerseys"
+    ],
+    "description": "Premium half-sleeve sublimation cricket kit. Features 3 iconic colour themes: Black & Gold (Luxury), Royal Blue & Gold (Professional), and Purple & Gold (Champion). Half sleeve polo jersey paired with matching sublimated lower.",
+    "fabric": "PMC / Dotknit breathable performance polyester",
+    "features": [
+      "Rate List: Collar Half Sleeve (₹400) + Sublimation Lower (₹550)",
+      "Half-sleeve freedom of motion for fast bowlers and power hitters",
+      "Side pocket zippers on matching lowers",
+      "Vibrant high-contrast gradient pattern"
+    ],
+    "rating": 4.7,
+    "reviews": 112,
+    "isNew": true,
+    "featured": false,
+    "topSelling": true,
+    "createdAt": null
+  },
+  {
+    "id": 1006,
+    "name": "RS Construction Athletic Polo Series (17 Designs)",
+    "slug": "rs-construction-athletic-polo",
+    "price": 420,
+    "mrp": 699,
+    "image": "/products/rs/rs-prod-38.jpg",
+    "gallery": [
+      "/products/rs/rs-prod-38.jpg",
+      "/products/rs/rs-prod-25.jpg",
+      "/products/rs/rs-prod-42.jpg"
+    ],
+    "colors": [
+      {
+        "name": "Design 1 (Orange & Steel)",
+        "hex": "#f97316",
+        "image": "/products/rs/rs-prod-38.jpg",
+        "images": [
+          "/products/rs/rs-prod-38.jpg"
+        ]
+      },
+      {
+        "name": "Stealth Force (Black & Gold)",
+        "hex": "#eab308",
+        "image": "/products/rs/rs-prod-25.jpg",
+        "images": [
+          "/products/rs/rs-prod-25.jpg"
+        ]
+      },
+      {
+        "name": "Midnight Strike (Navy & Orange)",
+        "hex": "#0e2140",
+        "image": "/products/rs/rs-prod-25.jpg",
+        "images": [
+          "/products/rs/rs-prod-25.jpg"
+        ]
+      },
+      {
+        "name": "Steel Titanium (Charcoal & Lime)",
+        "hex": "#84cc16",
+        "image": "/products/rs/rs-prod-25.jpg",
+        "images": [
+          "/products/rs/rs-prod-25.jpg"
+        ]
+      },
+      {
+        "name": "Crimson Edge (Maroon & Gold)",
+        "hex": "#881337",
+        "image": "/products/rs/rs-prod-25.jpg",
+        "images": [
+          "/products/rs/rs-prod-25.jpg"
+        ]
+      },
+      {
+        "name": "Arctic Impact (Royal & White)",
+        "hex": "#2563eb",
+        "image": "/products/rs/rs-prod-25.jpg",
+        "images": [
+          "/products/rs/rs-prod-25.jpg"
+        ]
+      },
+      {
+        "name": "Sunset Blaze (Black & Red)",
+        "hex": "#ef4444",
+        "image": "/products/rs/rs-prod-25.jpg",
+        "images": [
+          "/products/rs/rs-prod-25.jpg"
+        ]
+      },
+      {
+        "name": "Ocean Depth (Cyan & Blue)",
+        "hex": "#06b6d4",
+        "image": "/products/rs/rs-prod-25.jpg",
+        "images": [
+          "/products/rs/rs-prod-25.jpg"
+        ]
+      },
+      {
+        "name": "Voltage (Neon Yellow & Black)",
+        "hex": "#facc15",
+        "image": "/products/rs/rs-prod-25.jpg",
+        "images": [
+          "/products/rs/rs-prod-25.jpg"
+        ]
+      },
+      {
+        "name": "Purple Haze (Purple & Gold)",
+        "hex": "#9333ea",
+        "image": "/products/rs/rs-prod-25.jpg",
+        "images": [
+          "/products/rs/rs-prod-25.jpg"
+        ]
+      }
+    ],
+    "fabricOptions": [
+      {
+        "name": "Superpoly",
+        "rate": 350
+      },
+      {
+        "name": "PMC",
+        "rate": 400
+      },
+      {
+        "name": "Dotknit",
+        "rate": 420
+      },
+      {
+        "name": "4 Way Lycra",
+        "rate": 450
+      },
+      {
+        "name": "Fusion",
+        "rate": 450
+      },
+      {
+        "name": "Airmesh",
+        "rate": 500
+      },
+      {
+        "name": "Jacquard",
+        "rate": 550
+      },
+      {
+        "name": "Jacquard Lite",
+        "rate": 600
+      }
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL",
+      "XXXL"
+    ],
+    "stock": 280,
+    "categories": [
+      "tshirts",
+      "jerseys"
+    ],
+    "subs": [
+      "polo-tshirts",
+      "sublimation-jerseys"
+    ],
+    "description": "Built Strong. Delivered Right. 17 signature heavy-duty sublimation polo designs engineered for construction crews, corporate events, and sports leagues.",
+    "fabric": "Dotknit Performance Pique (Rate: ₹420 from Rate List)",
+    "features": [
+      "17 unique engineering & sports design patterns available",
+      "Button placket with tailored self-collar",
+      "Stain-release and quick-dry finish",
+      "Custom company or club logo on left chest and back"
+    ],
+    "rating": 4.9,
+    "reviews": 203,
+    "isNew": true,
+    "featured": true,
+    "topSelling": true,
+    "createdAt": null
+  },
+  {
+    "id": 1007,
+    "name": "Saran Cricket Association (SCA) Official Senior Match Kit",
+    "slug": "saran-cricket-association-senior-kit",
+    "price": 1020,
+    "mrp": 1499,
+    "image": "/products/rs/rs-prod-62.jpg",
+    "gallery": [
+      "/products/rs/rs-prod-62.jpg",
+      "/products/rs/rs-prod-61.jpg",
+      "/products/rs/rs-prod-60.jpg"
+    ],
+    "colors": [
+      {
+        "name": "Navy & Orange Senior",
+        "hex": "#0e2140",
+        "image": "/products/rs/rs-prod-62.jpg",
+        "images": [
+          "/products/rs/rs-prod-62.jpg",
+          "/products/rs/rs-prod-61.jpg"
+        ]
+      }
+    ],
+    "sizes": [
+      "38",
+      "40",
+      "42",
+      "44",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "stock": 120,
+    "categories": [
+      "jerseys",
+      "teamwear"
+    ],
+    "subs": [
+      "cricket-jerseys",
+      "sublimation-jerseys"
+    ],
+    "description": "Official BCCI/BCA district affiliate Saran Cricket Association Senior team kit. Features the official SCA crest, SARAN typography, custom numbering roster, and matching lowers.",
+    "fabric": "High-grade Micro-Poly with moisture management",
+    "features": [
+      "Official district association tournament jersey",
+      "Available with custom team roster sizing (38, 40, 42, 44)",
+      "Collar full sleeve jersey + Sublimation match lower",
+      "Direct factory production by Rishikar Sports"
+    ],
+    "rating": 5,
+    "reviews": 64,
+    "isNew": true,
+    "featured": true,
+    "topSelling": false,
+    "createdAt": null
+  },
+  {
+    "id": 1008,
+    "name": "Saran Cricket Association U-19 & U-23 Match Kit",
+    "slug": "saran-u19-u23-cricket-match-kit",
+    "price": 950,
+    "mrp": 1399,
+    "image": "/products/rs/rs-prod-57.jpg",
+    "gallery": [
+      "/products/rs/rs-prod-57.jpg",
+      "/products/rs/rs-prod-58.jpg"
+    ],
+    "colors": [
+      {
+        "name": "Navy & Yellow (U-19)",
+        "hex": "#eab308",
+        "image": "/products/rs/rs-prod-57.jpg",
+        "images": [
+          "/products/rs/rs-prod-57.jpg"
+        ]
+      },
+      {
+        "name": "Navy & Sky Blue (U-23)",
+        "hex": "#0284c7",
+        "image": "/products/rs/rs-prod-58.jpg",
+        "images": [
+          "/products/rs/rs-prod-58.jpg"
+        ]
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "stock": 130,
+    "categories": [
+      "jerseys",
+      "teamwear"
+    ],
+    "subs": [
+      "cricket-jerseys",
+      "sublimation-jerseys"
+    ],
+    "description": "Official Saran Cricket Association age-group kits for U-19 and U-23 tournaments. Engineered for high agility, breathability and durability in multi-day matches.",
+    "fabric": "Dotknit Performance Polyester",
+    "features": [
+      "Official Saran Cricket Association U-19 and U-23 crest",
+      "Collar half sleeve match jersey + matching trousers",
+      "Sublimation that withstands intense match conditions",
+      "Manufactured in Rishikar Sports manufacturing facility"
+    ],
+    "rating": 4.9,
+    "reviews": 47,
+    "isNew": true,
+    "featured": false,
+    "topSelling": false,
+    "createdAt": null
+  },
+  {
+    "id": 1009,
+    "name": "Solar Corner & Corporate Tournament Match Kit",
+    "slug": "solar-corner-tournament-jersey-kit",
+    "price": 950,
+    "mrp": 1399,
+    "image": "/products/rs/rs-prod-46.jpg",
+    "gallery": [
+      "/products/rs/rs-prod-46.jpg"
+    ],
+    "colors": [
+      {
+        "name": "Royal Blue & Orange",
+        "hex": "#1d4ed8",
+        "image": "/products/rs/rs-prod-46.jpg",
+        "images": [
+          "/products/rs/rs-prod-46.jpg"
+        ]
+      }
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "stock": 90,
+    "categories": [
+      "jerseys",
+      "teamwear"
+    ],
+    "subs": [
+      "cricket-jerseys",
+      "sublimation-jerseys"
+    ],
+    "description": "Turnkey tournament uniform solution with multi-sponsor printing (Bharat Petroleum, Solar Corner), faceted polygon artwork, and matching orange-piped trousers.",
+    "fabric": "160 GSM Sublimated Poly",
+    "features": [
+      "Multi-sponsor logo printing on chest, back, and sleeves",
+      "Geometric faceted diamond print pattern",
+      "Player name and number printing included",
+      "Matching drawstring trousers included"
+    ],
+    "rating": 4.8,
+    "reviews": 38,
+    "isNew": false,
+    "featured": false,
+    "topSelling": false,
+    "createdAt": null
+  },
+  {
+    "id": 1010,
+    "name": "RS Pro Cricket Whites Match Kit (Full Sleeve + Lower)",
+    "slug": "rs-pro-cricket-whites-kit",
+    "price": 770,
+    "mrp": 1199,
+    "image": "/products/rs/rs-prod-18.jpg",
+    "gallery": [
+      "/products/rs/rs-prod-18.jpg"
+    ],
+    "colors": [
+      {
+        "name": "Classic White & Royal",
+        "hex": "#ffffff",
+        "image": "/products/rs/rs-prod-18.jpg",
+        "images": [
+          "/products/rs/rs-prod-18.jpg"
+        ]
+      }
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL",
+      "XXXL"
+    ],
+    "stock": 145,
+    "categories": [
+      "jerseys",
+      "teamwear"
+    ],
+    "subs": [
+      "cricket-jerseys",
+      "lowers"
+    ],
+    "description": "Classic cricket match whites for league and club tournaments. Includes full sleeve collar white jersey with blue shoulder accents and matching white match trousers.",
+    "fabric": "Superpoly / Dotknit White Fabric + Plain Lower (₹370 + ₹400 = ₹770)",
+    "features": [
+      "Excel Rate list combination: Full Sleeve White + Match Lower",
+      "Sun protection full sleeves with rib cuffs",
+      "Easy-clean stain-resistant treatment",
+      "Comfort elasticated waist trousers"
+    ],
+    "rating": 4.7,
+    "reviews": 82,
+    "isNew": false,
+    "featured": false,
+    "topSelling": true,
+    "createdAt": null
+  },
+  {
+    "id": 1011,
+    "name": "RS Pro Sublimation Sports Shorts",
+    "slug": "rs-sublimation-pro-match-shorts",
+    "price": 300,
+    "mrp": 499,
+    "image": "/products/rs/rs-prod-02.jpg",
+    "gallery": [
+      "/products/rs/rs-prod-02.jpg",
+      "/products/rs/rs-prod-05.jpg"
+    ],
+    "colors": [
+      {
+        "name": "Black & Gold",
+        "hex": "#eab308",
+        "image": "/products/rs/rs-prod-02.jpg",
+        "images": [
+          "/products/rs/rs-prod-02.jpg"
+        ]
+      },
+      {
+        "name": "Blue & Orange",
+        "hex": "#f97316",
+        "image": "/products/rs/rs-prod-05.jpg",
+        "images": [
+          "/products/rs/rs-prod-05.jpg"
+        ]
+      }
+    ],
+    "fabricOptions": [
+      {
+        "name": "Superpoly",
+        "rate": 250
+      },
+      {
+        "name": "PMC",
+        "rate": 280
+      },
+      {
+        "name": "Dotknit",
+        "rate": 300
+      },
+      {
+        "name": "Airmesh",
+        "rate": 350
+      },
+      {
+        "name": "4 Way Lycra",
+        "rate": 400
+      }
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "stock": 220,
+    "categories": [
+      "teamwear"
+    ],
+    "subs": [
+      "shorts"
+    ],
+    "description": "Sublimation printed sports shorts with dynamic side curves, elastic waistband, deep side pockets, and double stitch hem. Built according to Rishikar Sports Excel rate list.",
+    "fabric": "Dotknit / Micro Poly (Excel Rate: ₹300, Lycra: ₹400)",
+    "features": [
+      "Excel Rate: Superpoly ₹250, PMC ₹280, Dotknit ₹300, Airmesh ₹350, 4-Way Lycra ₹400",
+      "Dual deep side pockets for balls & essentials",
+      "Reinforced elastic waistband with drawstring",
+      "Lightweight, breathable, moisture wicking"
+    ],
+    "rating": 4.8,
+    "reviews": 135,
+    "isNew": true,
+    "featured": false,
+    "topSelling": true,
+    "createdAt": null
+  },
+  {
+    "id": 1012,
+    "name": "RS Classic Training Plain Shorts",
+    "slug": "rs-classic-training-plain-shorts",
+    "price": 250,
+    "mrp": 399,
+    "image": "/products/rs/rs-prod-06.jpg",
+    "gallery": [
+      "/products/rs/rs-prod-06.jpg",
+      "/products/rs/rs-prod-04.jpg",
+      "/products/rs/rs-prod-53.jpg"
+    ],
+    "colors": [
+      {
+        "name": "Royal Blue",
+        "hex": "#2563eb",
+        "image": "/products/rs/rs-prod-06.jpg",
+        "images": [
+          "/products/rs/rs-prod-06.jpg"
+        ]
+      },
+      {
+        "name": "Black",
+        "hex": "#18181b",
+        "image": "/products/rs/rs-prod-04.jpg",
+        "images": [
+          "/products/rs/rs-prod-04.jpg"
+        ]
+      },
+      {
+        "name": "Navy",
+        "hex": "#0e2140",
+        "image": "/products/rs/rs-prod-53.jpg",
+        "images": [
+          "/products/rs/rs-prod-53.jpg"
+        ]
+      }
+    ],
+    "fabricOptions": [
+      {
+        "name": "Superpoly",
+        "rate": 200
+      },
+      {
+        "name": "PMC",
+        "rate": 230
+      },
+      {
+        "name": "Dotknit",
+        "rate": 250
+      },
+      {
+        "name": "Airmesh",
+        "rate": 300
+      },
+      {
+        "name": "4 Way Lycra",
+        "rate": 320
+      }
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "stock": 260,
+    "categories": [
+      "teamwear"
+    ],
+    "subs": [
+      "shorts"
+    ],
+    "description": "Solid athletic training shorts with embroidered RS logo. Perfect for daily net sessions, gym, running, and casual team wear.",
+    "fabric": "Dotknit / Superpoly (Excel Rate: ₹200 to ₹320)",
+    "features": [
+      "Excel Rate: Superpoly ₹200, PMC ₹230, Dotknit ₹250, Airmesh ₹300, 4 Way Lycra ₹320",
+      "Side pocket with secure stitching",
+      "Elastic waistband with drawcord",
+      "Ultra-soft feel that resists chafing"
+    ],
+    "rating": 4.6,
+    "reviews": 94,
+    "isNew": false,
+    "featured": false,
+    "topSelling": false,
+    "createdAt": null
+  },
+  {
+    "id": 1013,
+    "name": "RS Official Embroidered Sports Cap",
+    "slug": "rs-official-embroidered-sports-cap",
+    "price": 300,
+    "mrp": 499,
+    "image": "/products/rs/rs-prod-03.jpg",
+    "gallery": [
+      "/products/rs/rs-prod-03.jpg"
+    ],
+    "colors": [
+      {
+        "name": "Royal Blue",
+        "hex": "#1d4ed8",
+        "image": "/products/rs/rs-prod-03.jpg",
+        "images": [
+          "/products/rs/rs-prod-03.jpg"
+        ]
+      }
+    ],
+    "sizes": [
+      "Free Size (Adjustable)"
+    ],
+    "stock": 350,
+    "categories": [
+      "accessories"
+    ],
+    "subs": [
+      "caps"
+    ],
+    "description": "Official Rishikar Sports 6-panel athletic cap with 3D embroidery of the RS emblem. Features breathable eyelets and an adjustable rear strap.",
+    "fabric": "Heavy Cotton Twill / Polyester Blend",
+    "features": [
+      "Excel Rate list: Cap with Logo ₹300, Cap with Name/Number ₹320",
+      "High density 3D embroidery that retains its sharp look",
+      "Pre-curved visor for glare shielding",
+      "Metal buckle adjustment fits all head sizes"
+    ],
+    "rating": 4.9,
+    "reviews": 215,
+    "isNew": true,
+    "featured": true,
+    "topSelling": true,
+    "createdAt": null
+  },
+  {
+    "id": 1014,
+    "name": "Bihar Cricket Association (BCA) Official Cap",
+    "slug": "bihar-cricket-association-cap",
+    "price": 300,
+    "mrp": 549,
+    "image": "/products/rs/rs-prod-09.jpg",
+    "gallery": [
+      "/products/rs/rs-prod-09.jpg",
+      "/products/rs/rs-prod-07.jpg",
+      "/products/rs/rs-prod-08.jpg"
+    ],
+    "colors": [
+      {
+        "name": "Blue & Gold Visor",
+        "hex": "#eab308",
+        "image": "/products/rs/rs-prod-09.jpg",
+        "images": [
+          "/products/rs/rs-prod-09.jpg"
+        ]
+      },
+      {
+        "name": "Blue & Orange Visor",
+        "hex": "#f97316",
+        "image": "/products/rs/rs-prod-07.jpg",
+        "images": [
+          "/products/rs/rs-prod-07.jpg"
+        ]
+      },
+      {
+        "name": "Solid Royal Blue",
+        "hex": "#1e40af",
+        "image": "/products/rs/rs-prod-08.jpg",
+        "images": [
+          "/products/rs/rs-prod-08.jpg"
+        ]
+      }
+    ],
+    "sizes": [
+      "Free Size (Adjustable)"
+    ],
+    "stock": 280,
+    "categories": [
+      "accessories"
+    ],
+    "subs": [
+      "caps"
+    ],
+    "description": "Official Bihar Cricket Association embroidered state team cap. Features the circular BCA insignia on front, side RS branding, and contrast piped crown.",
+    "fabric": "Premium Structured Twill",
+    "features": [
+      "Official Bihar Cricket Association insignia embroidery",
+      "Contrast visor options: Gold, Orange, or Solid Blue",
+      "Brass buckle backstrap with tuck-in slot",
+      "Manufactured exclusively by Rishikar Sports"
+    ],
+    "rating": 5,
+    "reviews": 148,
+    "isNew": true,
+    "featured": true,
+    "topSelling": true,
+    "createdAt": null
+  },
+  {
+    "id": 1015,
+    "name": "RS Cricket Wide-Brim Sun Hat",
+    "slug": "rs-cricket-wide-brim-sun-hat",
+    "price": 310,
+    "mrp": 499,
+    "image": "/products/rs/rs-prod-01.jpg",
+    "gallery": [
+      "/products/rs/rs-prod-01.jpg",
+      "/products/rs/rs-prod-54.jpg"
+    ],
+    "colors": [
+      {
+        "name": "Royal Blue",
+        "hex": "#1d4ed8",
+        "image": "/products/rs/rs-prod-01.jpg",
+        "images": [
+          "/products/rs/rs-prod-01.jpg"
+        ]
+      },
+      {
+        "name": "Navy Blue",
+        "hex": "#0e2140",
+        "image": "/products/rs/rs-prod-54.jpg",
+        "images": [
+          "/products/rs/rs-prod-54.jpg"
+        ]
+      }
+    ],
+    "sizes": [
+      "M (56cm)",
+      "L (58cm)",
+      "XL (60cm)"
+    ],
+    "stock": 190,
+    "categories": [
+      "accessories"
+    ],
+    "subs": [
+      "caps"
+    ],
+    "description": "360-degree wide brim cricket hat designed for full-day field play under the sun. Direct rate from Excel: Hat with Logo ₹310, with Name/No ₹330.",
+    "fabric": "100% Breathable Heavy Cotton Canvas",
+    "features": [
+      "Excel Rate list: Hat with Logo ₹310, with Name ₹310, Name No. ₹330",
+      "Full 360 wide brim keeps neck and face sheltered",
+      "Ventilation brass side eyelets for cross airflow",
+      "Sweat-wicking inner brow lining"
+    ],
+    "rating": 4.8,
+    "reviews": 79,
+    "isNew": true,
+    "featured": false,
+    "topSelling": true,
+    "createdAt": null
+  },
+  {
+    "id": 1016,
+    "name": "RS Sublimation Jaycart Sleeveless Jersey / Inner Vest",
+    "slug": "rs-full-sublimation-jaycart-vest",
+    "price": 450,
+    "mrp": 699,
+    "image": "/products/rs/rs-prod-40.jpg",
+    "gallery": [
+      "/products/rs/rs-prod-40.jpg",
+      "/products/rs/rs-prod-41.jpg"
+    ],
+    "colors": [
+      {
+        "name": "Round Neck Jaycart",
+        "hex": "#1d4ed8",
+        "image": "/products/rs/rs-prod-40.jpg",
+        "images": [
+          "/products/rs/rs-prod-40.jpg"
+        ]
+      },
+      {
+        "name": "V-Neck Jaycart",
+        "hex": "#2563eb",
+        "image": "/products/rs/rs-prod-41.jpg",
+        "images": [
+          "/products/rs/rs-prod-41.jpg"
+        ]
+      }
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "stock": 140,
+    "categories": [
+      "tshirts",
+      "jerseys"
+    ],
+    "subs": [
+      "sleeveless-tees",
+      "sublimation-jerseys"
+    ],
+    "description": "High-spec Jacquard (Jaycart) full sublimation sleeveless training top. Features woven airflow texture that keeps skin cool under gear.",
+    "fabric": "Jacquard / Jaycart Knit (Excel Rate: ₹450)",
+    "features": [
+      "Excel Rate list: Jacquard Round Neck ₹450",
+      "Available in Round Neck and V-Neck necklines",
+      "Armhole drop optimized for bowling and gym workouts",
+      "Featherweight construction with rapid evaporate technology"
+    ],
+    "rating": 4.7,
+    "reviews": 53,
+    "isNew": false,
+    "featured": false,
+    "topSelling": false,
+    "createdAt": null
+  },
+  {
+    "id": 1017,
+    "name": "RS Pro Athletic Tracksuit (Zip Jacket + Track Pant Set)",
+    "slug": "rs-pro-athletic-tracksuit",
+    "price": 1700,
+    "mrp": 2499,
+    "image": "/products/rs/rs-prod-43.jpg",
+    "gallery": [
+      "/products/rs/rs-prod-43.jpg"
+    ],
+    "colors": [
+      {
+        "name": "Navy & Sky Blue",
+        "hex": "#0f172a",
+        "image": "/products/rs/rs-prod-43.jpg",
+        "images": [
+          "/products/rs/rs-prod-43.jpg"
+        ]
+      }
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL",
+      "XXXL"
+    ],
+    "stock": 110,
+    "categories": [
+      "teamwear"
+    ],
+    "subs": [
+      "tracksuits",
+      "track-jackets"
+    ],
+    "description": "Full team travel and warmup tracksuit. Includes high-neck zip jacket and athletic track pants. Built to withstand rigors of tour travel and cool weather training.",
+    "fabric": "Bonded Performance Poly with micro-fleece interior (Excel Rate: ₹1700)",
+    "features": [
+      "Exact Excel Rate list: TRACSUIT ₹1700",
+      "Full front zipper with chin guard and side pockets",
+      "Ankle zips on track pants for easy on/off over cleats",
+      "Custom team crest and sponsor printing available"
+    ],
+    "rating": 4.9,
+    "reviews": 87,
+    "isNew": true,
+    "featured": true,
+    "topSelling": true,
+    "createdAt": null
+  },
+  {
+    "id": 1018,
+    "name": "RS Sports Sleeveless Half Sweater / Thermal Vest",
+    "slug": "rs-sports-sleeveless-half-sweater",
+    "price": 1100,
+    "mrp": 1699,
+    "image": "/products/rs/rs-prod-44.jpg",
+    "gallery": [
+      "/products/rs/rs-prod-44.jpg"
+    ],
+    "colors": [
+      {
+        "name": "Royal & Navy",
+        "hex": "#1e3a8a",
+        "image": "/products/rs/rs-prod-44.jpg",
+        "images": [
+          "/products/rs/rs-prod-44.jpg"
+        ]
+      }
+    ],
+    "fabricOptions": [
+      {
+        "name": "Standard Poly-Thermal",
+        "rate": 1100
+      },
+      {
+        "name": "Woolen Knit (Half Sweater Wollen)",
+        "rate": 1400
+      }
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "stock": 85,
+    "categories": [
+      "teamwear"
+    ],
+    "subs": [
+      "teamwear"
+    ],
+    "description": "Sleeveless cricket half sweater with quarter-zip stand collar. Provides core torso warmth during morning field sessions without hindering bowling action.",
+    "fabric": "Thermal Micro-Knit (Excel Rate: Regular ₹1100, Woolen ₹1400)",
+    "features": [
+      "Excel Rate list: HALF SWEATER ₹1100, HALF SWEATER WOLLEN ₹1400",
+      "Quarter zip stand-up collar for wind protection",
+      "Sleeveless cut for unrestricted bowling and batting motion",
+      "Ribbed hem to lock in body warmth"
+    ],
+    "rating": 4.8,
+    "reviews": 42,
+    "isNew": false,
+    "featured": false,
+    "topSelling": false,
+    "createdAt": null
+  },
+  {
+    "id": 1019,
+    "name": "RS Elite Pullover Performance Hoodie",
+    "slug": "rs-elite-pullover-hoodie",
+    "price": 1300,
+    "mrp": 1899,
+    "image": "/products/rs/rs-prod-52.jpg",
+    "gallery": [
+      "/products/rs/rs-prod-52.jpg",
+      "/products/rs/rs-prod-45.jpg"
+    ],
+    "colors": [
+      {
+        "name": "Navy & Sky RS",
+        "hex": "#0f172a",
+        "image": "/products/rs/rs-prod-52.jpg",
+        "images": [
+          "/products/rs/rs-prod-52.jpg"
+        ]
+      },
+      {
+        "name": "India Cricket Edition",
+        "hex": "#1d4ed8",
+        "image": "/products/rs/rs-prod-45.jpg",
+        "images": [
+          "/products/rs/rs-prod-45.jpg"
+        ]
+      }
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL",
+      "XXXL"
+    ],
+    "stock": 130,
+    "categories": [
+      "teamwear"
+    ],
+    "subs": [
+      "hoodies"
+    ],
+    "description": "Heavyweight athletic pullover hoodie with sleeve 3-stripes, kangaroo pouch, drawstring hood, and ribbed cuffs. Direct factory price from Excel rate sheet.",
+    "fabric": "320 GSM Cotton-Poly Brushed Fleece (Excel Rate: ₹1300)",
+    "features": [
+      "Exact Excel Rate list: HOODIES ₹1300",
+      "Plush fleeced interior for winter practice and gym sessions",
+      "Reinforced pouch pocket with bar-tack stitching",
+      "Pre-shrunk fabric to prevent sizing distortion"
+    ],
+    "rating": 4.9,
+    "reviews": 118,
+    "isNew": true,
+    "featured": false,
+    "topSelling": true,
+    "createdAt": null
+  },
+  {
+    "id": 1020,
+    "name": "RS Classic Solid Collar Polo T-Shirt",
+    "slug": "rs-classic-solid-polo",
+    "price": 400,
+    "mrp": 599,
+    "image": "/products/rs/rs-prod-55.jpg",
+    "gallery": [
+      "/products/rs/rs-prod-55.jpg"
+    ],
+    "colors": [
+      {
+        "name": "Solid Navy",
+        "hex": "#0e2140",
+        "image": "/products/rs/rs-prod-55.jpg",
+        "images": [
+          "/products/rs/rs-prod-55.jpg"
+        ]
+      }
+    ],
+    "fabricOptions": [
+      {
+        "name": "Superpoly",
+        "rate": 350
+      },
+      {
+        "name": "PMC",
+        "rate": 400
+      },
+      {
+        "name": "Dotknit",
+        "rate": 420
+      },
+      {
+        "name": "4 Way Lycra",
+        "rate": 450
+      },
+      {
+        "name": "Airmesh",
+        "rate": 500
+      }
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "stock": 210,
+    "categories": [
+      "tshirts"
+    ],
+    "subs": [
+      "polo-tshirts"
+    ],
+    "description": "Classic solid sports polo with ribbed collar and contrast placket trim. Ideal for tournament coaching staff, support personnel, and travel apparel.",
+    "fabric": "PMC Poly Pique (Excel Rate: ₹350 - ₹450)",
+    "features": [
+      "Excel Rate list: Collar Half Sleeve PMC ₹400, Dotknit ₹420",
+      "Embroidered RS logo on chest",
+      "Breathable and durable knit",
+      "Retains collar stiffness wash after wash"
+    ],
+    "rating": 4.6,
+    "reviews": 69,
+    "isNew": false,
+    "featured": false,
+    "topSelling": false,
+    "createdAt": null
+  },
+  {
+    "id": 1021,
+    "name": "RS Pro Sublimation Cricket Lowers / Track Pants",
+    "slug": "rs-pro-sublimation-lowers",
+    "price": 550,
+    "mrp": 799,
+    "image": "/products/rs/rs-prod-33.jpg",
+    "gallery": [
+      "/products/rs/rs-prod-33.jpg",
+      "/products/rs/rs-prod-23.jpg"
+    ],
+    "colors": [
+      {
+        "name": "Royal Blue & Gold",
+        "hex": "#1e40af",
+        "image": "/products/rs/rs-prod-33.jpg",
+        "images": [
+          "/products/rs/rs-prod-33.jpg"
+        ]
+      },
+      {
+        "name": "Black & Grey",
+        "hex": "#1f2937",
+        "image": "/products/rs/rs-prod-23.jpg",
+        "images": [
+          "/products/rs/rs-prod-23.jpg"
+        ]
+      }
+    ],
+    "fabricOptions": [
+      {
+        "name": "4 Way Stretch",
+        "rate": 550
+      },
+      {
+        "name": "Diagonal",
+        "rate": 550
+      },
+      {
+        "name": "Waffle",
+        "rate": 550
+      }
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL",
+      "XXXL"
+    ],
+    "stock": 190,
+    "categories": [
+      "teamwear"
+    ],
+    "subs": [
+      "lowers"
+    ],
+    "description": "Sublimation cricket track lowers engineered for cricket and athletic training. Built in 4-Way, Diagonal, and Waffle fabrics as listed in Rishikar Sports Rate List.",
+    "fabric": "4-Way / Waffle / Diagonal Stretch Polyester (Excel Rate: ₹550)",
+    "features": [
+      "Excel Rate list: SUBLIMATION LOWER (4 Way, Diagonal, Waffle) ₹550",
+      "Printed side panel inserts that match team jerseys",
+      "Deep zipper pockets on both sides",
+      "Ankle rib cuffs for snug fit over cricket shoes"
+    ],
+    "rating": 4.8,
+    "reviews": 93,
+    "isNew": false,
+    "featured": false,
+    "topSelling": true,
+    "createdAt": null
+  },
+  {
+    "id": 1022,
+    "name": "RS Heavy-Duty Player Kit Bag",
+    "slug": "rs-heavy-duty-kit-bag",
+    "price": 4500,
+    "mrp": 5999,
+    "image": "/products/bag.png",
+    "gallery": [
+      "/products/bag.png"
+    ],
+    "colors": [
+      {
+        "name": "Black & Orange",
+        "hex": "#ea580c",
+        "image": "/products/bag.png",
+        "images": [
+          "/products/bag.png"
+        ]
+      }
+    ],
+    "sizes": [
+      "Full Senior Size"
+    ],
+    "stock": 50,
+    "categories": [
+      "accessories"
+    ],
+    "subs": [
+      "kit-bags"
+    ],
+    "description": "Full-capacity cricket player wheelie kit bag. Engineered with 1680D nylon, dedicated internal bat compartment, heavy-duty tractor wheels, and shoe tunnel. Built to exact factory rate.",
+    "fabric": "1680D Ballistic Heavy-Duty Cordura (Excel Rate: ₹4500, GST 18%)",
+    "features": [
+      "Exact Excel Rate list: KIT BAG ₹4500 (GST at 18% applicable)",
+      "Padded bat sleeves holds up to 3 full-size bats",
+      "Heavy-duty tractor wheels with skid rails",
+      "Separate ventilated footwear and helmet sections"
+    ],
+    "rating": 4.9,
+    "reviews": 61,
+    "isNew": false,
+    "featured": true,
+    "topSelling": false,
+    "createdAt": null
+  },
+  {
+    "id": 1023,
+    "name": "RS Player Pro Team Backpack",
+    "slug": "rs-player-pro-backpack",
+    "price": 1500,
+    "mrp": 2199,
+    "image": "/products/bag.png",
+    "gallery": [
+      "/products/bag.png"
+    ],
+    "colors": [
+      {
+        "name": "Black & Charcoal",
+        "hex": "#374151",
+        "image": "/products/bag.png",
+        "images": [
+          "/products/bag.png"
+        ]
+      }
+    ],
+    "sizes": [
+      "Standard 35L"
+    ],
+    "stock": 120,
+    "categories": [
+      "accessories"
+    ],
+    "subs": [
+      "kit-bags"
+    ],
+    "description": "Compact multi-sport gear backpack with bat/stick sleeve, padded back support, laptop compartment, and gear separator. Factory priced directly from rate sheet.",
+    "fabric": "900D Water-Resistant Poly (Excel Rate: ₹1500)",
+    "features": [
+      "Exact Excel Rate list: BAG PACK ₹1500",
+      "Side bat sleeve and water bottle mesh pockets",
+      "Breathable cushioned mesh back panel",
+      "Reinforced heavy-duty zippers and haul loop"
+    ],
+    "rating": 4.7,
+    "reviews": 73,
+    "isNew": false,
+    "featured": false,
+    "topSelling": false,
+    "createdAt": null
+  },
+  {
+    "id": 1024,
+    "name": "RS Performance Cushioned Sports Socks (Pack of 3)",
+    "slug": "rs-performance-sports-socks",
+    "price": 250,
+    "mrp": 399,
+    "image": "/products/bottle.png",
+    "gallery": [
+      "/products/bottle.png"
+    ],
+    "colors": [
+      {
+        "name": "White & Navy",
+        "hex": "#f8fafc",
+        "image": "/products/bottle.png",
+        "images": [
+          "/products/bottle.png"
+        ]
+      }
+    ],
+    "sizes": [
+      "Free Size (UK 6-11)"
+    ],
+    "stock": 300,
+    "categories": [
+      "accessories"
+    ],
+    "subs": [
+      "accessories"
+    ],
+    "description": "High performance ribbed sports crew socks with terry cushioning on sole and heel. Absorbs high-impact shocks during bowling and running.",
+    "fabric": "Cotton-Lycra Terry Cushion (Excel Rate: ₹250)",
+    "features": [
+      "Exact Excel Rate list: SHOCKS ₹250",
+      "High shock-absorbing terry footbed",
+      "Arch compression band prevents slippage inside shoes",
+      "Reinforced heel and toe for prolonged durability"
+    ],
+    "rating": 4.8,
+    "reviews": 140,
+    "isNew": false,
+    "featured": false,
+    "topSelling": false,
+    "createdAt": null
+  },
+  {
+    "id": 1025,
+    "name": "RS Pro Round Neck Half Sleeve Performance Tee",
+    "slug": "rs-round-neck-dryfit-tee",
+    "price": 300,
+    "mrp": 499,
+    "image": "/products/rs/rs-prod-40.jpg",
+    "gallery": [
+      "/products/rs/rs-prod-40.jpg",
+      "/products/rs/rs-prod-20.jpg"
+    ],
+    "colors": [
+      {
+        "name": "Royal Blue Print",
+        "hex": "#1d4ed8",
+        "image": "/products/rs/rs-prod-40.jpg",
+        "images": [
+          "/products/rs/rs-prod-40.jpg"
+        ]
+      },
+      {
+        "name": "Navy & Orange",
+        "hex": "#0e2140",
+        "image": "/products/rs/rs-prod-20.jpg",
+        "images": [
+          "/products/rs/rs-prod-20.jpg"
+        ]
+      }
+    ],
+    "fabricOptions": [
+      {
+        "name": "Superpoly",
+        "rate": 300
+      },
+      {
+        "name": "PMC",
+        "rate": 320
+      },
+      {
+        "name": "Dotknit",
+        "rate": 350
+      },
+      {
+        "name": "4 Way Lycra",
+        "rate": 390
+      },
+      {
+        "name": "Fusion",
+        "rate": 390
+      },
+      {
+        "name": "Airmesh",
+        "rate": 420
+      },
+      {
+        "name": "Jacquard",
+        "rate": 450
+      },
+      {
+        "name": "Jacquard Lite",
+        "rate": 480
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "stock": 220,
+    "categories": [
+      "tshirts"
+    ],
+    "subs": [
+      "round-neck-tees",
+      "sublimation-jerseys",
+      "football-jerseys"
+    ],
+    "description": "Round neck half sleeve performance tee. Direct factory pricing from Rishikar Sports Excel Rate List starting at ₹300 (Superpoly) up to ₹480 (Jacquard Lite).",
+    "fabric": "Superpoly / Dotknit / Lycra / Jacquard",
+    "features": [
+      "Excel Rate list: Superpoly ₹300, PMC ₹320, Dotknit ₹350, Lycra ₹390, Fusion ₹390, Airmesh ₹420, Jacquard ₹450, Jacquard Lite ₹480",
+      "Comfort round collar with sweat tape",
+      "Full digital sublimation print support",
+      "Durable double needle hem"
+    ],
+    "rating": 4.8,
+    "reviews": 104,
+    "isNew": true,
+    "featured": false,
+    "topSelling": true,
+    "createdAt": null
+  },
+  {
+    "id": 1026,
+    "name": "RS Round Neck Full Sleeve Training Tee",
+    "slug": "rs-round-neck-full-sleeve",
+    "price": 320,
+    "mrp": 549,
+    "image": "/products/rs/rs-prod-20.jpg",
+    "gallery": [
+      "/products/rs/rs-prod-20.jpg"
+    ],
+    "colors": [
+      {
+        "name": "Navy & Orange",
+        "hex": "#0e2140",
+        "image": "/products/rs/rs-prod-20.jpg",
+        "images": [
+          "/products/rs/rs-prod-20.jpg"
+        ]
+      }
+    ],
+    "fabricOptions": [
+      {
+        "name": "Superpoly",
+        "rate": 320
+      },
+      {
+        "name": "PMC",
+        "rate": 340
+      },
+      {
+        "name": "Dotknit",
+        "rate": 370
+      },
+      {
+        "name": "4 Way Lycra",
+        "rate": 410
+      },
+      {
+        "name": "Fusion",
+        "rate": 410
+      },
+      {
+        "name": "Airmesh",
+        "rate": 440
+      },
+      {
+        "name": "Jacquard",
+        "rate": 470
+      },
+      {
+        "name": "Jacquard Lite",
+        "rate": 500
+      }
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL",
+      "XXXL"
+    ],
+    "stock": 180,
+    "categories": [
+      "tshirts"
+    ],
+    "subs": [
+      "round-neck-tees",
+      "sublimation-jerseys"
+    ],
+    "description": "Full sleeve round neck jersey offering complete sun protection and warmth. Priced directly according to the Rishikar Sports Excel rate list.",
+    "fabric": "Superpoly / Dotknit (Excel Rate: ₹320 - ₹500)",
+    "features": [
+      "Excel Rate: Superpoly ₹320, PMC ₹340, Dotknit ₹370, Lycra ₹410, Fusion ₹410, Airmesh ₹440, Jacquard ₹470, Jacquard Lite ₹500",
+      "Full sleeve coverage with ribbed wrist cuffs",
+      "Moisture-wicking yarn for intense training sessions",
+      "Custom name and number printing available"
+    ],
+    "rating": 4.7,
+    "reviews": 76,
+    "isNew": true,
+    "featured": false,
+    "topSelling": false,
+    "createdAt": null
+  },
+  {
+    "id": 1027,
+    "name": "RS Dual-Combo Hybrid Fabric Sublimation Jersey",
+    "slug": "rs-combo-fabric-sublimated-jersey",
+    "price": 420,
+    "mrp": 699,
+    "image": "/products/rs/rs-prod-29.jpg",
+    "gallery": [
+      "/products/rs/rs-prod-29.jpg",
+      "/products/rs/rs-prod-30.jpg",
+      "/products/rs/rs-prod-32.jpg"
+    ],
+    "colors": [
+      {
+        "name": "Navy & Neon Pink (Player 18)",
+        "hex": "#f43f5e",
+        "image": "/products/rs/rs-prod-29.jpg",
+        "images": [
+          "/products/rs/rs-prod-29.jpg"
+        ]
+      },
+      {
+        "name": "Navy & Lime (Player RS)",
+        "hex": "#84cc16",
+        "image": "/products/rs/rs-prod-30.jpg",
+        "images": [
+          "/products/rs/rs-prod-30.jpg"
+        ]
+      },
+      {
+        "name": "Red & Black Raglan (Player 10)",
+        "hex": "#dc2626",
+        "image": "/products/rs/rs-prod-32.jpg",
+        "images": [
+          "/products/rs/rs-prod-32.jpg"
+        ]
+      }
+    ],
+    "fabricOptions": [
+      {
+        "name": "PMC + Fusion (Collar Half)",
+        "rate": 420
+      },
+      {
+        "name": "PMC + Fusion (Collar Full)",
+        "rate": 450
+      },
+      {
+        "name": "PMC + Airmesh (Collar Half)",
+        "rate": 500
+      },
+      {
+        "name": "PMC + Airmesh (Collar Full)",
+        "rate": 550
+      },
+      {
+        "name": "PMC + Jacquard (Collar Half)",
+        "rate": 550
+      },
+      {
+        "name": "PMC + Jacquard (Collar Full)",
+        "rate": 600
+      }
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL",
+      "XXXL"
+    ],
+    "stock": 190,
+    "categories": [
+      "jerseys"
+    ],
+    "subs": [
+      "sublimation-jerseys",
+      "football-jerseys",
+      "cricket-jerseys"
+    ],
+    "description": "Official 'COMBO FABRIC JERSEY' line from Excel Rate List! Combines PMC body fabric with high-airflow Fusion, Airmesh, or Jacquard panels for ultimate thermoregulation.",
+    "fabric": "PMC + Fusion / Airmesh / Jacquard Hybrid (Excel Rate: ₹350 - ₹600)",
+    "features": [
+      "Excel Rate: PMC + Fusion ₹350-450, PMC + Airmesh ₹400-550, PMC + Jacquard ₹450-600",
+      "Engineered hybrid mesh zoning under arms and back",
+      "Ultra light and breathable in humid summer tournaments",
+      "Player name, number, team and sponsor print included"
+    ],
+    "rating": 4.9,
+    "reviews": 126,
+    "isNew": true,
+    "featured": true,
+    "topSelling": true,
+    "createdAt": null
+  },
+  {
+    "id": 1028,
+    "name": "RS 4-Way Diagonal & Waffle Plain Lower",
+    "slug": "rs-plain-athletic-training-lower",
+    "price": 400,
+    "mrp": 649,
+    "image": "/products/rs/rs-prod-04.jpg",
+    "gallery": [
+      "/products/rs/rs-prod-04.jpg",
+      "/products/rs/rs-prod-53.jpg",
+      "/products/rs/rs-prod-18.jpg"
+    ],
+    "colors": [
+      {
+        "name": "Solid Black",
+        "hex": "#18181b",
+        "image": "/products/rs/rs-prod-04.jpg",
+        "images": [
+          "/products/rs/rs-prod-04.jpg"
+        ]
+      },
+      {
+        "name": "Solid Navy",
+        "hex": "#0e2140",
+        "image": "/products/rs/rs-prod-53.jpg",
+        "images": [
+          "/products/rs/rs-prod-53.jpg"
+        ]
+      },
+      {
+        "name": "Cricket Match White",
+        "hex": "#ffffff",
+        "image": "/products/rs/rs-prod-18.jpg",
+        "images": [
+          "/products/rs/rs-prod-18.jpg"
+        ]
+      }
+    ],
+    "fabricOptions": [
+      {
+        "name": "4 Way Diagonal",
+        "rate": 400
+      },
+      {
+        "name": "Waffle Stretch",
+        "rate": 400
+      }
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL",
+      "XXXL"
+    ],
+    "stock": 250,
+    "categories": [
+      "teamwear"
+    ],
+    "subs": [
+      "lowers"
+    ],
+    "description": "Official 'PLAIN LOWER' from Rishikar Sports Rate List. Made in 4-Way Diagonal and Waffle knit fabrics at factory rate of ₹400.",
+    "fabric": "4-Way Diagonal / Waffle Knit (Excel Rate: ₹400)",
+    "features": [
+      "Exact Excel Rate list: PLAIN LOWER (4 Way Diagonal / Waffle) ₹400",
+      "4-way stretch moves naturally with every stride and dive",
+      "Zippered side pockets keep keys and phone safe",
+      "Elastic waist with internal drawstring"
+    ],
+    "rating": 4.8,
+    "reviews": 88,
+    "isNew": false,
+    "featured": false,
+    "topSelling": true,
+    "createdAt": null
+  }
+]

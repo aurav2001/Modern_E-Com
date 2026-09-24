@@ -1,116 +1,116 @@
 [
- {
-  "name": "Jerseys",
-  "slug": "jerseys",
-  "groups": [
-   {
-    "name": "Shop Jerseys",
-    "items": [
-     {
-      "name": "Custom Sublimation",
-      "slug": "sublimation-jerseys",
-      "count": 3
-     },
-     {
-      "name": "Football Jerseys",
-      "slug": "football-jerseys",
-      "count": 3
-     },
-     {
-      "name": "Cricket Jerseys",
-      "slug": "cricket-jerseys",
-      "count": 1
-     }
+  {
+    "name": "Jerseys",
+    "slug": "jerseys",
+    "groups": [
+      {
+        "name": "Shop Jerseys",
+        "items": [
+          {
+            "name": "Custom Sublimation",
+            "slug": "sublimation-jerseys",
+            "count": 13
+          },
+          {
+            "name": "Football Jerseys",
+            "slug": "football-jerseys",
+            "count": 4
+          },
+          {
+            "name": "Cricket Jerseys",
+            "slug": "cricket-jerseys",
+            "count": 10
+          }
+        ]
+      }
     ]
-   }
-  ]
- },
- {
-  "name": "T-Shirts & Polos",
-  "slug": "tshirts",
-  "groups": [
-   {
-    "name": "Shop T-Shirts & Polos",
-    "items": [
-     {
-      "name": "Polo T-Shirts",
-      "slug": "polo-tshirts",
-      "count": 3
-     },
-     {
-      "name": "Round Neck Tees",
-      "slug": "round-neck-tees",
-      "count": 1
-     },
-     {
-      "name": "Sleeveless Tees",
-      "slug": "sleeveless-tees",
-      "count": 1
-     }
+  },
+  {
+    "name": "T-Shirts & Polos",
+    "slug": "tshirts",
+    "groups": [
+      {
+        "name": "Shop T-Shirts & Polos",
+        "items": [
+          {
+            "name": "Polo T-Shirts",
+            "slug": "polo-tshirts",
+            "count": 2
+          },
+          {
+            "name": "Round Neck Tees",
+            "slug": "round-neck-tees",
+            "count": 2
+          },
+          {
+            "name": "Sleeveless Tees",
+            "slug": "sleeveless-tees",
+            "count": 1
+          }
+        ]
+      }
     ]
-   }
-  ]
- },
- {
-  "name": "Teamwear",
-  "slug": "teamwear",
-  "groups": [
-   {
-    "name": "Shop Teamwear",
-    "items": [
-     {
-      "name": "Tracksuits",
-      "slug": "tracksuits",
-      "count": 2
-     },
-     {
-      "name": "Track Jackets",
-      "slug": "track-jackets",
-      "count": 1
-     },
-     {
-      "name": "Hoodies",
-      "slug": "hoodies",
-      "count": 2
-     },
-     {
-      "name": "Lowers & Pants",
-      "slug": "lowers",
-      "count": 1
-     },
-     {
-      "name": "Shorts",
-      "slug": "shorts",
-      "count": 1
-     }
+  },
+  {
+    "name": "Teamwear",
+    "slug": "teamwear",
+    "groups": [
+      {
+        "name": "Shop Teamwear",
+        "items": [
+          {
+            "name": "Tracksuits",
+            "slug": "tracksuits",
+            "count": 1
+          },
+          {
+            "name": "Track Jackets",
+            "slug": "track-jackets",
+            "count": 1
+          },
+          {
+            "name": "Hoodies",
+            "slug": "hoodies",
+            "count": 1
+          },
+          {
+            "name": "Lowers & Pants",
+            "slug": "lowers",
+            "count": 3
+          },
+          {
+            "name": "Shorts",
+            "slug": "shorts",
+            "count": 2
+          }
+        ]
+      }
     ]
-   }
-  ]
- },
- {
-  "name": "Accessories",
-  "slug": "accessories",
-  "groups": [
-   {
-    "name": "Shop Accessories",
-    "items": [
-     {
-      "name": "Kit Bags",
-      "slug": "kit-bags",
-      "count": 2
-     },
-     {
-      "name": "Caps",
-      "slug": "caps",
-      "count": 1
-     },
-     {
-      "name": "Bottles",
-      "slug": "bottles",
-      "count": 2
-     }
+  },
+  {
+    "name": "Accessories",
+    "slug": "accessories",
+    "groups": [
+      {
+        "name": "Shop Accessories",
+        "items": [
+          {
+            "name": "Kit Bags",
+            "slug": "kit-bags",
+            "count": 2
+          },
+          {
+            "name": "Caps",
+            "slug": "caps",
+            "count": 3
+          },
+          {
+            "name": "Bottles",
+            "slug": "bottles",
+            "count": 0
+          }
+        ]
+      }
     ]
-   }
-  ]
- }
+  }
 ]

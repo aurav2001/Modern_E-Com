@@ -6,7 +6,7 @@ import { BRAND, COUPONS as BASE_COUPONS, FREE_SHIP_ABOVE, SHIPPING_FEE, COD_FEE 
 import { loadLS, saveLS } from './utils'
 
 export const KEYS = {
-  products: 'rs.products',
+  products: 'rs.products.v2',
   orders: 'rs.orders',
   users: 'rs.users',
   enquiries: 'rs.enquiries',

@@ -17,6 +17,7 @@ import Account from './pages/Account'
 import Admin from './pages/Admin'
 import { Login, Signup } from './pages/Auth'
 import { Wishlist, About, Contact, FAQ, SizeChartPage, Policy, NotFound, CustomKits } from './pages/Static'
+import RateList from './pages/RateList'
 
 const waHref = () => {
   const wa = getSettings().phoneIntl.replace('+', '')
@@ -56,6 +57,7 @@ function Shell() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/size-chart" element={<SizeChartPage />} />
+          <Route path="/rate-list" element={<RateList />} />
           <Route path="/policies/:slug" element={<Policy />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
