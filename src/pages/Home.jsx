@@ -4,6 +4,7 @@ import { BRAND, HERO, MARQUEE, MANUFACTURE, PROMO_CARDS, CATEGORY_TILES, USPS, P
 import { newArrivals, bestSellers, onSale, queryProducts, getProduct, PRODUCTS } from '../lib/catalog'
 import { SectionHead, Rail, Stars, Reveal } from '../components/Shared'
 import ProductCard from '../components/ProductCard'
+import RSConstructionSection from '../components/RSConstructionSection'
 import { Newsletter } from '../components/Footer'
 import { ArrowRight, Truck, Refresh, Shield, Zap, WhatsApp } from '../components/Icons'
 import { cx, formatPrice } from '../lib/utils'
@@ -127,6 +128,8 @@ export default function Home() {
           <div className="load-more"><Link to={tab === 'all' ? '/shop' : `/c/${tab}`} className="btn btn--outline">Shop all products</Link></div>
         </div>
       </section>
+
+      <RSConstructionSection />
 
       <section className="section section--ink">
         <div className="container drop">
