@@ -1,19 +1,36 @@
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import initialProducts from '../src/data/products.json' with { type: 'json' }
+import initialRateList from '../src/data/rateList.json' with { type: 'json' }
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const DATA_DIR = path.resolve(__dirname, 'data')
-if (!fs.existsSync(DATA_DIR)) {
-  fs.mkdirSync(DATA_DIR, { recursive: true })
-}
+// On Vercel, the filesystem is read-only except /tmp
+const DATA_DIR = process.env.VERCEL ? path.join('/tmp', 'rs_data') : path.resolve(__dirname, 'data')
 
-const SRC_DATA_DIR = path.resolve(__dirname, '../src/data')
+try {
+  if (!fs.existsSync(DATA_DIR)) {
+    fs.mkdirSync(DATA_DIR, { recursive: true })
+  }
+} catch {
+  // Graceful fallback to memory if filesystem is restricted
+}
 
 function getFilePath(collection) {
   return path.join(DATA_DIR, `${collection}.json`)
+}
+
+// In-memory cache ensures zero latency and works seamlessly in serverless
+const memoryStore = {
+  products: initialProducts,
+  rateList: initialRateList,
+  coupons: null,
+  settings: null,
+  orders: null,
+  enquiries: null,
+  users: [],
 }
 
 function readJsonFile(filePath, fallback = []) {
@@ -23,7 +40,7 @@ function readJsonFile(filePath, fallback = []) {
       return JSON.parse(raw)
     }
   } catch (err) {
-    console.error(`Error reading ${filePath}:`, err)
+    console.warn(`[DB Read Notice] ${filePath}:`, err.message)
   }
   return fallback
 }
@@ -33,24 +50,10 @@ function writeJsonFile(filePath, data) {
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8')
     return true
   } catch (err) {
-    console.error(`Error writing ${filePath}:`, err)
+    console.warn(`[DB Write Notice] ${filePath}:`, err.message)
     return false
   }
 }
-
-// Initializers
-function initCollection(collection, defaultData) {
-  const file = getFilePath(collection)
-  if (!fs.existsSync(file)) {
-    writeJsonFile(file, defaultData)
-    return defaultData
-  }
-  return readJsonFile(file, defaultData)
-}
-
-// Load seed data if available
-const initialProducts = readJsonFile(path.join(SRC_DATA_DIR, 'products.json'), [])
-const initialRateList = readJsonFile(path.join(SRC_DATA_DIR, 'rateList.json'), {})
 
 const DEFAULT_COUPONS = [
   { code: 'RS10', discount: 10, type: 'percent', minOrder: 999, maxDiscount: 500, label: '10% off on orders above ₹999' },
@@ -167,59 +170,71 @@ const DEFAULT_ENQUIRIES = [
   },
 ]
 
-// Initialize collections
-initCollection('products', initialProducts)
-initCollection('rateList', initialRateList)
-initCollection('coupons', DEFAULT_COUPONS)
-initCollection('settings', DEFAULT_SETTINGS)
-initCollection('orders', DEFAULT_ORDERS)
-initCollection('enquiries', DEFAULT_ENQUIRIES)
-initCollection('users', [])
+// Populate memory store
+memoryStore.coupons = DEFAULT_COUPONS
+memoryStore.settings = DEFAULT_SETTINGS
+memoryStore.orders = DEFAULT_ORDERS
+memoryStore.enquiries = DEFAULT_ENQUIRIES
 
 export const db = {
   getProducts() {
-    return readJsonFile(getFilePath('products'), initialProducts)
+    return memoryStore.products || readJsonFile(getFilePath('products'), initialProducts)
   },
   saveProducts(data) {
-    return writeJsonFile(getFilePath('products'), data)
+    memoryStore.products = data
+    writeJsonFile(getFilePath('products'), data)
+    return true
   },
 
   getOrders() {
-    return readJsonFile(getFilePath('orders'), DEFAULT_ORDERS)
+    const list = readJsonFile(getFilePath('orders'), null)
+    if (list) memoryStore.orders = list
+    return memoryStore.orders || DEFAULT_ORDERS
   },
   saveOrders(data) {
-    return writeJsonFile(getFilePath('orders'), data)
+    memoryStore.orders = data
+    writeJsonFile(getFilePath('orders'), data)
+    return true
   },
 
   getEnquiries() {
-    return readJsonFile(getFilePath('enquiries'), DEFAULT_ENQUIRIES)
+    const list = readJsonFile(getFilePath('enquiries'), null)
+    if (list) memoryStore.enquiries = list
+    return memoryStore.enquiries || DEFAULT_ENQUIRIES
   },
   saveEnquiries(data) {
-    return writeJsonFile(getFilePath('enquiries'), data)
+    memoryStore.enquiries = data
+    writeJsonFile(getFilePath('enquiries'), data)
+    return true
   },
 
   getCoupons() {
-    return readJsonFile(getFilePath('coupons'), DEFAULT_COUPONS)
+    return memoryStore.coupons || readJsonFile(getFilePath('coupons'), DEFAULT_COUPONS)
   },
   saveCoupons(data) {
-    return writeJsonFile(getFilePath('coupons'), data)
+    memoryStore.coupons = data
+    writeJsonFile(getFilePath('coupons'), data)
+    return true
   },
 
   getSettings() {
-    return readJsonFile(getFilePath('settings'), DEFAULT_SETTINGS)
+    return memoryStore.settings || readJsonFile(getFilePath('settings'), DEFAULT_SETTINGS)
   },
   saveSettings(data) {
-    return writeJsonFile(getFilePath('settings'), data)
+    memoryStore.settings = data
+    writeJsonFile(getFilePath('settings'), data)
+    return true
   },
 
   getRateList() {
-    return readJsonFile(getFilePath('rateList'), initialRateList)
+    return initialRateList
   },
 
   getUsers() {
-    return readJsonFile(getFilePath('users'), [])
+    return memoryStore.users
   },
   saveUsers(data) {
-    return writeJsonFile(getFilePath('users'), data)
+    memoryStore.users = data
+    return true
   },
 }

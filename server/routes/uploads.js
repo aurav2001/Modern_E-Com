@@ -7,10 +7,12 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const UPLOAD_DIR = path.resolve(__dirname, '../../public/uploads')
-if (!fs.existsSync(UPLOAD_DIR)) {
-  fs.mkdirSync(UPLOAD_DIR, { recursive: true })
-}
+const UPLOAD_DIR = process.env.VERCEL ? path.join('/tmp', 'uploads') : path.resolve(__dirname, '../../public/uploads')
+try {
+  if (!fs.existsSync(UPLOAD_DIR)) {
+    fs.mkdirSync(UPLOAD_DIR, { recursive: true })
+  }
+} catch {}
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
