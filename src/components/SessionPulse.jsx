@@ -69,9 +69,9 @@ export default function SessionPulse() {
           width: '110px',
           height: '110px',
           borderRadius: '22px',
-          background: 'linear-gradient(145deg, rgba(14, 22, 38, 0.96) 0%, rgba(6, 11, 20, 0.98) 100%)',
-          border: '1px solid rgba(245, 130, 31, 0.45)',
-          boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(245, 130, 31, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.12)',
+          background: 'linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)',
+          border: '1.5px solid rgba(245, 130, 31, 0.4)',
+          boxShadow: '0 20px 45px rgba(14, 22, 38, 0.16), 0 0 25px rgba(245, 130, 31, 0.12), inset 0 1px 0 #ffffff',
           backdropFilter: 'blur(16px)',
           WebkitBackdropFilter: 'blur(16px)',
           display: 'flex',
@@ -82,14 +82,14 @@ export default function SessionPulse() {
           boxSizing: 'border-box',
         }}
       >
-        {/* Subtle orange accent top ambient glow */}
+        {/* Subtle orange accent top ambient line */}
         <div
           style={{
             position: 'absolute',
             top: 0,
             left: '20%',
             right: '20%',
-            height: '2px',
+            height: '2.5px',
             background: 'linear-gradient(90deg, transparent, #f5821f, transparent)',
             borderRadius: '2px',
           }}
@@ -99,11 +99,11 @@ export default function SessionPulse() {
           <defs>
             <linearGradient id="gpGrad" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0%" stopColor="#f5821f" />
-              <stop offset="55%" stopColor="#fb923c" />
-              <stop offset="100%" stopColor="#ffffff" />
+              <stop offset="50%" stopColor="#ea580c" />
+              <stop offset="100%" stopColor="#0e1626" />
             </linearGradient>
             <filter id="gpGlow" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="2" stdDeviation="3.5" floodColor="#f5821f" floodOpacity="0.45" />
+              <feDropShadow dx="0" dy="2" stdDeviation="2.5" floodColor="#f5821f" floodOpacity="0.25" />
             </filter>
           </defs>
           {/* G */}
@@ -136,7 +136,7 @@ export default function SessionPulse() {
             fontSize: '7.5px',
             fontWeight: '800',
             letterSpacing: '0.26em',
-            color: '#fed7aa',
+            color: '#0e1626',
             textTransform: 'uppercase',
             fontFamily: "var(--font-head, 'Archivo', sans-serif)",
             display: 'flex',
