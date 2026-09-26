@@ -4,3 +4,7 @@ dist
 screenshots
 .vercel
 WhatsApp Unknown*
+.env
+.env.local
+.env.*
+!.env.example

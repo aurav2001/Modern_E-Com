@@ -1,6 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { MongoClient } from 'mongodb'
+import 'dotenv/config'
 import initialProducts from '../src/data/products.json' with { type: 'json' }
 import initialRateList from '../src/data/rateList.json' with { type: 'json' }
 
@@ -170,11 +172,109 @@ const DEFAULT_ENQUIRIES = [
   },
 ]
 
-// Populate memory store
+// Populate memory store defaults
 memoryStore.coupons = DEFAULT_COUPONS
 memoryStore.settings = DEFAULT_SETTINGS
 memoryStore.orders = DEFAULT_ORDERS
 memoryStore.enquiries = DEFAULT_ENQUIRIES
+
+/* ───────────────────────── MongoDB Atlas Integration ───────────────────────── */
+const MONGODB_URI = process.env.MONGODB_URI || ''
+let mongoClient = null
+let mongoDb = null
+let isConnected = false
+
+async function initMongo() {
+  if (!MONGODB_URI || MONGODB_URI.includes('<db_username>') || MONGODB_URI.includes('<db_password>')) {
+    console.log('[MongoDB Notice] MONGODB_URI has placeholder credentials (<db_username> / <db_password>) or is unset. Running with local fallback store.')
+    return
+  }
+
+  try {
+    mongoClient = new MongoClient(MONGODB_URI, {
+      serverSelectionTimeoutMS: 5000,
+      connectTimeoutMS: 10000,
+    })
+    await mongoClient.connect()
+    mongoDb = mongoClient.db('rishikar')
+    isConnected = true
+    console.log('[MongoDB] ✅ Successfully connected to MongoDB Atlas database: rishikar')
+
+    // Initial sync / populate from MongoDB
+    await syncFromMongo()
+  } catch (err) {
+    console.warn('[MongoDB] ⚠️ Connection error:', err.message, '- Using local storage.')
+    isConnected = false
+  }
+}
+
+async function syncFromMongo() {
+  if (!isConnected || !mongoDb) return
+  try {
+    const productsColl = mongoDb.collection('products')
+    const pCount = await productsColl.countDocuments()
+    if (pCount > 0) {
+      const pDocs = await productsColl.find({}, { projection: { _id: 0 } }).toArray()
+      if (pDocs.length > 0) memoryStore.products = pDocs
+    } else {
+      await productsColl.insertMany(initialProducts.map((p) => ({ ...p })))
+    }
+
+    const ordersColl = mongoDb.collection('orders')
+    const oCount = await ordersColl.countDocuments()
+    if (oCount > 0) {
+      memoryStore.orders = await ordersColl.find({}, { projection: { _id: 0 } }).toArray()
+    } else {
+      await ordersColl.insertMany(DEFAULT_ORDERS.map((o) => ({ ...o })))
+    }
+
+    const enquiriesColl = mongoDb.collection('enquiries')
+    const eCount = await enquiriesColl.countDocuments()
+    if (eCount > 0) {
+      memoryStore.enquiries = await enquiriesColl.find({}, { projection: { _id: 0 } }).toArray()
+    } else {
+      await enquiriesColl.insertMany(DEFAULT_ENQUIRIES.map((e) => ({ ...e })))
+    }
+
+    const couponsColl = mongoDb.collection('coupons')
+    const cCount = await couponsColl.countDocuments()
+    if (cCount > 0) {
+      memoryStore.coupons = await couponsColl.find({}, { projection: { _id: 0 } }).toArray()
+    } else {
+      await couponsColl.insertMany(DEFAULT_COUPONS.map((c) => ({ ...c })))
+    }
+
+    const settingsColl = mongoDb.collection('settings')
+    const sDoc = await settingsColl.findOne({ key: 'main' }, { projection: { _id: 0 } })
+    if (sDoc && sDoc.value) {
+      memoryStore.settings = sDoc.value
+    } else {
+      await settingsColl.updateOne({ key: 'main' }, { $set: { key: 'main', value: DEFAULT_SETTINGS } }, { upsert: true })
+    }
+  } catch (err) {
+    console.warn('[MongoDB] Initial sync notice:', err.message)
+  }
+}
+
+async function persistToMongo(collectionName, data) {
+  if (!isConnected || !mongoDb) return
+  try {
+    const coll = mongoDb.collection(collectionName)
+    if (collectionName === 'settings') {
+      await coll.updateOne({ key: 'main' }, { $set: { key: 'main', value: data } }, { upsert: true })
+    } else if (Array.isArray(data)) {
+      await coll.deleteMany({})
+      if (data.length > 0) {
+        await coll.insertMany(data.map((d) => ({ ...d })))
+      }
+    }
+  } catch (err) {
+    console.warn(`[MongoDB] Persist error for ${collectionName}:`, err.message)
+  }
+}
+
+// Start connection in background
+initMongo()
 
 export const db = {
   getProducts() {
@@ -183,6 +283,7 @@ export const db = {
   saveProducts(data) {
     memoryStore.products = data
     writeJsonFile(getFilePath('products'), data)
+    persistToMongo('products', data)
     return true
   },
 
@@ -194,6 +295,7 @@ export const db = {
   saveOrders(data) {
     memoryStore.orders = data
     writeJsonFile(getFilePath('orders'), data)
+    persistToMongo('orders', data)
     return true
   },
 
@@ -205,6 +307,7 @@ export const db = {
   saveEnquiries(data) {
     memoryStore.enquiries = data
     writeJsonFile(getFilePath('enquiries'), data)
+    persistToMongo('enquiries', data)
     return true
   },
 
@@ -214,6 +317,7 @@ export const db = {
   saveCoupons(data) {
     memoryStore.coupons = data
     writeJsonFile(getFilePath('coupons'), data)
+    persistToMongo('coupons', data)
     return true
   },
 
@@ -223,6 +327,7 @@ export const db = {
   saveSettings(data) {
     memoryStore.settings = data
     writeJsonFile(getFilePath('settings'), data)
+    persistToMongo('settings', data)
     return true
   },
 
@@ -235,6 +340,19 @@ export const db = {
   },
   saveUsers(data) {
     memoryStore.users = data
+    persistToMongo('users', data)
     return true
+  },
+
+  isMongoConnected() {
+    return isConnected
+  },
+  getMongoStatus() {
+    return {
+      connected: isConnected,
+      hasUri: Boolean(MONGODB_URI),
+      isPlaceholder: Boolean(MONGODB_URI && (MONGODB_URI.includes('<db_username>') || MONGODB_URI.includes('<db_password>'))),
+      database: isConnected ? 'rishikar' : null,
+    }
   },
 }

@@ -9,6 +9,7 @@ import { couponRouter } from './routes/coupons.js'
 import { adminRouter } from './routes/admin.js'
 import { rateListRouter } from './routes/rateList.js'
 import { uploadRouter } from './routes/uploads.js'
+import { db } from './db.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -43,6 +44,7 @@ app.get('/api/health', (req, res) => {
     status: 'ok',
     store: 'Rishikar Sports API',
     uptime: Math.round(process.uptime()),
+    database: db.getMongoStatus(),
     timestamp: new Date().toISOString(),
   })
 })
