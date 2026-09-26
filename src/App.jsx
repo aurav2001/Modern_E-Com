@@ -68,7 +68,7 @@ function Shell() {
       <Toasts />
       {!isAdmin && (
         <a className="wa" href={waHref()} target="_blank" rel="noreferrer" aria-label="Chat on WhatsApp">
-          <WhatsApp /> WhatsApp
+          <WhatsApp /> <span>WhatsApp</span>
         </a>
       )}
     </>

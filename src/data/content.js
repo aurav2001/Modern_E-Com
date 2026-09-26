@@ -21,9 +21,9 @@ export const HERO = {
   text:
     'Sportswear manufacturing from our own unit in Chapra, Bihar. Full-sublimation cricket jerseys, tracksuits, polos, hoodies and kit bags — crafted to official rate specifications.',
   cards: [
-    { img: '/products/rs/rs-prod-09.jpg', to: '/product/rs-construction-athletic-polo' },
+    { img: '/products/rs/rs-prod-38.jpg', to: '/product/rs-construction-athletic-polo' },
     { img: '/products/rs/rs-prod-35.jpg', to: '/product/rs-pro-sublimated-jersey' },
-    { img: '/products/rs/rs-prod-25.jpg', to: '/product/rs-heavy-duty-kit-bag' },
+    { img: '/products/bag.png', to: '/product/rs-heavy-duty-kit-bag' },
   ],
   tags: [
     { label: 'RS Sublimation Jersey', sub: 'From ₹300 · Excel Rate' },
@@ -36,17 +36,17 @@ export const MARQUEE = ['Sublimation Jerseys', 'Cricket Whites', 'Tracksuits', '
 
 export const MANUFACTURE = [
   { name: 'Jerseys', sub: 'Cricket · Football · Multi-Sport', to: '/c/jerseys', img: '/products/rs/rs-prod-35.jpg' },
-  { name: 'Polos & Tees', sub: 'RS Construction & Dry-Fit', to: '/c/tshirts', img: '/products/rs/rs-prod-09.jpg' },
+  { name: 'Polos & Tees', sub: 'RS Construction & Dry-Fit', to: '/c/tshirts', img: '/products/rs/rs-prod-38.jpg' },
   { name: 'Tracksuits', sub: 'Pro Jacket + Pant Sets', to: '/c/teamwear/tracksuits', img: '/products/rs/rs-prod-43.jpg' },
-  { name: 'Hoodies & Sweaters', sub: 'Winter Training Warmers', to: '/c/teamwear/hoodies', img: '/products/rs/rs-prod-30.jpg' },
-  { name: 'Kit Bags & Caps', sub: 'Player Duffles & BCA Caps', to: '/c/accessories', img: '/products/rs/rs-prod-25.jpg' },
+  { name: 'Hoodies & Sweaters', sub: 'Winter Training Warmers', to: '/c/teamwear/hoodies', img: '/products/rs/rs-prod-52.jpg' },
+  { name: 'Kit Bags & Caps', sub: 'Player Duffles & BCA Caps', to: '/c/accessories', img: '/products/bag.png' },
 ]
 
 export const CATEGORY_TILES = [
   { slug: 'jerseys', name: 'Jerseys & Full Kits', sub: 'Full sublimation · from ₹300', img: '/products/rs/rs-prod-15.jpg', size: 'xl' },
-  { slug: 'tshirts', name: 'Polos & T-Shirts', sub: 'RS Construction 17 designs · from ₹270', img: '/products/rs/rs-prod-09.jpg', size: 'wide' },
+  { slug: 'tshirts', name: 'Polos & T-Shirts', sub: 'RS Construction 17 designs · from ₹270', img: '/products/rs/rs-prod-38.jpg', size: 'wide' },
   { slug: 'teamwear', name: 'Teamwear & Lowers', sub: 'Tracksuits · lowers · shorts', img: '/products/rs/rs-prod-43.jpg' },
-  { slug: 'accessories', name: 'Kit Bags & Caps', sub: 'Heavy bags · BCA caps · socks', img: '/products/rs/rs-prod-25.jpg' },
+  { slug: 'accessories', name: 'Kit Bags & Caps', sub: 'Heavy bags · BCA caps · socks', img: '/products/bag.png' },
 ]
 
 export const PROMO_CARDS = [

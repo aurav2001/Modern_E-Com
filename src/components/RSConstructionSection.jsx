@@ -88,18 +88,20 @@ export default function RSConstructionSection() {
             </p>
           </div>
 
-          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', width: '100%', maxWidth: '380px' }}>
             <button
               onClick={() => { setZoomLevel(1); setModalOpen(true) }}
               className="btn btn--accent"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
+                justifyContent: 'center',
                 gap: '8px',
                 padding: '10px 18px',
                 fontSize: '13px',
                 fontWeight: '700',
-                borderRadius: '8px'
+                borderRadius: '8px',
+                flex: '1 1 150px'
               }}
             >
               🔍 View Full HD Details
@@ -110,13 +112,15 @@ export default function RSConstructionSection() {
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
+                justifyContent: 'center',
                 gap: '8px',
                 padding: '10px 18px',
                 fontSize: '13px',
                 fontWeight: '600',
                 borderRadius: '8px',
                 color: '#fff',
-                borderColor: '#334155'
+                borderColor: '#334155',
+                flex: '1 1 150px'
               }}
             >
               📋 Check Fabric Rates
@@ -162,46 +166,50 @@ export default function RSConstructionSection() {
           {/* Floating Click-To-Zoom Banner */}
           <div style={{
             position: 'absolute',
-            bottom: '16px',
-            right: '16px',
-            background: 'rgba(15, 23, 42, 0.88)',
+            bottom: '12px',
+            right: '12px',
+            left: '12px',
+            maxWidth: '320px',
+            marginLeft: 'auto',
+            background: 'rgba(15, 23, 42, 0.92)',
             backdropFilter: 'blur(8px)',
             border: '1px solid rgba(255, 255, 255, 0.2)',
             color: '#fff',
             padding: '8px 14px',
             borderRadius: '24px',
-            fontSize: '12px',
+            fontSize: '11.5px',
             fontWeight: '600',
             display: 'flex',
             alignItems: 'center',
+            justifyContent: 'center',
             gap: '8px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.4)'
+            boxShadow: '0 4px 14px rgba(0,0,0,0.5)'
           }}>
-            <span>🔍 Tap / Click to Zoom & View All Details</span>
+            <span>🔍 Tap / Click to Zoom & View Full Poster</span>
           </div>
         </div>
 
         {/* Feature Highlights bar from the poster */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          gap: '16px',
-          marginTop: '24px'
+          gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+          gap: '12px',
+          marginTop: '20px'
         }}>
           {FEATURES.map((f, i) => (
             <div key={i} style={{
               background: 'rgba(255, 255, 255, 0.03)',
               border: '1px solid rgba(255, 255, 255, 0.08)',
               borderRadius: '12px',
-              padding: '14px 18px',
+              padding: '12px 14px',
               display: 'flex',
               alignItems: 'center',
-              gap: '12px'
+              gap: '10px'
             }}>
-              <span style={{ fontSize: '24px' }}>{f.icon}</span>
+              <span style={{ fontSize: '20px', flex: 'none' }}>{f.icon}</span>
               <div>
-                <b style={{ display: 'block', fontSize: '13px', color: '#f1f5f9' }}>{f.title}</b>
-                <span style={{ fontSize: '12px', color: '#94a3b8' }}>{f.text}</span>
+                <b style={{ display: 'block', fontSize: '12.5px', color: '#f1f5f9' }}>{f.title}</b>
+                <span style={{ fontSize: '11px', color: '#94a3b8' }}>{f.text}</span>
               </div>
             </div>
           ))}
@@ -209,22 +217,60 @@ export default function RSConstructionSection() {
 
         {/* 12 Designs Interactive Selector */}
         <div style={{
-          marginTop: '32px',
+          marginTop: '24px',
           background: 'rgba(15, 23, 42, 0.6)',
           border: '1px solid rgba(255, 255, 255, 0.08)',
           borderRadius: '16px',
-          padding: '24px'
+          padding: '18px'
         }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '12px', marginBottom: '18px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '12px', marginBottom: '14px' }}>
             <div>
-              <h3 style={{ fontSize: '18px', fontWeight: '700', margin: '0 0 4px', color: '#ffffff' }}>
+              <h3 style={{ fontSize: '17px', fontWeight: '700', margin: '0 0 4px', color: '#ffffff' }}>
                 All 12 Catalog Designs & Color Codes
               </h3>
-              <p style={{ fontSize: '13px', color: '#94a3b8', margin: 0 }}>
-                Select any design below to enquire directly on WhatsApp for your team:
+              <p style={{ fontSize: '12.5px', color: '#94a3b8', margin: 0 }}>
+                Tap any design below to see color codes & order for your squad:
               </p>
             </div>
-            {selectedDesign && (
+          </div>
+
+          {/* Active Selected Design Highlight Card */}
+          {selectedDesign && (
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.16) 0%, rgba(15, 23, 42, 0.85) 100%)',
+              border: '1.5px solid rgba(249, 115, 22, 0.45)',
+              borderRadius: '12px',
+              padding: '12px 16px',
+              marginBottom: '16px',
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '12px'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ display: 'flex', gap: '4px' }}>
+                  {selectedDesign.colors.map((c, idx) => (
+                    <span key={idx} style={{
+                      width: '14px',
+                      height: '14px',
+                      borderRadius: '50%',
+                      background: c,
+                      border: '2px solid rgba(255,255,255,0.4)',
+                      display: 'inline-block'
+                    }} />
+                  ))}
+                </div>
+                <div>
+                  <b style={{ color: '#fff', fontSize: '14px', display: 'block' }}>
+                    {selectedDesign.code}: {selectedDesign.name}
+                  </b>
+                  <span style={{ color: '#fb923c', fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                    {selectedDesign.desc}
+                  </span>
+                </div>
+              </div>
+
               <a
                 href={getWaLink(selectedDesign)}
                 target="_blank"
@@ -237,21 +283,21 @@ export default function RSConstructionSection() {
                   color: '#fff',
                   padding: '9px 16px',
                   borderRadius: '8px',
-                  fontSize: '13px',
+                  fontSize: '12.5px',
                   fontWeight: '700',
                   textDecoration: 'none'
                 }}
               >
-                <WhatsApp width={16} height={16} /> Order {selectedDesign.code} ({selectedDesign.name})
+                <WhatsApp width={16} height={16} /> Order {selectedDesign.code} on WhatsApp
               </a>
-            )}
-          </div>
+            </div>
+          )}
 
           {/* Grid of Designs */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))',
-            gap: '12px'
+            gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
+            gap: '10px'
           }}>
             {DESIGNS.map((d) => {
               const isSelected = selectedDesign?.id === d.id
@@ -260,10 +306,10 @@ export default function RSConstructionSection() {
                   key={d.id}
                   onClick={() => setSelectedDesign(d)}
                   style={{
-                    background: isSelected ? 'rgba(249, 115, 22, 0.12)' : 'rgba(255, 255, 255, 0.02)',
-                    border: isSelected ? '1.5px solid #f97316' : '1px solid rgba(255, 255, 255, 0.07)',
+                    background: isSelected ? 'rgba(249, 115, 22, 0.16)' : 'rgba(255, 255, 255, 0.02)',
+                    border: isSelected ? '1.5px solid #f97316' : '1px solid rgba(255, 255, 255, 0.08)',
                     borderRadius: '10px',
-                    padding: '12px',
+                    padding: '10px',
                     cursor: 'pointer',
                     transition: 'all 0.15s ease'
                   }}
@@ -272,7 +318,7 @@ export default function RSConstructionSection() {
                     <span style={{ fontSize: '11px', fontWeight: '800', color: isSelected ? '#f97316' : '#94a3b8', letterSpacing: '0.04em' }}>
                       {d.code}
                     </span>
-                    <div style={{ display: 'flex', gap: '4px' }}>
+                    <div style={{ display: 'flex', gap: '3px' }}>
                       {d.colors.map((c, idx) => (
                         <span key={idx} style={{
                           width: '9px',
@@ -285,8 +331,8 @@ export default function RSConstructionSection() {
                       ))}
                     </div>
                   </div>
-                  <b style={{ display: 'block', fontSize: '13px', color: '#fff', marginBottom: '4px' }}>{d.name}</b>
-                  <span style={{ display: 'block', fontSize: '10px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+                  <b style={{ display: 'block', fontSize: '12.5px', color: '#fff', marginBottom: '3px' }}>{d.name}</b>
+                  <span style={{ display: 'block', fontSize: '9.5px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.02em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {d.desc}
                   </span>
                 </div>
@@ -306,13 +352,13 @@ export default function RSConstructionSection() {
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'rgba(3, 7, 18, 0.95)',
+            background: 'rgba(3, 7, 18, 0.96)',
             backdropFilter: 'blur(10px)',
             zIndex: 99999,
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
-            padding: '16px'
+            padding: '12px'
           }}
         >
           {/* Modal Header Bar */}
@@ -322,31 +368,33 @@ export default function RSConstructionSection() {
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              padding: '10px 16px',
-              background: 'rgba(15, 23, 42, 0.9)',
+              flexWrap: 'wrap',
+              gap: '8px',
+              padding: '10px 14px',
+              background: 'rgba(15, 23, 42, 0.92)',
               borderRadius: '12px',
               border: '1px solid rgba(255, 255, 255, 0.1)',
-              marginBottom: '10px'
+              marginBottom: '8px'
             }}
           >
             <div>
-              <b style={{ color: '#fff', fontSize: '15px' }}>RS CONSTRUCTION · 12 Designs Sublimation Catalog</b>
-              <span style={{ display: 'block', color: '#94a3b8', fontSize: '12px' }}>Pinch / Scroll to zoom details. Built Strong. Delivered Right.</span>
+              <b style={{ color: '#fff', fontSize: '14px', display: 'block' }}>RS CONSTRUCTION · 12 Designs Sublimation Catalog</b>
+              <span style={{ display: 'block', color: '#94a3b8', fontSize: '11px' }}>Tap / Scroll to zoom details</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <button
                 onClick={() => setZoomLevel((z) => (z >= 2 ? 1 : z + 0.5))}
                 style={{
                   background: '#1e293b',
                   color: '#fff',
                   border: '1px solid #334155',
-                  padding: '6px 12px',
+                  padding: '6px 10px',
                   borderRadius: '6px',
-                  fontSize: '12px',
+                  fontSize: '11.5px',
                   cursor: 'pointer'
                 }}
               >
-                Zoom: {zoomLevel}x
+                {zoomLevel}x
               </button>
               <a
                 href="/images/rs-construction-catalog.jpg"
@@ -355,17 +403,17 @@ export default function RSConstructionSection() {
                   background: '#f97316',
                   color: '#fff',
                   border: 'none',
-                  padding: '6px 14px',
+                  padding: '6px 10px',
                   borderRadius: '6px',
-                  fontSize: '12px',
+                  fontSize: '11.5px',
                   fontWeight: '600',
                   textDecoration: 'none',
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: '6px'
+                  gap: '4px'
                 }}
               >
-                📥 Download Poster
+                📥 Poster
               </a>
               <button
                 onClick={() => setModalOpen(false)}
@@ -425,8 +473,9 @@ export default function RSConstructionSection() {
             style={{
               display: 'flex',
               justifyContent: 'center',
-              gap: '12px',
-              paddingTop: '10px'
+              flexWrap: 'wrap',
+              gap: '10px',
+              paddingTop: '8px'
             }}
           >
             <a
@@ -436,17 +485,20 @@ export default function RSConstructionSection() {
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
+                justifyContent: 'center',
                 gap: '8px',
                 background: '#22c55e',
                 color: '#fff',
-                padding: '10px 20px',
+                padding: '10px 18px',
                 borderRadius: '8px',
-                fontSize: '14px',
+                fontSize: '13px',
                 fontWeight: '700',
-                textDecoration: 'none'
+                textDecoration: 'none',
+                flex: '1 1 200px',
+                maxWidth: '340px'
               }}
             >
-              <WhatsApp width={16} height={16} /> Chat on WhatsApp for Team Order
+              <WhatsApp width={16} height={16} /> Chat on WhatsApp
             </a>
             <button
               onClick={() => setModalOpen(false)}
@@ -454,13 +506,14 @@ export default function RSConstructionSection() {
                 background: '#1e293b',
                 color: '#cbd5e1',
                 border: '1px solid #334155',
-                padding: '10px 18px',
+                padding: '10px 16px',
                 borderRadius: '8px',
-                fontSize: '14px',
-                cursor: 'pointer'
+                fontSize: '13px',
+                cursor: 'pointer',
+                flex: '0 1 auto'
               }}
             >
-              Close Viewer
+              Close
             </button>
           </div>
         </div>
