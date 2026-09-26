@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 // typed outside a text field; then the monogram fades in for a few seconds.
 const SEQUENCE = 'gpgp'
 const WINDOW_MS = 1800
-const SHOW_MS = 3500
+const SHOW_MS = 3800
 
 export default function SessionPulse() {
   const [visible, setVisible] = useState(false)
@@ -52,40 +52,59 @@ export default function SessionPulse() {
         left: '22px',
         zIndex: 2147483000,
         pointerEvents: 'none',
-        animation: 'gpFade 3.5s ease-in-out both',
+        animation: 'gpFade 3.8s cubic-bezier(0.16, 1, 0.3, 1) both',
       }}
     >
       <style>{`
         @keyframes gpFade {
-          0% { opacity: 0; transform: translateY(14px) scale(.94); }
+          0% { opacity: 0; transform: translateY(16px) scale(0.92); }
           12% { opacity: 1; transform: translateY(0) scale(1); }
-          80% { opacity: 1; transform: translateY(0) scale(1); }
-          100% { opacity: 0; transform: translateY(8px) scale(.98); }
+          82% { opacity: 1; transform: translateY(0) scale(1); }
+          100% { opacity: 0; transform: translateY(10px) scale(0.96); }
         }
       `}</style>
       <div
         style={{
           position: 'relative',
-          width: '104px',
-          height: '104px',
-          borderRadius: '24px',
-          background: 'rgba(7, 19, 36, 0.95)',
-          border: '1px solid rgba(56, 189, 248, 0.4)',
-          boxShadow: '0 18px 50px rgba(0, 0, 0, 0.55), 0 0 25px rgba(56, 189, 248, 0.2)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
+          width: '110px',
+          height: '110px',
+          borderRadius: '22px',
+          background: 'linear-gradient(145deg, rgba(14, 22, 38, 0.96) 0%, rgba(6, 11, 20, 0.98) 100%)',
+          border: '1px solid rgba(245, 130, 31, 0.45)',
+          boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(245, 130, 31, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.12)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
+          padding: '10px',
+          boxSizing: 'border-box',
         }}
       >
-        <svg viewBox="0 0 120 120" style={{ width: '70px', height: '70px', display: 'block' }}>
+        {/* Subtle orange accent top ambient glow */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: '20%',
+            right: '20%',
+            height: '2px',
+            background: 'linear-gradient(90deg, transparent, #f5821f, transparent)',
+            borderRadius: '2px',
+          }}
+        />
+
+        <svg viewBox="0 0 120 120" style={{ width: '64px', height: '64px', display: 'block', marginTop: '-2px' }}>
           <defs>
             <linearGradient id="gpGrad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#38bdf8" />
-              <stop offset="100%" stopColor="#ef4444" />
+              <stop offset="0%" stopColor="#f5821f" />
+              <stop offset="55%" stopColor="#fb923c" />
+              <stop offset="100%" stopColor="#ffffff" />
             </linearGradient>
+            <filter id="gpGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="2" stdDeviation="3.5" floodColor="#f5821f" floodOpacity="0.45" />
+            </filter>
           </defs>
           {/* G */}
           <path
@@ -95,6 +114,7 @@ export default function SessionPulse() {
             strokeWidth="9"
             strokeLinecap="round"
             strokeLinejoin="round"
+            filter="url(#gpGlow)"
           />
           {/* P */}
           <path
@@ -104,19 +124,24 @@ export default function SessionPulse() {
             strokeWidth="9"
             strokeLinecap="round"
             strokeLinejoin="round"
+            filter="url(#gpGlow)"
           />
-          <circle cx="60" cy="104" r="3.5" fill="#38bdf8" />
+          <circle cx="60" cy="104" r="3.5" fill="#f5821f" filter="url(#gpGlow)" />
         </svg>
+
         <span
           style={{
             position: 'absolute',
-            bottom: '9px',
+            bottom: '8px',
             fontSize: '7.5px',
             fontWeight: '800',
-            letterSpacing: '0.28em',
-            color: 'rgba(186, 230, 253, 0.75)',
+            letterSpacing: '0.26em',
+            color: '#fed7aa',
             textTransform: 'uppercase',
-            fontFamily: 'system-ui, -apple-system, sans-serif',
+            fontFamily: "var(--font-head, 'Archivo', sans-serif)",
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px',
           }}
         >
           CRAFTED BY GP
