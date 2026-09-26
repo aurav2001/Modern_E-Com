@@ -50,7 +50,7 @@ export const CATEGORY_TILES = [
 ]
 
 export const PROMO_CARDS = [
-  { tone: 'orange', kicker: 'Official Rate List', title: 'Factory Rates for Clubs & Academies', to: '/rate-list', img: '/products/rs/rs-prod-35.jpg', cta: 'View Excel Rate Card 📋' },
+  { tone: 'orange', kicker: 'Official Rate List', title: 'Factory Rates for Clubs & Academies', to: '/rate-list', img: '/products/rs/rs-prod-35.jpg', cta: 'View Excel Rate Card' },
   { tone: 'navy', kicker: 'Tournament Match Kits', title: 'Complete Uniforms (Jersey + Lower + Cap)', to: '/product/rs-sublimated-cricket-full-kit', img: '/products/rs/rs-prod-15.jpg', cta: 'Explore Match Kits' },
 ]
 

@@ -3,7 +3,15 @@ import { Link } from 'react-router-dom'
 import rateData from '../data/rateList.json'
 import { getSettings } from '../lib/db'
 import { Crumbs } from '../components/Shared'
-import { WhatsApp, ArrowRight, Check, Shield, Truck, Zap } from '../components/Icons'
+import { WhatsApp, ArrowRight, Check, Shield, Truck, Zap, Download, Shirt, Layers, Package, Clipboard, Info } from '../components/Icons'
+
+const TABS = [
+  { id: 'jerseys', label: 'Jerseys (Round Neck & Collar)', icon: Shirt },
+  { id: 'combo', label: 'Combo Fabric Jerseys', icon: Layers },
+  { id: 'bottoms', label: 'Shorts & Lowers', icon: Zap },
+  { id: 'other', label: 'Caps, Tracksuits & Gear', icon: Package },
+  { id: 'terms', label: 'GST, Shipping & Terms', icon: Clipboard },
+]
 
 export default function RateList() {
   const [activeTab, setActiveTab] = useState('jerseys')
@@ -75,7 +83,7 @@ export default function RateList() {
                 textDecoration: 'none'
               }}
             >
-              📥 Download Excel Rate Sheet (.xlsx)
+              <Download width={16} height={16} /> Download Excel Rate Sheet (.xlsx)
             </a>
             <a
               href={`https://wa.me/${phone}?text=${encodeURIComponent('Hi Rishikar Sports, I am looking at your official Rate List and want to inquire about bulk ordering.')}`}
@@ -110,32 +118,32 @@ export default function RateList() {
           marginBottom: '28px',
           paddingBottom: '2px'
         }}>
-          {[
-            { id: 'jerseys', label: '👕 Jerseys (Round Neck & Collar)' },
-            { id: 'combo', label: '⚡ Combo Fabric Jerseys' },
-            { id: 'bottoms', label: '🩳 Shorts & Lowers' },
-            { id: 'other', label: '🧢 Caps, Tracksuits & Gear' },
-            { id: 'terms', label: '📋 GST, Shipping & Terms' }
-          ].map((t) => (
-            <button
-              key={t.id}
-              onClick={() => setActiveTab(t.id)}
-              style={{
-                padding: '12px 20px',
-                fontWeight: activeTab === t.id ? '700' : '500',
-                fontSize: '14px',
-                cursor: 'pointer',
-                border: 'none',
-                background: 'transparent',
-                color: activeTab === t.id ? '#f97316' : '#64748b',
-                borderBottom: activeTab === t.id ? '3px solid #f97316' : '3px solid transparent',
-                whiteSpace: 'nowrap',
-                transition: 'all 0.15s ease'
-              }}
-            >
-              {t.label}
-            </button>
-          ))}
+          {TABS.map((t) => {
+            const Icon = t.icon
+            return (
+              <button
+                key={t.id}
+                onClick={() => setActiveTab(t.id)}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '12px 18px',
+                  fontWeight: activeTab === t.id ? '700' : '500',
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                  border: 'none',
+                  background: 'transparent',
+                  color: activeTab === t.id ? '#f97316' : '#64748b',
+                  borderBottom: activeTab === t.id ? '3px solid #f97316' : '3px solid transparent',
+                  whiteSpace: 'nowrap',
+                  transition: 'all 0.15s ease'
+                }}
+              >
+                <Icon width={16} height={16} /> {t.label}
+              </button>
+            )
+          })}
         </div>
 
         {/* Tab 1: Jerseys */}
@@ -145,12 +153,20 @@ export default function RateList() {
               background: '#f8fafc',
               border: '1px solid #e2e8f0',
               borderRadius: '12px',
-              padding: '18px 22px',
+              padding: '16px 20px',
               marginBottom: '24px',
               fontSize: '14px',
-              color: '#475569'
+              color: '#475569',
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '12px'
             }}>
-              💡 <b>Jersey Pricing Guide:</b> Rates listed below are per piece. Full edge-to-edge sublimation printing is included with zero setup charge for sponsor logos, crests, player names, and numbers.
+              <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#e0f2fe', color: '#0284c7', display: 'grid', placeItems: 'center', flexShrink: 0, marginTop: '1px' }}>
+                <Info width={16} height={16} />
+              </div>
+              <div style={{ lineHeight: '1.5' }}>
+                <b style={{ color: '#0f172a' }}>Jersey Pricing Guide:</b> Rates listed below are per piece. Full edge-to-edge sublimation printing is included with zero setup charge for sponsor logos, crests, player names, and numbers.
+              </div>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
@@ -245,12 +261,20 @@ export default function RateList() {
               background: '#f8fafc',
               border: '1px solid #e2e8f0',
               borderRadius: '12px',
-              padding: '18px 22px',
+              padding: '16px 20px',
               marginBottom: '24px',
               fontSize: '14px',
-              color: '#475569'
+              color: '#475569',
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '12px'
             }}>
-              ⚡ <b>Combo Fabric Jerseys:</b> Dual-fabric construction engineered for high ventilation. Main torso body in ultra-durable PMC knit with specialized airflow inserts (Fusion, Airmesh, or Jacquard) for rapid cooling during tournament play.
+              <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#ffedd5', color: '#ea580c', display: 'grid', placeItems: 'center', flexShrink: 0, marginTop: '1px' }}>
+                <Zap width={16} height={16} />
+              </div>
+              <div style={{ lineHeight: '1.5' }}>
+                <b style={{ color: '#0f172a' }}>Combo Fabric Jerseys:</b> Dual-fabric construction engineered for high ventilation. Main torso body in ultra-durable PMC knit with specialized airflow inserts (Fusion, Airmesh, or Jacquard) for rapid cooling during tournament play.
+              </div>
             </div>
 
             <div style={{

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { BRAND } from '../data/content'
-import { WhatsApp, ArrowRight, Zap, Shield, Check, X } from './Icons'
+import { WhatsApp, ArrowRight, Zap, Shield, Check, X, Wind, Droplet, ShieldCheck, Clipboard, ZoomIn, Download } from './Icons'
 
 const DESIGNS = [
   { id: 6, code: 'DESIGN 6', name: 'Stealth Force', colors: ['#111111', '#c59b27', '#ffffff'], desc: 'BLACK · GOLD · WHITE' },
@@ -19,10 +19,10 @@ const DESIGNS = [
 ]
 
 const FEATURES = [
-  { icon: '🌬️', title: 'Breathable Fabric', text: 'Stay cool and comfortable all day long.' },
-  { icon: '💧', title: 'Moisture Wicking', text: 'Keeps sweat away and dries fast.' },
-  { icon: '🛡️', title: 'Durable & Comfort', text: 'Built to last with superior comfort.' },
-  { icon: '⚡', title: 'High Performance', text: 'Lightweight fabric for maximum performance.' },
+  { icon: Wind, title: 'Breathable Fabric', text: 'Stay cool and comfortable all day long.', color: '#38bdf8', bg: 'rgba(56, 189, 248, 0.12)', border: 'rgba(56, 189, 248, 0.28)' },
+  { icon: Droplet, title: 'Moisture Wicking', text: 'Keeps sweat away and dries fast.', color: '#60a5fa', bg: 'rgba(96, 165, 250, 0.12)', border: 'rgba(96, 165, 250, 0.28)' },
+  { icon: ShieldCheck, title: 'Durable & Comfort', text: 'Built to last with superior comfort.', color: '#34d399', bg: 'rgba(52, 211, 153, 0.12)', border: 'rgba(52, 211, 153, 0.28)' },
+  { icon: Zap, title: 'High Performance', text: 'Lightweight fabric for maximum performance.', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.12)', border: 'rgba(245, 158, 11, 0.28)' },
 ]
 
 export default function RSConstructionSection() {
@@ -104,7 +104,7 @@ export default function RSConstructionSection() {
                 flex: '1 1 150px'
               }}
             >
-              🔍 View Full HD Details
+              <ZoomIn width={16} height={16} /> View Full HD Details
             </button>
             <Link
               to="/rate-list"
@@ -123,7 +123,7 @@ export default function RSConstructionSection() {
                 flex: '1 1 150px'
               }}
             >
-              📋 Check Fabric Rates
+              <Clipboard width={16} height={16} /> Check Fabric Rates
             </Link>
           </div>
         </div>
@@ -185,34 +185,49 @@ export default function RSConstructionSection() {
             gap: '8px',
             boxShadow: '0 4px 14px rgba(0,0,0,0.5)'
           }}>
-            <span>🔍 Tap / Click to Zoom & View Full Poster</span>
+            <ZoomIn width={15} height={15} />
+            <span>Tap to Zoom & View Full Poster</span>
           </div>
         </div>
 
         {/* Feature Highlights bar from the poster */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
           gap: '12px',
           marginTop: '20px'
         }}>
-          {FEATURES.map((f, i) => (
-            <div key={i} style={{
-              background: 'rgba(255, 255, 255, 0.03)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              borderRadius: '12px',
-              padding: '12px 14px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px'
-            }}>
-              <span style={{ fontSize: '20px', flex: 'none' }}>{f.icon}</span>
-              <div>
-                <b style={{ display: 'block', fontSize: '12.5px', color: '#f1f5f9' }}>{f.title}</b>
-                <span style={{ fontSize: '11px', color: '#94a3b8' }}>{f.text}</span>
+          {FEATURES.map((f, i) => {
+            const Icon = f.icon
+            return (
+              <div key={i} style={{
+                background: 'rgba(255, 255, 255, 0.03)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                borderRadius: '12px',
+                padding: '12px 16px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px'
+              }}>
+                <div style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '10px',
+                  background: f.bg || 'rgba(255, 255, 255, 0.06)',
+                  border: `1px solid ${f.border || 'rgba(255, 255, 255, 0.1)'}`,
+                  display: 'grid',
+                  placeItems: 'center',
+                  flexShrink: 0
+                }}>
+                  <Icon width={20} height={20} style={{ color: f.color }} />
+                </div>
+                <div>
+                  <b style={{ display: 'block', fontSize: '13px', color: '#f1f5f9' }}>{f.title}</b>
+                  <span style={{ fontSize: '11.5px', color: '#94a3b8' }}>{f.text}</span>
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
 
         {/* 12 Designs Interactive Selector */}
@@ -413,7 +428,7 @@ export default function RSConstructionSection() {
                   gap: '4px'
                 }}
               >
-                📥 Poster
+                <Download width={14} height={14} /> Poster
               </a>
               <button
                 onClick={() => setModalOpen(false)}
@@ -432,7 +447,7 @@ export default function RSConstructionSection() {
                 }}
                 aria-label="Close"
               >
-                ✕
+                <X width={16} height={16} />
               </button>
             </div>
           </div>

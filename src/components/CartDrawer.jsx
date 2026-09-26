@@ -5,7 +5,7 @@ import { formatPrice } from '../lib/utils'
 import { getSettings } from '../lib/db'
 
 const FREE_SHIP_ABOVE = getSettings().freeShipAbove
-import { Bag, X } from './Icons'
+import { Bag, X, Sparkles } from './Icons'
 import { Qty } from './Shared'
 
 export default function CartDrawer() {
@@ -44,7 +44,14 @@ export default function CartDrawer() {
           ) : (
             <>
               <div className="freeship">
-                {remaining > 0 ? <>Add <b>{formatPrice(remaining)}</b> more for <b>free shipping</b></> : <><b>🎉 You've unlocked free shipping</b></>}
+                {remaining > 0 ? (
+                  <>Add <b>{formatPrice(remaining)}</b> more for <b>free shipping</b></>
+                ) : (
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                    <Sparkles width={16} height={16} style={{ color: 'var(--orange)' }} />
+                    <b>You've unlocked free shipping</b>
+                  </span>
+                )}
                 <i style={{ '--w': pctFree + '%' }} />
               </div>
               {cart.map((l) => (
