@@ -18,6 +18,7 @@ import Admin from './pages/Admin'
 import { Login, Signup } from './pages/Auth'
 import { Wishlist, About, Contact, FAQ, SizeChartPage, Policy, NotFound, CustomKits } from './pages/Static'
 import RateList from './pages/RateList'
+import SessionPulse from './components/SessionPulse'
 
 const waHref = () => {
   const wa = getSettings().phoneIntl.replace('+', '')
@@ -71,6 +72,7 @@ function Shell() {
           <WhatsApp /> <span>WhatsApp</span>
         </a>
       )}
+      <SessionPulse />
     </>
   )
 }
