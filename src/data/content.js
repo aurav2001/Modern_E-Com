@@ -36,10 +36,10 @@ export const MARQUEE = ['Sublimation Jerseys', 'Cricket Whites', 'Tracksuits', '
 
 export const MANUFACTURE = [
   { name: 'Jerseys', sub: 'Cricket · Football · Multi-Sport', to: '/c/jerseys', img: '/products/rs/rs-prod-35.jpg' },
-  { name: 'Polos & Tees', sub: 'RS Construction & Dry-Fit', to: '/c/tshirts', img: '/products/rs/rs-prod-38.jpg' },
-  { name: 'Tracksuits', sub: 'Pro Jacket + Pant Sets', to: '/c/teamwear/tracksuits', img: '/products/rs/rs-prod-43.jpg' },
+  { name: 'Polos & Tees', sub: 'RS Construction & Dry-Fit', to: '/c/tshirts', img: '/products/rs/rs-prod-37.jpg' },
+  { name: 'Tracksuits', sub: 'Pro Jacket + Pant Sets', to: '/c/teamwear/tracksuits', img: '/products/rs/rs-prod-15.jpg' },
   { name: 'Hoodies & Sweaters', sub: 'Winter Training Warmers', to: '/c/teamwear/hoodies', img: '/products/rs/rs-prod-52.jpg' },
-  { name: 'Kit Bags & Caps', sub: 'Player Duffles & BCA Caps', to: '/c/accessories', img: '/products/bag.png' },
+  { name: 'Kit Bags & Caps', sub: 'Player Duffles & Official Caps', to: '/c/accessories', img: '/products/rs/rs-prod-03.jpg' },
 ]
 
 export const CATEGORY_TILES = [

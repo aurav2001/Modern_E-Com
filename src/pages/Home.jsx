@@ -108,9 +108,17 @@ export default function Home() {
           <div className="sports">
             {MANUFACTURE.map((s, i) => (
               <Link to={s.to} className="sport" key={s.name}>
-                <span className="sport__num">0{i + 1}</span>
-                <div className="sport__img"><img src={s.img} alt="" loading="lazy" /></div>
-                <div><b>{s.name}</b><br /><small>{s.sub}</small></div>
+                <div className="sport__top">
+                  <span className="sport__num">0{i + 1}</span>
+                  <span className="sport__arrow"><ArrowRight width={13} height={13} /></span>
+                </div>
+                <div className="sport__media">
+                  <img src={s.img} alt={s.name} loading="lazy" />
+                </div>
+                <div className="sport__body">
+                  <b>{s.name}</b>
+                  <small>{s.sub}</small>
+                </div>
               </Link>
             ))}
           </div>

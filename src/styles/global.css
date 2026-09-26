@@ -325,27 +325,133 @@ ul { margin: 0; padding: 0; list-style: none; }
   .tile__pill { top: 10px; left: 10px; padding: 4px 8px; font-size: 9.5px; border-radius: 6px; }
 }
 
-/* Sports cards */
-.sports { display: grid; gap: 10px; grid-template-columns: repeat(2, 1fr); }
-@media (min-width: 720px) { .sports { grid-template-columns: repeat(3, 1fr); } }
-@media (min-width: 1024px) { .sports { grid-template-columns: repeat(5, 1fr); gap: 14px; } }
-.sport { position: relative; display: flex; flex-direction: column; justify-content: space-between; min-height: 200px; padding: 18px; border-radius: 18px; background: #fff; border: 1px solid var(--line); overflow: hidden; transition: transform 0.3s var(--ease), background 0.3s, color 0.3s; }
-.sport:hover { transform: translateY(-4px); background: var(--ink); color: #fff; }
-.sport__num { font-family: var(--font-head); font-size: 12px; font-weight: 700; letter-spacing: 0.14em; color: var(--muted); }
-.sport:hover .sport__num { color: var(--orange); }
-.sport__img { position: absolute; right: -6px; top: 26px; width: 54%; aspect-ratio: 1; transition: transform 0.4s var(--ease); }
-.sport__img img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.18)); }
-.sport:hover .sport__img { transform: rotate(-6deg) scale(1.06); }
-.sport b { position: relative; z-index: 1; font-family: var(--font-head); font-size: 22px; font-weight: 800; text-transform: uppercase; letter-spacing: -0.02em; }
-.sport small { position: relative; z-index: 1; font-size: 12.5px; color: var(--muted); }
-.sport:hover small { color: #b8bcc4; }
-
-@media (max-width: 640px) {
-  .sport { min-height: 155px; padding: 14px; border-radius: 14px; }
-  .sport__num { font-size: 11px; }
-  .sport__img { right: 2px; top: 12px; width: 48%; max-width: 82px; }
-  .sport b { font-size: 16px; }
-  .sport small { font-size: 11.5px; }
+/* Sports / Manufacture Category cards */
+.sports {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, 1fr);
+}
+@media (min-width: 720px) {
+  .sports {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+}
+@media (min-width: 1024px) {
+  .sports {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+  }
+}
+.sport {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  box-shadow: 0 2px 8px -2px rgba(14, 22, 38, 0.05);
+  transition: transform 0.25s var(--ease), border-color 0.25s, box-shadow 0.25s;
+  overflow: hidden;
+}
+.sport:hover {
+  transform: translateY(-4px);
+  border-color: rgba(245, 130, 31, 0.45);
+  box-shadow: 0 12px 24px -6px rgba(14, 22, 38, 0.12);
+}
+.sport__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+.sport__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 5px;
+  background: rgba(245, 130, 31, 0.12);
+  color: var(--orange);
+  font-family: var(--font-head);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+.sport__arrow {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--muted);
+  display: grid;
+  place-items: center;
+  transition: all 0.2s;
+}
+.sport:hover .sport__arrow {
+  background: var(--orange);
+  color: #fff;
+  transform: translate(2px, -2px);
+}
+.sport__arrow svg {
+  width: 13px;
+  height: 13px;
+}
+.sport__media {
+  width: 100%;
+  height: 124px;
+  border-radius: 12px;
+  background: radial-gradient(circle at 50% 40%, #ffffff 0%, #f4f6fa 100%);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 6px;
+  position: relative;
+}
+@media (min-width: 1024px) {
+  .sport__media {
+    height: 140px;
+  }
+}
+.sport__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.1));
+  transition: transform 0.4s var(--ease);
+}
+.sport:hover .sport__media img {
+  transform: scale(1.06);
+}
+.sport__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 2px;
+}
+.sport__body b {
+  font-family: var(--font-head);
+  font-size: 14px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  line-height: 1.25;
+}
+.sport__body small {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
 }
 
 /* ───────────────────────── Product card ───────────────────────── */
