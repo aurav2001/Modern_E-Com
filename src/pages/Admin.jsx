@@ -550,216 +550,217 @@ function ProductEditor({ product, onClose, onSave, onDelete }) {
 
   const cat = f.categories[0]
   return (
-    <Modal title={isNewProduct ? 'Add product' : `Edit: ${product.name}`} onClose={onClose} width={820}>
-      <form className="form-grid" onSubmit={save}>
-        {/* Basic Details */}
-        <div className="field span-2">
-          <label>Product Name</label>
-          <input className="input" required value={f.name} onChange={(e) => setF({ ...f, name: e.target.value, slug: isNewProduct ? slugify(e.target.value) : f.slug })} placeholder="e.g. RS Pro Sublimated Match Jersey" />
-        </div>
-
-        <div className="field">
-          <label>Selling Price (₹)</label>
-          <input className="input" type="number" required min="0" value={f.price} onChange={set('price')} />
-        </div>
-        <div className="field">
-          <label>MRP (₹, optional)</label>
-          <input className="input" type="number" min="0" value={f.mrp || ''} onChange={set('mrp')} placeholder="Crossed-out price" />
-        </div>
-        <div className="field">
-          <label>Stock Quantity</label>
-          <input className="input" type="number" min="0" value={f.stock} onChange={set('stock')} />
-        </div>
-        <div className="field">
-          <label>GST / Tax Rate (%)</label>
-          <select className="select" value={f.gst} onChange={set('gst')}>
-            <option value="5">5% (Apparel / Sportswear standard)</option>
-            <option value="12">12% (Caps, Bags & Accessories)</option>
-            <option value="18">18% (Standard Rate)</option>
-            <option value="0">0% (Tax Exempt)</option>
-          </select>
-        </div>
-
-        <div className="field">
-          <label>Primary Category</label>
-          <select className="select" value={cat} onChange={(e) => setF({ ...f, categories: [e.target.value], subs: [SUBS[e.target.value][0]] })}>
-            {CATS.map((c) => <option key={c.slug} value={c.slug}>{c.name}</option>)}
-          </select>
-        </div>
-        <div className="field">
-          <label>Product Slug (URL)</label>
-          <input className="input" value={f.slug || ''} onChange={set('slug')} placeholder="auto-generated-slug" />
-        </div>
-
-        <div className="field span-2">
-          <label>Sub-categories</label>
-          <div className="achips">
-            {SUBS[cat].map((s) => (
-              <button type="button" key={s} className={cx('chip', f.subs.includes(s) && 'active')}
-                onClick={() => setF({ ...f, subs: f.subs.includes(s) ? f.subs.filter((x) => x !== s) : [...f.subs, s] })}>
-                {s.replace(/-/g, ' ')}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Photo Upload Section */}
-        <div className="field span-2">
-          <div className="a-sec-head">
-            <span>Product Image</span>
-            <span className="a-sec-hint">Upload from PC or mobile device</span>
-          </div>
-
-          <div className="a-upload-zone">
-            <img className="a-upload-prev" src={f.image} alt="Preview" onError={(e) => { e.target.src = '/products/jersey.png' }} />
-            <div className="a-upload-info">
-              <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="image/*" onChange={handlePhotoUpload} />
-              <button type="button" className="a-upload-btn" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
-                <Plus width={15} height={15} /> {uploading ? 'Uploading…' : 'Upload photo from device'}
-              </button>
-              <div style={{ marginTop: 8 }}>
-                <input className="input" style={{ fontSize: '12px', height: '32px' }} value={f.image} onChange={set('image')} placeholder="Or enter image URL: /products/rs-prod-01.jpg" />
-              </div>
-            </div>
-          </div>
-
-          <p className="small muted" style={{ margin: '8px 0 6px' }}>Or choose from existing presets:</p>
-          <div className="aimgs">
-            {IMAGES.map((src) => (
-              <button type="button" key={src} className={cx('aimg', f.image === src && 'active')} onClick={() => setF({ ...f, image: src })}>
-                <img src={src} alt="" />
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Color Management */}
-        <div className="field span-2">
-          <div className="a-sec-head">
-            <span>Colors & Swatches ({colors.length})</span>
-            <span className="a-sec-hint">Add colors shown on the product card</span>
-          </div>
-
-          <div className="a-color-grid">
-            {colors.map((c, i) => (
-              <div className="a-color-chip" key={i}>
-                <span className="a-color-dot" style={{ background: c.hex }} />
-                <span>{c.name}</span>
-                <button type="button" className="a-color-del" onClick={() => removeColor(i)} title="Remove color"><X width={13} height={13} /></button>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', marginTop: 6 }}>
-            <input className="input" style={{ width: 140, height: 34 }} placeholder="Color name" value={cName} onChange={(e) => setCName(e.target.value)} />
-            <input type="color" style={{ width: 40, height: 34, padding: 2, border: '1px solid var(--line)', borderRadius: 8, cursor: 'pointer' }} value={cHex} onChange={(e) => setCHex(e.target.value)} title="Pick hex code" />
-            <button type="button" className="btn btn--sm btn--outline" onClick={() => addColor()}><Plus width={14} height={14} /> Add Color</button>
-          </div>
-
-          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 8 }}>
-            <span className="small muted" style={{ alignSelf: 'center', marginRight: 4 }}>Quick presets:</span>
-            {COLOR_PRESETS.map((p) => (
-              <button type="button" key={p.name} className="chip" style={{ fontSize: 11, height: 26, padding: '0 8px' }} onClick={() => addColor(p.name, p.hex)}>
-                <span className="a-color-dot" style={{ background: p.hex, width: 10, height: 10, marginRight: 4, display: 'inline-block' }} />
-                {p.name}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Sizes Selection */}
-        <div className="field span-2">
-          <div className="a-sec-head">
-            <span>Available Sizes ({sizes.length} selected)</span>
-            <span className="a-sec-hint">Click pills to toggle sizes on/off</span>
-          </div>
-
-          <div className="a-size-grid">
-            {STANDARD_SIZES.map((sz) => (
-              <button type="button" key={sz} className={cx('a-size-btn', sizes.includes(sz) && 'active')} onClick={() => toggleSize(sz)}>
-                {sz}
-              </button>
-            ))}
-          </div>
-
-          <div style={{ display: 'flex', gap: 8, marginTop: 10, alignItems: 'center' }}>
-            <input className="input" style={{ width: 180, height: 34 }} placeholder="Custom size (e.g. 28, 30)" value={customSize} onChange={(e) => setCustomSize(e.target.value)} />
-            <button type="button" className="btn btn--sm btn--outline" onClick={addCustomSize}><Plus width={14} height={14} /> Add Size</button>
-          </div>
-        </div>
-
-        {/* Fabric & Variants Quality Options */}
-        <div className="field span-2">
-          <div className="a-sec-head">
-            <span>Fabric / Quality Variants & Rates ({fabricOptions.length})</span>
-            <span className="a-sec-hint">Different fabrics with specific price points</span>
-          </div>
-
-          {fabricOptions.length > 0 ? (
-            <div className="a-fab-list" style={{ marginBottom: 12 }}>
-              {fabricOptions.map((item, i) => (
-                <div className="a-fab-row" key={i}>
-                  <span className="a-fab-name">{item.name}</span>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <span style={{ fontSize: 13, color: 'var(--muted)' }}>₹</span>
-                    <input className="input a-fab-rate" type="number" min="0" value={item.rate} onChange={(e) => updateFabricRate(i, e.target.value)} />
+    <Modal title={isNewProduct ? 'Add product' : `Edit: ${product.name}`} onClose={onClose} className="modal--admin-wide">
+      <form onSubmit={save} style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
+        <div className="modal__body">
+          <div className="admin-editor-layout">
+            {/* Left Column: General Info, Pricing, Description */}
+            <div>
+              <div className="admin-card-section">
+                <h4>General Information & Pricing</h4>
+                <div className="form-grid">
+                  <div className="field span-2">
+                    <label>Product Name</label>
+                    <input className="input" required value={f.name} onChange={(e) => setF({ ...f, name: e.target.value, slug: isNewProduct ? slugify(e.target.value) : f.slug })} placeholder="e.g. RS Pro Sublimated Match Jersey" />
                   </div>
-                  <button type="button" className="icon-btn" style={{ color: 'var(--sale)', width: 30, height: 30 }} onClick={() => removeFabric(i)} title="Remove fabric variant"><Trash width={14} height={14} /></button>
+
+                  <div className="field">
+                    <label>Selling Price (₹)</label>
+                    <input className="input" type="number" required min="0" value={f.price} onChange={set('price')} />
+                  </div>
+                  <div className="field">
+                    <label>MRP (₹, optional)</label>
+                    <input className="input" type="number" min="0" value={f.mrp || ''} onChange={set('mrp')} placeholder="Crossed-out price" />
+                  </div>
+
+                  <div className="field">
+                    <label>Stock Quantity</label>
+                    <input className="input" type="number" min="0" value={f.stock} onChange={set('stock')} />
+                  </div>
+                  <div className="field">
+                    <label>GST / Tax Rate (%)</label>
+                    <select className="select" value={f.gst} onChange={set('gst')}>
+                      <option value="5">5% (Apparel / Sportswear standard)</option>
+                      <option value="12">12% (Caps, Bags & Accessories)</option>
+                      <option value="18">18% (Standard Rate)</option>
+                      <option value="0">0% (Tax Exempt)</option>
+                    </select>
+                  </div>
+
+                  <div className="field">
+                    <label>Primary Category</label>
+                    <select className="select" value={cat} onChange={(e) => setF({ ...f, categories: [e.target.value], subs: [SUBS[e.target.value][0]] })}>
+                      {CATS.map((c) => <option key={c.slug} value={c.slug}>{c.name}</option>)}
+                    </select>
+                  </div>
+                  <div className="field">
+                    <label>Product Slug (URL)</label>
+                    <input className="input" value={f.slug || ''} onChange={set('slug')} placeholder="auto-generated-slug" />
+                  </div>
+
+                  <div className="field span-2">
+                    <label>Sub-categories</label>
+                    <div className="achips">
+                      {SUBS[cat].map((s) => (
+                        <button type="button" key={s} className={cx('chip', f.subs.includes(s) && 'active')}
+                          onClick={() => setF({ ...f, subs: f.subs.includes(s) ? f.subs.filter((x) => x !== s) : [...f.subs, s] })}>
+                          {s.replace(/-/g, ' ')}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              ))}
+              </div>
+
+              <div className="admin-card-section">
+                <h4>Description & Specifications</h4>
+                <div className="form-grid">
+                  <div className="field span-2">
+                    <label>Product Description</label>
+                    <textarea className="textarea" style={{ minHeight: 75 }} value={f.description} onChange={set('description')} placeholder="Detailed description of the product, manufacturing standards, etc." />
+                  </div>
+                  <div className="field span-2">
+                    <label>Primary Fabric Specification</label>
+                    <input className="input" value={f.fabric || ''} onChange={set('fabric')} placeholder="e.g. 150 GSM Micro Polyester, Breathable & Quick Dry" />
+                  </div>
+                  <div className="field span-2">
+                    <label>Key Features (one per line)</label>
+                    <textarea className="textarea" style={{ minHeight: 75 }} value={f.features} onChange={set('features')} placeholder="Sublimation printing&#10;Breathable fabric&#10;Custom team name & numbers" />
+                  </div>
+                  <div className="field span-2" style={{ flexDirection: 'row', gap: 24, paddingTop: 6 }}>
+                    <label className="check"><input type="checkbox" checked={!!f.isNew} onChange={(e) => setF({ ...f, isNew: e.target.checked })} /> Mark as “New Arrival”</label>
+                    <label className="check"><input type="checkbox" checked={!!f.featured} onChange={(e) => setF({ ...f, featured: e.target.checked })} /> Mark as “Best Seller / Top”</label>
+                  </div>
+                </div>
+              </div>
             </div>
-          ) : (
-            <p className="small muted" style={{ marginBottom: 10 }}>No custom fabric variants yet. Base price (₹{f.price}) will apply.</p>
-          )}
 
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-            <input className="input" style={{ width: 160, height: 34 }} placeholder="Fabric name (e.g. Dotknit)" value={fabName} onChange={(e) => setFabName(e.target.value)} />
-            <input className="input" style={{ width: 100, height: 34 }} type="number" placeholder="₹ Rate" value={fabRate} onChange={(e) => setFabRate(e.target.value)} />
-            <button type="button" className="btn btn--sm btn--outline" onClick={() => addFabric()}><Plus width={14} height={14} /> Add Variant</button>
+            {/* Right Column: Media, Colors, Sizes, Fabric Variants */}
+            <div>
+              {/* Photo Upload Section */}
+              <div className="admin-card-section">
+                <h4>Product Image & Photo Upload</h4>
+                <div className="a-upload-zone">
+                  <img className="a-upload-prev" src={f.image} alt="Preview" onError={(e) => { e.target.src = '/products/jersey.png' }} />
+                  <div className="a-upload-info">
+                    <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="image/*" onChange={handlePhotoUpload} />
+                    <button type="button" className="a-upload-btn" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
+                      <Plus width={15} height={15} /> {uploading ? 'Uploading…' : 'Upload photo from device'}
+                    </button>
+                    <div style={{ marginTop: 8 }}>
+                      <input className="input" style={{ fontSize: '12px', height: '32px' }} value={f.image} onChange={set('image')} placeholder="Or enter image URL: /products/rs-prod-01.jpg" />
+                    </div>
+                  </div>
+                </div>
+
+                <p className="small muted" style={{ margin: '10px 0 6px' }}>Or choose from existing catalogue photos:</p>
+                <div className="aimgs">
+                  {IMAGES.map((src) => (
+                    <button type="button" key={src} className={cx('aimg', f.image === src && 'active')} onClick={() => setF({ ...f, image: src })}>
+                      <img src={src} alt="" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Color Management */}
+              <div className="admin-card-section">
+                <h4>Colors & Swatches ({colors.length})</h4>
+                <div className="a-color-grid">
+                  {colors.map((c, i) => (
+                    <div className="a-color-chip" key={i}>
+                      <span className="a-color-dot" style={{ background: c.hex }} />
+                      <span>{c.name}</span>
+                      <button type="button" className="a-color-del" onClick={() => removeColor(i)} title="Remove color"><X width={13} height={13} /></button>
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', marginTop: 6 }}>
+                  <input className="input" style={{ width: 140, height: 34 }} placeholder="Color name" value={cName} onChange={(e) => setCName(e.target.value)} />
+                  <input type="color" style={{ width: 40, height: 34, padding: 2, border: '1px solid var(--line)', borderRadius: 8, cursor: 'pointer' }} value={cHex} onChange={(e) => setCHex(e.target.value)} title="Pick hex code" />
+                  <button type="button" className="btn btn--sm btn--outline" onClick={() => addColor()}><Plus width={14} height={14} /> Add Color</button>
+                </div>
+
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 8 }}>
+                  <span className="small muted" style={{ alignSelf: 'center', marginRight: 4 }}>Quick presets:</span>
+                  {COLOR_PRESETS.map((p) => (
+                    <button type="button" key={p.name} className="chip" style={{ fontSize: 11, height: 26, padding: '0 8px' }} onClick={() => addColor(p.name, p.hex)}>
+                      <span className="a-color-dot" style={{ background: p.hex, width: 10, height: 10, marginRight: 4, display: 'inline-block' }} />
+                      {p.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Sizes Selection */}
+              <div className="admin-card-section">
+                <h4>Available Sizes ({sizes.length} selected)</h4>
+                <div className="a-size-grid">
+                  {STANDARD_SIZES.map((sz) => (
+                    <button type="button" key={sz} className={cx('a-size-btn', sizes.includes(sz) && 'active')} onClick={() => toggleSize(sz)}>
+                      {sz}
+                    </button>
+                  ))}
+                </div>
+
+                <div style={{ display: 'flex', gap: 8, marginTop: 10, alignItems: 'center' }}>
+                  <input className="input" style={{ width: 180, height: 34 }} placeholder="Custom size (e.g. 28, 30)" value={customSize} onChange={(e) => setCustomSize(e.target.value)} />
+                  <button type="button" className="btn btn--sm btn--outline" onClick={addCustomSize}><Plus width={14} height={14} /> Add Size</button>
+                </div>
+              </div>
+
+              {/* Fabric & Variants Quality Options */}
+              <div className="admin-card-section">
+                <h4>Fabric Variants & Rates ({fabricOptions.length})</h4>
+                {fabricOptions.length > 0 ? (
+                  <div className="a-fab-list" style={{ marginBottom: 12 }}>
+                    {fabricOptions.map((item, i) => (
+                      <div className="a-fab-row" key={i}>
+                        <span className="a-fab-name">{item.name}</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <span style={{ fontSize: 13, color: 'var(--muted)' }}>₹</span>
+                          <input className="input a-fab-rate" type="number" min="0" value={item.rate} onChange={(e) => updateFabricRate(i, e.target.value)} />
+                        </div>
+                        <button type="button" className="icon-btn" style={{ color: 'var(--sale)', width: 30, height: 30 }} onClick={() => removeFabric(i)} title="Remove fabric variant"><Trash width={14} height={14} /></button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="small muted" style={{ marginBottom: 10 }}>No custom fabric variants yet. Base price (₹{f.price}) will apply.</p>
+                )}
+
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+                  <input className="input" style={{ width: 160, height: 34 }} placeholder="Fabric name (e.g. Dotknit)" value={fabName} onChange={(e) => setFabName(e.target.value)} />
+                  <input className="input" style={{ width: 100, height: 34 }} type="number" placeholder="₹ Rate" value={fabRate} onChange={(e) => setFabRate(e.target.value)} />
+                  <button type="button" className="btn btn--sm btn--outline" onClick={() => addFabric()}><Plus width={14} height={14} /> Add Variant</button>
+                </div>
+
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 8 }}>
+                  <span className="small muted" style={{ alignSelf: 'center', marginRight: 4 }}>Add sports fabric:</span>
+                  {FABRIC_PRESETS.map((name) => (
+                    <button type="button" key={name} className="chip" style={{ fontSize: 11, height: 26, padding: '0 8px' }} onClick={() => addFabric(name, f.price)}>
+                      + {name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-
-          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 8 }}>
-            <span className="small muted" style={{ alignSelf: 'center', marginRight: 4 }}>Add sports fabric:</span>
-            {FABRIC_PRESETS.map((name) => (
-              <button type="button" key={name} className="chip" style={{ fontSize: 11, height: 26, padding: '0 8px' }} onClick={() => addFabric(name, f.price)}>
-                + {name}
-              </button>
-            ))}
-          </div>
         </div>
 
-        {/* Description & Features */}
-        <div className="field span-2">
-          <label>Product Description</label>
-          <textarea className="textarea" style={{ minHeight: 70 }} value={f.description} onChange={set('description')} placeholder="Detailed description of the product, manufacturing standards, etc." />
-        </div>
-        <div className="field span-2">
-          <label>Primary Fabric Specification</label>
-          <input className="input" value={f.fabric || ''} onChange={set('fabric')} placeholder="e.g. 150 GSM Micro Polyester, Breathable & Quick Dry" />
-        </div>
-        <div className="field span-2">
-          <label>Key Features (one per line)</label>
-          <textarea className="textarea" style={{ minHeight: 80 }} value={f.features} onChange={set('features')} placeholder="Sublimation printing&#10;Breathable fabric&#10;Custom team name & numbers" />
-        </div>
-
-        {/* Badges */}
-        <div className="field span-2" style={{ flexDirection: 'row', gap: 24, padding: '10px 0' }}>
-          <label className="check"><input type="checkbox" checked={!!f.isNew} onChange={(e) => setF({ ...f, isNew: e.target.checked })} /> Mark as “New Arrival”</label>
-          <label className="check"><input type="checkbox" checked={!!f.featured} onChange={(e) => setF({ ...f, featured: e.target.checked })} /> Mark as “Best Seller / Top”</label>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="span-2" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 12, paddingTop: 14, borderTop: '1px solid var(--line)' }}>
+        {/* Sticky Modal Footer */}
+        <div className="modal__foot">
           <div>
             {!isNewProduct && onDelete && (
-              <button type="button" className="btn btn--sm btn--ghost" style={{ color: 'var(--sale)' }} onClick={() => onDelete(product.slug)}>
+              <button type="button" className="btn btn--sm btn--ghost" style={{ color: 'var(--sale)', display: 'inline-flex', alignItems: 'center', gap: 6 }} onClick={() => onDelete(product.slug)}>
                 <Trash width={15} height={15} /> Delete Product
               </button>
             )}
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div style={{ display: 'flex', gap: 10 }}>
             <button type="button" className="btn btn--ghost" onClick={onClose}>Cancel</button>
-            <button type="submit" className="btn btn--primary">Save Product</button>
+            <button type="submit" className="btn btn--primary" style={{ minWidth: 130 }}>Save Product</button>
           </div>
         </div>
       </form>

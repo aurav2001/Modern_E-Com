@@ -127,7 +127,7 @@ export function Reveal({ children, className, as: Tag = 'div' }) {
   return <Tag ref={ref} className={cx('reveal', inView && 'in', className)}>{children}</Tag>
 }
 
-export function Modal({ title, onClose, children, width }) {
+export function Modal({ title, onClose, children, width, className, style }) {
   useEffect(() => {
     const onKey = (e) => e.key === 'Escape' && onClose()
     window.addEventListener('keydown', onKey)
@@ -136,7 +136,7 @@ export function Modal({ title, onClose, children, width }) {
   }, [onClose])
   return (
     <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal" style={width ? { maxWidth: width } : undefined} onClick={(e) => e.stopPropagation()} role="dialog" aria-label={title}>
+      <div className={cx('modal', className)} style={{ ...(width ? { maxWidth: width } : {}), ...style }} onClick={(e) => e.stopPropagation()} role="dialog" aria-label={title}>
         <div className="modal__head">
           <h3>{title}</h3>
           <button className="icon-btn" onClick={onClose} aria-label="Close"><X /></button>

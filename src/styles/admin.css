@@ -129,3 +129,84 @@
 .a-fab-name { flex: 1; font-weight: 600; font-size: 13px; }
 .a-fab-rate { width: 110px; }
 
+/* ── Full Height & Wide Admin Product Modal ── */
+.modal--admin-wide {
+  width: 95vw !important;
+  max-width: 1380px !important;
+  height: 94vh !important;
+  max-height: 94vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 0 !important;
+  border-radius: 18px !important;
+  overflow: hidden !important;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.4) !important;
+}
+
+.modal--admin-wide .modal__head {
+  padding: 16px 24px !important;
+  margin-bottom: 0 !important;
+  border-bottom: 1.5px solid var(--line) !important;
+  background: #ffffff !important;
+  flex: none !important;
+}
+
+.modal--admin-wide .modal__head h3 {
+  font-size: 19px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.01em !important;
+}
+
+.modal--admin-wide .modal__body {
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  padding: 24px !important;
+  background: var(--bg) !important;
+}
+
+.modal--admin-wide .modal__foot {
+  padding: 16px 24px !important;
+  border-top: 1.5px solid var(--line) !important;
+  background: #ffffff !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  flex: none !important;
+}
+
+.admin-editor-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 1020px) {
+  .admin-editor-layout {
+    grid-template-columns: 1.15fr 1fr;
+    align-items: start;
+  }
+}
+
+.admin-card-section {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.admin-card-section:last-child {
+  margin-bottom: 0;
+}
+
+.admin-card-section h4 {
+  font-size: 14.5px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+
