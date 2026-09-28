@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { db } from '../db.js'
+import { requireAdmin } from '../middleware/auth.js'
 
 export const productRouter = Router()
 
@@ -71,8 +72,8 @@ productRouter.get('/:slugOrId', (req, res) => {
   }
 })
 
-// POST /api/products - Create new product (Admin)
-productRouter.post('/', (req, res) => {
+// POST /api/products - Create new product (Admin only)
+productRouter.post('/', requireAdmin, (req, res) => {
   try {
     const list = db.getProducts()
     const { name, slug, price, mrp, image, gallery, colors, sizes, categories, subs, fabricOptions, fabric, description, stock } = req.body
@@ -117,8 +118,8 @@ productRouter.post('/', (req, res) => {
   }
 })
 
-// PUT /api/products/:slugOrId - Update product
-productRouter.put('/:slugOrId', (req, res) => {
+// PUT /api/products/:slugOrId - Update product (Admin only)
+productRouter.put('/:slugOrId', requireAdmin, (req, res) => {
   try {
     const list = db.getProducts()
     const { slugOrId } = req.params
@@ -146,8 +147,8 @@ productRouter.put('/:slugOrId', (req, res) => {
   }
 })
 
-// DELETE /api/products/:slugOrId - Delete product
-productRouter.delete('/:slugOrId', (req, res) => {
+// DELETE /api/products/:slugOrId - Delete product (Admin only)
+productRouter.delete('/:slugOrId', requireAdmin, (req, res) => {
   try {
     let list = db.getProducts()
     const { slugOrId } = req.params

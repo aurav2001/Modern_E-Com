@@ -251,6 +251,12 @@ async function syncFromMongo() {
     } else {
       await settingsColl.updateOne({ key: 'main' }, { $set: { key: 'main', value: DEFAULT_SETTINGS } }, { upsert: true })
     }
+
+    const usersColl = mongoDb.collection('users')
+    const uCount = await usersColl.countDocuments()
+    if (uCount > 0) {
+      memoryStore.users = await usersColl.find({}, { projection: { _id: 0 } }).toArray()
+    }
   } catch (err) {
     console.warn('[MongoDB] Initial sync notice:', err.message)
   }
@@ -336,10 +342,13 @@ export const db = {
   },
 
   getUsers() {
-    return memoryStore.users
+    const list = readJsonFile(getFilePath('users'), null)
+    if (list) memoryStore.users = list
+    return memoryStore.users || []
   },
   saveUsers(data) {
     memoryStore.users = data
+    writeJsonFile(getFilePath('users'), data)
     persistToMongo('users', data)
     return true
   },

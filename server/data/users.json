@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "id": "usr_1790576717416",
+    "name": "Gulshan Pandey",
+    "email": "gulshan.test@gmail.com",
+    "phone": "9876543210",
+    "password": "$2b$10$7Mav4o4H1gVy/miptPCeIu5arK2qldEEkAWq.GyYXE6BTcdXZgDr2",
+    "role": "user",
+    "addresses": [],
+    "createdAt": "2026-09-28T06:25:17.416Z"
+  }
+]

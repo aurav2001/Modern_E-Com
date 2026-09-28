@@ -10,9 +10,9 @@ export function Login() {
   const [sp] = useSearchParams()
   const [f, setF] = useState({ email: '', password: '' })
   const [err, setErr] = useState('')
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault()
-    const er = login(f.email, f.password)
+    const er = await login(f.email, f.password)
     if (er) return setErr(er)
     nav(sp.get('next') || '/account')
   }
@@ -25,7 +25,7 @@ export function Login() {
         <button className="btn btn--primary btn--lg btn--block">Log in</button>
       </form>
       <p className="auth__alt">New to Rishikar Sports? <Link to={`/signup${sp.get('next') ? `?next=${sp.get('next')}` : ''}`}>Create an account</Link></p>
-      <p className="auth__alt small">Demo store: accounts are stored only in this browser.</p>
+      <p className="auth__alt small">Secure authentication with real backend sync.</p>
     </AuthShell>
   )
 }
@@ -36,11 +36,11 @@ export function Signup() {
   const [sp] = useSearchParams()
   const [f, setF] = useState({ name: '', email: '', phone: '', password: '' })
   const [err, setErr] = useState('')
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault()
     if (f.password.length < 6) return setErr('Password must be at least 6 characters')
     if (!/^[6-9]\d{9}$/.test(f.phone)) return setErr('Enter a valid 10-digit mobile number')
-    const er = register(f.name.trim(), f.email.trim(), f.password, f.phone)
+    const er = await register(f.name.trim(), f.email.trim(), f.password, f.phone)
     if (er) return setErr(er)
     nav(sp.get('next') || '/account')
   }

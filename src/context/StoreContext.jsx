@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useReducer, useState, useCallback } from 'react'
 import { loadLS, saveLS, uid } from '../lib/utils'
 import { getCoupons, getSettings, addEnquiry as dbAddEnquiry } from '../lib/db'
+import { api } from '../lib/api'
 
 const COUPONS = getCoupons()
 const SETTINGS = getSettings()
@@ -99,6 +100,22 @@ export function StoreProvider({ children }) {
   useEffect(() => saveLS('rs.coupon', state.coupon), [state.coupon])
   useEffect(() => saveLS('rs.recent', state.recent), [state.recent])
 
+  // Sync logged in user profile from server if token exists
+  useEffect(() => {
+    const token = localStorage.getItem('rs.auth_token')
+    if (token) {
+      api.getMe()
+        .then((res) => {
+          if (res.success && res.user) {
+            dispatch({ type: 'LOGIN', user: res.user })
+          }
+        })
+        .catch(() => {
+          localStorage.removeItem('rs.auth_token')
+        })
+    }
+  }, [])
+
   const toast = useCallback((message, opts = {}) => {
     const id = uid()
     setToasts((t) => [...t, { id, message, ...opts }])
@@ -154,22 +171,48 @@ export function StoreProvider({ children }) {
         return true
       },
       removeCoupon: () => dispatch({ type: 'SET_COUPON', code: null }),
-      login(email, password) {
-        const u = state.users.find((x) => x.email.toLowerCase() === email.toLowerCase())
-        if (!u || u.password !== password) return 'Incorrect email or password'
-        dispatch({ type: 'LOGIN', user: u })
-        toast(`Welcome back, ${u.name.split(' ')[0]}`)
-        return null
+      async login(email, password) {
+        try {
+          const res = await api.login(email, password)
+          if (res.success && res.user) {
+            localStorage.setItem('rs.auth_token', res.token)
+            dispatch({ type: 'LOGIN', user: res.user })
+            toast(`Welcome back, ${res.user.name.split(' ')[0]}`)
+            return null
+          }
+        } catch (err) {
+          // Fallback to local accounts if backend is unreachable or local testing
+          const u = state.users.find((x) => x.email.toLowerCase() === email.toLowerCase())
+          if (u && u.password === password) {
+            dispatch({ type: 'LOGIN', user: u })
+            toast(`Welcome back, ${u.name.split(' ')[0]}`)
+            return null
+          }
+          return err.message || 'Incorrect email or password'
+        }
       },
-      register(name, email, password, phone) {
-        if (state.users.some((x) => x.email.toLowerCase() === email.toLowerCase())) return 'An account with this email already exists'
-        const user = { name, email, password, phone, createdAt: Date.now() }
-        dispatch({ type: 'REGISTER', user })
-        toast(`Account created. Welcome, ${name.split(' ')[0]}!`)
-        return null
+      async register(name, email, password, phone) {
+        try {
+          const res = await api.register(name, email, phone, password)
+          if (res.success && res.user) {
+            localStorage.setItem('rs.auth_token', res.token)
+            dispatch({ type: 'REGISTER', user: res.user })
+            toast(`Account created. Welcome, ${name.split(' ')[0]}!`)
+            return null
+          }
+        } catch (err) {
+          if (state.users.some((x) => x.email.toLowerCase() === email.toLowerCase())) {
+            return 'An account with this email already exists'
+          }
+          const user = { name, email, password, phone, createdAt: Date.now() }
+          dispatch({ type: 'REGISTER', user })
+          toast(`Account created. Welcome, ${name.split(' ')[0]}!`)
+          return null
+        }
       },
       updateUser: (patch) => dispatch({ type: 'UPDATE_USER', patch }),
       logout() {
+        localStorage.removeItem('rs.auth_token')
         dispatch({ type: 'LOGOUT' })
         toast('You have been logged out')
       },

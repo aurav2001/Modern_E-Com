@@ -4,6 +4,7 @@ import baseProducts from '../data/products.json'
 import baseMenu from '../data/menu.json'
 import { BRAND, COUPONS as BASE_COUPONS, FREE_SHIP_ABOVE, SHIPPING_FEE, COD_FEE } from '../data/content'
 import { loadLS, saveLS } from './utils'
+import { api } from './api'
 
 export const KEYS = {
   products: 'rs.products.v2',
@@ -43,12 +44,21 @@ export function saveProducts(list) {
 export function upsertProduct(product) {
   const list = getProducts()
   const i = list.findIndex((p) => p.slug === product.slug)
-  if (i === -1) return saveProducts([{ ...product, id: Math.max(0, ...list.map((p) => p.id)) + 1 }, ...list])
-  const next = [...list]
-  next[i] = { ...next[i], ...product }
+  let next
+  if (i === -1) {
+    next = [{ ...product, id: Math.max(0, ...list.map((p) => p.id)) + 1 }, ...list]
+    api.createProduct(product).catch(() => {})
+  } else {
+    next = [...list]
+    next[i] = { ...next[i], ...product }
+    api.updateProduct(product.slug, product).catch(() => api.createProduct(product).catch(() => {}))
+  }
   return saveProducts(next)
 }
-export const deleteProduct = (slug) => saveProducts(getProducts().filter((p) => p.slug !== slug))
+export const deleteProduct = (slug) => {
+  api.deleteProduct(slug).catch(() => {})
+  return saveProducts(getProducts().filter((p) => p.slug !== slug))
+}
 export const resetProducts = () => { localStorage.removeItem(KEYS.products); notify(); return baseProducts }
 
 // ── Menu (read-only, but counts follow the live catalogue) ─
@@ -66,6 +76,7 @@ export const getOrders = () => loadLS(KEYS.orders, [])
 export function setOrderStatus(id, status) {
   const orders = getOrders().map((o) => (o.id === id ? { ...o, status, statusAt: Date.now() } : o))
   saveLS(KEYS.orders, orders)
+  api.updateOrderStatus(id, status).catch(() => {})
   notify()
   return orders
 }
@@ -84,12 +95,14 @@ export const getEnquiries = () => loadLS(KEYS.enquiries, [])
 export function addEnquiry(e) {
   const list = [{ id: 'ENQ' + Date.now().toString().slice(-8), at: Date.now(), status: 'New', ...e }, ...getEnquiries()]
   saveLS(KEYS.enquiries, list)
+  api.createEnquiry(e).catch(() => {})
   notify()
   return list
 }
 export function setEnquiryStatus(id, status) {
   const list = getEnquiries().map((e) => (e.id === id ? { ...e, status } : e))
   saveLS(KEYS.enquiries, list)
+  api.updateEnquiryStatus(id, status).catch(() => {})
   notify()
   return list
 }
@@ -105,6 +118,7 @@ export const getSettings = () => ({ ...DEFAULT_SETTINGS, ...loadLS(KEYS.settings
 export function saveSettings(patch) {
   const next = { ...getSettings(), ...patch }
   saveLS(KEYS.settings, next)
+  api.saveSettings(next).catch(() => {})
   notify()
   return next
 }
@@ -122,10 +136,16 @@ export const isAdmin = () => loadLS(KEYS.admin, false) === true
 export const signInAdmin = (pin) => {
   if (String(pin) !== String(getSettings().adminPin)) return false
   saveLS(KEYS.admin, true)
+  saveLS('rs.admin_pin', String(pin).trim())
+  api.adminLogin(pin).catch(() => {})
   notify()
   return true
 }
-export const signOutAdmin = () => { saveLS(KEYS.admin, false); notify() }
+export const signOutAdmin = () => {
+  saveLS(KEYS.admin, false)
+  api.adminLogout()
+  notify()
+}
 
 // ── Derived stats for the dashboard ───────────────────────
 export function stats() {

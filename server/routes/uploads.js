@@ -3,6 +3,7 @@ import multer from 'multer'
 import path from 'path'
 import fs from 'fs'
 import { fileURLToPath } from 'url'
+import { requireAdmin } from '../middleware/auth.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -39,8 +40,8 @@ const upload = multer({
 
 export const uploadRouter = Router()
 
-// POST /api/upload - Single image upload
-uploadRouter.post('/', upload.single('image'), (req, res) => {
+// POST /api/upload - Single image upload (Admin only)
+uploadRouter.post('/', requireAdmin, upload.single('image'), (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ success: false, message: 'No image file uploaded' })

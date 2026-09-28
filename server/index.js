@@ -9,6 +9,7 @@ import { couponRouter } from './routes/coupons.js'
 import { adminRouter } from './routes/admin.js'
 import { rateListRouter } from './routes/rateList.js'
 import { uploadRouter } from './routes/uploads.js'
+import { authRouter } from './routes/auth.js'
 import { db } from './db.js'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -57,6 +58,7 @@ app.use('/api/coupons', couponRouter)
 app.use('/api/admin', adminRouter)
 app.use('/api/rate-list', rateListRouter)
 app.use('/api/upload', uploadRouter)
+app.use('/api/auth', authRouter)
 
 // In production, serve the built Vite SPA from dist/
 const distPath = path.resolve(__dirname, '../dist')

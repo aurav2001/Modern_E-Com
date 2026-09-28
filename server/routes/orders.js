@@ -1,13 +1,32 @@
 import { Router } from 'express'
 import { db } from '../db.js'
+import { requireAdmin, optionalAuth } from '../middleware/auth.js'
 
 export const orderRouter = Router()
 
-// GET /api/orders - List all orders (Admin or customer lookup)
-orderRouter.get('/', (req, res) => {
+// GET /api/orders - List orders (Admin gets all, customer gets by phone/email)
+orderRouter.get('/', optionalAuth, (req, res) => {
   try {
     let orders = db.getOrders()
-    const { status, phone, search } = req.query
+    const { status, phone, search, email } = req.query
+
+    // Check if user is an admin
+    const isAdmin = req.user?.role === 'admin' ||
+      (req.headers['x-admin-pin'] && String(req.headers['x-admin-pin']).trim() === String(db.getSettings().adminPin).trim()) ||
+      (req.headers.authorization && req.headers.authorization.includes('rs_adm_'))
+
+    // If not admin and no specific phone/email filter is provided, restrict access
+    if (!isAdmin && !phone && !email && !search) {
+      // If regular authenticated user, show only their orders
+      if (req.user?.email) {
+        orders = orders.filter((o) => o.customer?.email?.toLowerCase() === req.user.email.toLowerCase())
+      } else {
+        return res.status(403).json({
+          success: false,
+          message: 'Admin authorization or customer lookup filter (phone/email) is required to view orders.',
+        })
+      }
+    }
 
     if (status) {
       orders = orders.filter((o) => o.status.toLowerCase() === status.toLowerCase())
@@ -163,8 +182,8 @@ orderRouter.post('/', (req, res) => {
   }
 })
 
-// PATCH /api/orders/:id/status - Update order status (Admin)
-orderRouter.patch('/:id/status', (req, res) => {
+// PATCH /api/orders/:id/status - Update order status (Admin only)
+orderRouter.patch('/:id/status', requireAdmin, (req, res) => {
   try {
     const orders = db.getOrders()
     const { id } = req.params

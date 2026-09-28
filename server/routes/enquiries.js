@@ -1,10 +1,11 @@
 import { Router } from 'express'
 import { db } from '../db.js'
+import { requireAdmin } from '../middleware/auth.js'
 
 export const enquiryRouter = Router()
 
-// GET /api/enquiries - List all enquiries
-enquiryRouter.get('/', (req, res) => {
+// GET /api/enquiries - List all enquiries (Admin only)
+enquiryRouter.get('/', requireAdmin, (req, res) => {
   try {
     const list = db.getEnquiries()
     res.json({ success: true, total: list.length, data: list })
@@ -51,8 +52,8 @@ enquiryRouter.post('/', (req, res) => {
   }
 })
 
-// PATCH /api/enquiries/:id - Update status (Admin)
-enquiryRouter.patch('/:id', (req, res) => {
+// PATCH /api/enquiries/:id - Update status (Admin only)
+enquiryRouter.patch('/:id', requireAdmin, (req, res) => {
   try {
     const list = db.getEnquiries()
     const { id } = req.params
