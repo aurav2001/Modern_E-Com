@@ -28,7 +28,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+  limits: { fileSize: 25 * 1024 * 1024 }, // 25MB limit
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
       cb(null, true)
@@ -41,8 +41,41 @@ const upload = multer({
 export const uploadRouter = Router()
 
 // POST /api/upload - Single image upload (Admin only)
-uploadRouter.post('/', requireAdmin, upload.single('image'), (req, res) => {
-  try {
+uploadRouter.post('/', requireAdmin, (req, res) => {
+  // If base64 JSON is sent
+  if (req.body && req.body.base64) {
+    try {
+      const { base64, filename } = req.body
+      const matches = base64.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/)
+      if (matches && matches.length === 3) {
+        const ext = matches[1].split('/')[1] || 'jpg'
+        const cleanName = (filename || 'upload').replace(/[^a-z0-9]/gi, '-').toLowerCase()
+        const fname = `${cleanName}-${Date.now()}.${ext}`
+        const fpath = path.join(UPLOAD_DIR, fname)
+        fs.writeFileSync(fpath, Buffer.from(matches[2], 'base64'))
+        return res.json({
+          success: true,
+          message: 'Image uploaded successfully',
+          url: `/uploads/${fname}`,
+          dataUrl: base64,
+          filename: fname,
+        })
+      }
+      return res.json({
+        success: true,
+        message: 'Image processed successfully',
+        url: base64,
+      })
+    } catch {
+      return res.json({ success: true, url: req.body.base64 })
+    }
+  }
+
+  // Handle standard multipart form data
+  upload.single('image')(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({ success: false, message: err.message })
+    }
     if (!req.file) {
       return res.status(400).json({ success: false, message: 'No image file uploaded' })
     }
@@ -53,7 +86,5 @@ uploadRouter.post('/', requireAdmin, upload.single('image'), (req, res) => {
       url: publicUrl,
       filename: req.file.filename,
     })
-  } catch (err) {
-    res.status(500).json({ success: false, message: err.message })
-  }
+  })
 })
