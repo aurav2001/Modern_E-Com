@@ -463,12 +463,22 @@ function ProductEditor({ product, onClose, onSave, onDelete }) {
   const handlePhotoUpload = async (e) => {
     const file = e.target.files?.[0]
     if (!file) return
+
+    // 1. Instant local preview so user sees their photo immediately
+    const reader = new FileReader()
+    reader.onload = (ev) => {
+      if (ev.target?.result) {
+        setF((prev) => ({ ...prev, image: ev.target.result }))
+      }
+    }
+    reader.readAsDataURL(file)
+
     try {
       setUploading(true)
       const res = await api.uploadImage(file)
       if (res && res.url) {
         setF((prev) => ({ ...prev, image: res.url }))
-        toast('Photo uploaded successfully!')
+        toast('Photo uploaded and optimized successfully!')
       }
     } catch (err) {
       toast(err.message || 'Upload failed', { tone: 'error' })

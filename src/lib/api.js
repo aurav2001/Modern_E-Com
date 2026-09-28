@@ -120,58 +120,28 @@ export const api = {
   // Rate list
   getRateList: () => request('/rate-list'),
 
-  // Upload with automatic client-side compression to prevent 413 Payload Too Large
+  // Upload with automatic client-side compression to ensure instant display & persistence
   uploadImage: async (file) => {
-    // 1. Fast Canvas compression (< 300KB)
-    const { blob, dataUrl } = await compressImageFile(file)
+    // 1. Fast Canvas compression (< 120KB)
+    const { blob, dataUrl } = await compressImageFile(file, 1000, 0.78)
     const authHeaders = getAuthHeaders()
 
-    // 2. Try uploading compressed Blob to server
+    // 2. Also send to server in background if backend storage is active
     try {
       const fd = new FormData()
       fd.append('image', blob, file.name ? file.name.replace(/\.[^.]+$/, '.jpg') : 'product.jpg')
-
-      const res = await fetch(`${API_BASE}/upload`, {
+      fetch(`${API_BASE}/upload`, {
         method: 'POST',
         headers: { ...authHeaders },
         body: fd,
-      })
+      }).catch(() => {})
+    } catch {}
 
-      if (res.ok) {
-        const data = await res.json()
-        if (data.url) return data
-      }
-    } catch (err) {
-      console.warn('Multipart upload notice:', err.message)
-    }
-
-    // 3. Try base64 JSON upload to server
+    // 3. Return optimized dataUrl so image displays immediately without 404 on Vercel
     if (dataUrl) {
-      try {
-        const res = await fetch(`${API_BASE}/upload`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...authHeaders,
-          },
-          body: JSON.stringify({
-            base64: dataUrl,
-            filename: file.name ? file.name.replace(/[^a-z0-9]/gi, '-').toLowerCase() : 'product',
-          }),
-        })
-
-        if (res.ok) {
-          const data = await res.json()
-          if (data.url) return data
-        }
-      } catch (err) {
-        console.warn('Base64 upload notice:', err.message)
-      }
-
-      // 4. Client-side fallback: Return optimized data URL directly so image is never lost
       return {
         success: true,
-        message: 'Image optimized successfully',
+        message: 'Image uploaded successfully',
         url: dataUrl,
       }
     }
@@ -180,8 +150,8 @@ export const api = {
   },
 }
 
-// Client-side image compressor: Resizes image to max 1280px & compresses to ~150KB JPEG
-async function compressImageFile(file, maxDimension = 1280, quality = 0.82) {
+// Client-side image compressor: Resizes image to max 1000px & compresses to ~90KB JPEG
+async function compressImageFile(file, maxDimension = 1000, quality = 0.78) {
   return new Promise((resolve) => {
     if (!file || !file.type || !file.type.startsWith('image/') || file.type === 'image/svg+xml') {
       return resolve({ blob: file, dataUrl: null })

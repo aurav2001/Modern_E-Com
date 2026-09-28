@@ -36,7 +36,10 @@ app.use((req, res, next) => {
 })
 
 // Static files for uploaded images & public files
+const uploadDir = process.env.VERCEL ? path.join('/tmp', 'uploads') : path.resolve(__dirname, '../public/uploads')
+app.use('/uploads', express.static(uploadDir))
 app.use('/uploads', express.static(path.resolve(__dirname, '../public/uploads')))
+app.use('/api/uploads', express.static(uploadDir))
 app.use('/products', express.static(path.resolve(__dirname, '../public/products')))
 
 // Health check
