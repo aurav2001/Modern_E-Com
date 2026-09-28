@@ -103,3 +103,29 @@
 .aimg { width: 60px; height: 60px; border-radius: 10px; border: 2px solid var(--line-2); background: #fff; padding: 4px; }
 .aimg.active { border-color: var(--ink); }
 .aimg img { width: 100%; height: 100%; object-fit: contain; }
+
+/* ── Enhanced Product Editor ── */
+.a-sec-head { font-size: 13.5px; font-weight: 700; color: var(--ink); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+.a-sec-hint { font-size: 11.5px; color: var(--muted); font-weight: 400; }
+.a-upload-zone { display: flex; gap: 14px; align-items: center; padding: 14px; border: 1.5px dashed var(--line-2); border-radius: 12px; background: var(--paper); }
+.a-upload-prev { width: 72px; height: 72px; border-radius: 10px; border: 1px solid var(--line); background: #fff; padding: 4px; object-fit: contain; flex: none; }
+.a-upload-info { flex: 1; min-width: 0; }
+.a-upload-btn { display: inline-flex; align-items: center; gap: 7px; background: var(--ink); color: #fff; padding: 8px 14px; border-radius: 8px; font-size: 12.5px; font-weight: 600; cursor: pointer; transition: opacity 0.15s; }
+.a-upload-btn:hover { opacity: 0.9; }
+
+.a-color-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.a-color-chip { display: inline-flex; align-items: center; gap: 7px; padding: 4px 10px; background: #fff; border: 1.5px solid var(--line); border-radius: 20px; font-size: 12px; font-weight: 600; }
+.a-color-dot { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.15); flex: none; }
+.a-color-del { background: none; border: none; cursor: pointer; color: var(--muted); display: flex; align-items: center; padding: 0; }
+.a-color-del:hover { color: var(--sale); }
+
+.a-size-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+.a-size-btn { padding: 6px 14px; border-radius: 8px; border: 1.5px solid var(--line-2); background: #fff; font-size: 12.5px; font-weight: 700; color: var(--ink); cursor: pointer; transition: all 0.15s; }
+.a-size-btn:hover { border-color: var(--ink); }
+.a-size-btn.active { background: var(--ink); border-color: var(--ink); color: #fff; }
+
+.a-fab-list { display: grid; gap: 8px; }
+.a-fab-row { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; }
+.a-fab-name { flex: 1; font-weight: 600; font-size: 13px; }
+.a-fab-rate { width: 110px; }
+

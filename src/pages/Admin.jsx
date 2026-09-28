@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useRef } from 'react'
 import { Link, NavLink, useParams, useNavigate } from 'react-router-dom'
 import * as db from '../lib/db'
+import { api } from '../lib/api'
 import { useStore } from '../context/StoreContext'
 import { formatPrice, cx } from '../lib/utils'
 import { Modal } from '../components/Shared'
@@ -377,29 +378,151 @@ function Products() {
       </div>
       <p className="muted small" style={{ marginTop: 12 }}>Price, MRP and stock save as you type. Changes show on the storefront after a page refresh.</p>
 
-      {edit && <ProductEditor product={edit} onClose={() => setEdit(null)} onSave={(p) => { db.upsertProduct(p); setEdit(null); toast('Product saved') }} />}
+      {edit && (
+        <ProductEditor
+          product={edit}
+          onClose={() => setEdit(null)}
+          onSave={(p) => { db.upsertProduct(p); setEdit(null); toast('Product saved') }}
+          onDelete={(slug) => {
+            if (confirm(`Delete “${edit.name}” permanently?`)) {
+              db.deleteProduct(slug)
+              setEdit(null)
+              toast('Product deleted')
+            }
+          }}
+        />
+      )}
     </>
   )
 }
 
-function ProductEditor({ product, onClose, onSave }) {
+function ProductEditor({ product, onClose, onSave, onDelete }) {
   const isNewProduct = !product.id
+  const { toast } = useStore()
+  const fileInputRef = useRef(null)
+  const [uploading, setUploading] = useState(false)
+
+  const STANDARD_SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', 'Free Size']
+  const COLOR_PRESETS = [
+    { name: 'Navy Blue', hex: '#0e2140' },
+    { name: 'Royal Blue', hex: '#1e40af' },
+    { name: 'Black', hex: '#111827' },
+    { name: 'White', hex: '#ffffff' },
+    { name: 'Red', hex: '#dc2626' },
+    { name: 'Maroon', hex: '#881337' },
+    { name: 'Emerald Green', hex: '#059669' },
+    { name: 'Yellow', hex: '#eab308' },
+    { name: 'Orange', hex: '#ea580c' },
+    { name: 'Gray', hex: '#4b5563' },
+  ]
+  const FABRIC_PRESETS = ['Superpoly', 'Dotknit', 'PMC', '4 Way Lycra', 'Dry-Fit Mesh', 'Interlock', 'Micro Polyester']
+
   const [f, setF] = useState({
     ...product,
+    price: product.price || 0,
+    mrp: product.mrp || '',
+    stock: product.stock !== undefined ? product.stock : 100,
+    gst: product.gst !== undefined ? product.gst : 5,
+    categories: product.categories?.length ? product.categories : ['jerseys'],
+    subs: product.subs?.length ? product.subs : [SUBS.jerseys[0]],
     features: (product.features || []).join('\n'),
-    colorText: (product.colors || []).map((c) => `${c.name}:${c.hex}`).join(', '),
-    sizeText: (product.sizes || []).join(', '),
+    image: product.image || '/products/jersey.png',
   })
+
+  // Colors State
+  const [colors, setColors] = useState(() => {
+    if (product.colors && Array.isArray(product.colors) && product.colors.length) {
+      return product.colors.map((c) => ({
+        name: c.name || 'Color',
+        hex: c.hex || '#0e2140',
+        image: c.image || product.image,
+      }))
+    }
+    return [{ name: 'Navy Blue', hex: '#0e2140' }]
+  })
+  const [cName, setCName] = useState('')
+  const [cHex, setCHex] = useState('#1e40af')
+
+  // Sizes State
+  const [sizes, setSizes] = useState(() => {
+    return product.sizes && Array.isArray(product.sizes) && product.sizes.length ? product.sizes : ['S', 'M', 'L', 'XL']
+  })
+  const [customSize, setCustomSize] = useState('')
+
+  // Fabric / Quality Variants State
+  const [fabricOptions, setFabricOptions] = useState(() => {
+    return product.fabricOptions && Array.isArray(product.fabricOptions) ? product.fabricOptions : []
+  })
+  const [fabName, setFabName] = useState('')
+  const [fabRate, setFabRate] = useState(product.price || 420)
+
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value })
   const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
 
+  // File Upload
+  const handlePhotoUpload = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    try {
+      setUploading(true)
+      const res = await api.uploadImage(file)
+      if (res && res.url) {
+        setF((prev) => ({ ...prev, image: res.url }))
+        toast('Photo uploaded successfully!')
+      }
+    } catch (err) {
+      toast(err.message || 'Upload failed', { tone: 'error' })
+    } finally {
+      setUploading(false)
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    }
+  }
+
+  // Toggle Size
+  const toggleSize = (sz) => {
+    setSizes((prev) => (prev.includes(sz) ? prev.filter((s) => s !== sz) : [...prev, sz]))
+  }
+  const addCustomSize = (e) => {
+    e.preventDefault()
+    const sz = customSize.trim().toUpperCase()
+    if (!sz) return
+    if (!sizes.includes(sz)) setSizes([...sizes, sz])
+    setCustomSize('')
+  }
+
+  // Add Color
+  const addColor = (name, hex) => {
+    const n = (name || cName).trim()
+    const h = hex || cHex
+    if (!n) return
+    if (!colors.some((c) => c.name.toLowerCase() === n.toLowerCase())) {
+      setColors([...colors, { name: n, hex: h, image: f.image }])
+    }
+    setCName('')
+  }
+  const removeColor = (idx) => {
+    setColors(colors.filter((_, i) => i !== idx))
+  }
+
+  // Fabric / Variants
+  const addFabric = (name, rate) => {
+    const fn = (name || fabName).trim()
+    const fr = Number(rate !== undefined ? rate : fabRate) || Number(f.price) || 0
+    if (!fn) return
+    if (!fabricOptions.some((item) => item.name.toLowerCase() === fn.toLowerCase())) {
+      setFabricOptions([...fabricOptions, { name: fn, rate: fr }])
+    }
+    setFabName('')
+  }
+  const removeFabric = (idx) => {
+    setFabricOptions(fabricOptions.filter((_, i) => i !== idx))
+  }
+  const updateFabricRate = (idx, rate) => {
+    setFabricOptions(fabricOptions.map((item, i) => (i === idx ? { ...item, rate: Number(rate) } : item)))
+  }
+
   const save = (e) => {
     e.preventDefault()
-    const colors = f.colorText.split(',').map((c) => c.trim()).filter(Boolean).map((c) => {
-      const [name, hex] = c.split(':').map((x) => x.trim())
-      return { name: name || 'Colour', hex: hex || '#0e2140', image: f.image, images: [f.image] }
-    })
-    const sizes = f.sizeText.split(',').map((s) => s.trim()).filter(Boolean)
     onSave({
       ...product,
       name: f.name,
@@ -407,36 +530,69 @@ function ProductEditor({ product, onClose, onSave }) {
       price: +f.price || 0,
       mrp: f.mrp ? +f.mrp : null,
       stock: +f.stock || 0,
+      gst: Number(f.gst) || 5,
       image: f.image,
       gallery: [f.image],
       categories: [f.categories[0]],
       subs: f.subs,
       description: f.description,
-      fabric: f.fabric,
+      fabric: f.fabric || (fabricOptions[0]?.name ? `${fabricOptions[0].name} Performance Knit` : ''),
       features: f.features.split('\n').map((x) => x.trim()).filter(Boolean),
-      colors,
-      sizes,
+      colors: colors.length ? colors : [{ name: 'Standard', hex: '#0e2140', image: f.image }],
+      sizes: sizes.length ? sizes : ['S', 'M', 'L', 'XL'],
+      fabricOptions: fabricOptions,
       isNew: !!f.isNew,
       featured: !!f.featured,
-      rating: +f.rating || 4.5,
+      rating: +f.rating || 4.8,
       reviews: +f.reviews || 0,
     })
   }
 
   const cat = f.categories[0]
   return (
-    <Modal title={isNewProduct ? 'Add product' : 'Edit product'} onClose={onClose} width={760}>
+    <Modal title={isNewProduct ? 'Add product' : `Edit: ${product.name}`} onClose={onClose} width={820}>
       <form className="form-grid" onSubmit={save}>
-        <div className="field span-2"><label>Name</label><input className="input" required value={f.name} onChange={(e) => setF({ ...f, name: e.target.value, slug: isNewProduct ? slugify(e.target.value) : f.slug })} /></div>
-        <div className="field"><label>Price (₹)</label><input className="input" type="number" required value={f.price} onChange={set('price')} /></div>
-        <div className="field"><label>MRP (₹, optional)</label><input className="input" type="number" value={f.mrp || ''} onChange={set('mrp')} /></div>
-        <div className="field"><label>Stock</label><input className="input" type="number" value={f.stock} onChange={set('stock')} /></div>
-        <div className="field"><label>Category</label>
+        {/* Basic Details */}
+        <div className="field span-2">
+          <label>Product Name</label>
+          <input className="input" required value={f.name} onChange={(e) => setF({ ...f, name: e.target.value, slug: isNewProduct ? slugify(e.target.value) : f.slug })} placeholder="e.g. RS Pro Sublimated Match Jersey" />
+        </div>
+
+        <div className="field">
+          <label>Selling Price (₹)</label>
+          <input className="input" type="number" required min="0" value={f.price} onChange={set('price')} />
+        </div>
+        <div className="field">
+          <label>MRP (₹, optional)</label>
+          <input className="input" type="number" min="0" value={f.mrp || ''} onChange={set('mrp')} placeholder="Crossed-out price" />
+        </div>
+        <div className="field">
+          <label>Stock Quantity</label>
+          <input className="input" type="number" min="0" value={f.stock} onChange={set('stock')} />
+        </div>
+        <div className="field">
+          <label>GST / Tax Rate (%)</label>
+          <select className="select" value={f.gst} onChange={set('gst')}>
+            <option value="5">5% (Apparel / Sportswear standard)</option>
+            <option value="12">12% (Caps, Bags & Accessories)</option>
+            <option value="18">18% (Standard Rate)</option>
+            <option value="0">0% (Tax Exempt)</option>
+          </select>
+        </div>
+
+        <div className="field">
+          <label>Primary Category</label>
           <select className="select" value={cat} onChange={(e) => setF({ ...f, categories: [e.target.value], subs: [SUBS[e.target.value][0]] })}>
             {CATS.map((c) => <option key={c.slug} value={c.slug}>{c.name}</option>)}
           </select>
         </div>
-        <div className="field span-2"><label>Sub-categories</label>
+        <div className="field">
+          <label>Product Slug (URL)</label>
+          <input className="input" value={f.slug || ''} onChange={set('slug')} placeholder="auto-generated-slug" />
+        </div>
+
+        <div className="field span-2">
+          <label>Sub-categories</label>
           <div className="achips">
             {SUBS[cat].map((s) => (
               <button type="button" key={s} className={cx('chip', f.subs.includes(s) && 'active')}
@@ -446,7 +602,28 @@ function ProductEditor({ product, onClose, onSave }) {
             ))}
           </div>
         </div>
-        <div className="field span-2"><label>Photo</label>
+
+        {/* Photo Upload Section */}
+        <div className="field span-2">
+          <div className="a-sec-head">
+            <span>Product Image</span>
+            <span className="a-sec-hint">Upload from PC or mobile device</span>
+          </div>
+
+          <div className="a-upload-zone">
+            <img className="a-upload-prev" src={f.image} alt="Preview" onError={(e) => { e.target.src = '/products/jersey.png' }} />
+            <div className="a-upload-info">
+              <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="image/*" onChange={handlePhotoUpload} />
+              <button type="button" className="a-upload-btn" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
+                <Plus width={15} height={15} /> {uploading ? 'Uploading…' : 'Upload photo from device'}
+              </button>
+              <div style={{ marginTop: 8 }}>
+                <input className="input" style={{ fontSize: '12px', height: '32px' }} value={f.image} onChange={set('image')} placeholder="Or enter image URL: /products/rs-prod-01.jpg" />
+              </div>
+            </div>
+          </div>
+
+          <p className="small muted" style={{ margin: '8px 0 6px' }}>Or choose from existing presets:</p>
           <div className="aimgs">
             {IMAGES.map((src) => (
               <button type="button" key={src} className={cx('aimg', f.image === src && 'active')} onClick={() => setF({ ...f, image: src })}>
@@ -454,20 +631,136 @@ function ProductEditor({ product, onClose, onSave }) {
               </button>
             ))}
           </div>
-          <input className="input" style={{ marginTop: 8 }} value={f.image} onChange={set('image')} placeholder="/products/your-photo.png" />
         </div>
-        <div className="field span-2"><label>Description</label><textarea className="textarea" style={{ minHeight: 80 }} value={f.description} onChange={set('description')} /></div>
-        <div className="field span-2"><label>Fabric</label><input className="input" value={f.fabric || ''} onChange={set('fabric')} placeholder="150 GSM Micro Polyester" /></div>
-        <div className="field span-2"><label>Features (one per line)</label><textarea className="textarea" style={{ minHeight: 90 }} value={f.features} onChange={set('features')} /></div>
-        <div className="field"><label>Colours (Name:#hex, comma separated)</label><input className="input" value={f.colorText} onChange={set('colorText')} /></div>
-        <div className="field"><label>Sizes (comma separated)</label><input className="input" value={f.sizeText} onChange={set('sizeText')} placeholder="S, M, L, XL — blank for one-size" /></div>
-        <div className="field span-2" style={{ flexDirection: 'row', gap: 20 }}>
-          <label className="check"><input type="checkbox" checked={!!f.isNew} onChange={(e) => setF({ ...f, isNew: e.target.checked })} /> Mark as New</label>
-          <label className="check"><input type="checkbox" checked={!!f.featured} onChange={(e) => setF({ ...f, featured: e.target.checked })} /> Best seller</label>
+
+        {/* Color Management */}
+        <div className="field span-2">
+          <div className="a-sec-head">
+            <span>Colors & Swatches ({colors.length})</span>
+            <span className="a-sec-hint">Add colors shown on the product card</span>
+          </div>
+
+          <div className="a-color-grid">
+            {colors.map((c, i) => (
+              <div className="a-color-chip" key={i}>
+                <span className="a-color-dot" style={{ background: c.hex }} />
+                <span>{c.name}</span>
+                <button type="button" className="a-color-del" onClick={() => removeColor(i)} title="Remove color"><X width={13} height={13} /></button>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', marginTop: 6 }}>
+            <input className="input" style={{ width: 140, height: 34 }} placeholder="Color name" value={cName} onChange={(e) => setCName(e.target.value)} />
+            <input type="color" style={{ width: 40, height: 34, padding: 2, border: '1px solid var(--line)', borderRadius: 8, cursor: 'pointer' }} value={cHex} onChange={(e) => setCHex(e.target.value)} title="Pick hex code" />
+            <button type="button" className="btn btn--sm btn--outline" onClick={() => addColor()}><Plus width={14} height={14} /> Add Color</button>
+          </div>
+
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 8 }}>
+            <span className="small muted" style={{ alignSelf: 'center', marginRight: 4 }}>Quick presets:</span>
+            {COLOR_PRESETS.map((p) => (
+              <button type="button" key={p.name} className="chip" style={{ fontSize: 11, height: 26, padding: '0 8px' }} onClick={() => addColor(p.name, p.hex)}>
+                <span className="a-color-dot" style={{ background: p.hex, width: 10, height: 10, marginRight: 4, display: 'inline-block' }} />
+                {p.name}
+              </button>
+            ))}
+          </div>
         </div>
-        <div className="span-2" style={{ display: 'flex', gap: 8 }}>
-          <button className="btn btn--primary">Save product</button>
-          <button type="button" className="btn btn--ghost" onClick={onClose}>Cancel</button>
+
+        {/* Sizes Selection */}
+        <div className="field span-2">
+          <div className="a-sec-head">
+            <span>Available Sizes ({sizes.length} selected)</span>
+            <span className="a-sec-hint">Click pills to toggle sizes on/off</span>
+          </div>
+
+          <div className="a-size-grid">
+            {STANDARD_SIZES.map((sz) => (
+              <button type="button" key={sz} className={cx('a-size-btn', sizes.includes(sz) && 'active')} onClick={() => toggleSize(sz)}>
+                {sz}
+              </button>
+            ))}
+          </div>
+
+          <div style={{ display: 'flex', gap: 8, marginTop: 10, alignItems: 'center' }}>
+            <input className="input" style={{ width: 180, height: 34 }} placeholder="Custom size (e.g. 28, 30)" value={customSize} onChange={(e) => setCustomSize(e.target.value)} />
+            <button type="button" className="btn btn--sm btn--outline" onClick={addCustomSize}><Plus width={14} height={14} /> Add Size</button>
+          </div>
+        </div>
+
+        {/* Fabric & Variants Quality Options */}
+        <div className="field span-2">
+          <div className="a-sec-head">
+            <span>Fabric / Quality Variants & Rates ({fabricOptions.length})</span>
+            <span className="a-sec-hint">Different fabrics with specific price points</span>
+          </div>
+
+          {fabricOptions.length > 0 ? (
+            <div className="a-fab-list" style={{ marginBottom: 12 }}>
+              {fabricOptions.map((item, i) => (
+                <div className="a-fab-row" key={i}>
+                  <span className="a-fab-name">{item.name}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ fontSize: 13, color: 'var(--muted)' }}>₹</span>
+                    <input className="input a-fab-rate" type="number" min="0" value={item.rate} onChange={(e) => updateFabricRate(i, e.target.value)} />
+                  </div>
+                  <button type="button" className="icon-btn" style={{ color: 'var(--sale)', width: 30, height: 30 }} onClick={() => removeFabric(i)} title="Remove fabric variant"><Trash width={14} height={14} /></button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="small muted" style={{ marginBottom: 10 }}>No custom fabric variants yet. Base price (₹{f.price}) will apply.</p>
+          )}
+
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+            <input className="input" style={{ width: 160, height: 34 }} placeholder="Fabric name (e.g. Dotknit)" value={fabName} onChange={(e) => setFabName(e.target.value)} />
+            <input className="input" style={{ width: 100, height: 34 }} type="number" placeholder="₹ Rate" value={fabRate} onChange={(e) => setFabRate(e.target.value)} />
+            <button type="button" className="btn btn--sm btn--outline" onClick={() => addFabric()}><Plus width={14} height={14} /> Add Variant</button>
+          </div>
+
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 8 }}>
+            <span className="small muted" style={{ alignSelf: 'center', marginRight: 4 }}>Add sports fabric:</span>
+            {FABRIC_PRESETS.map((name) => (
+              <button type="button" key={name} className="chip" style={{ fontSize: 11, height: 26, padding: '0 8px' }} onClick={() => addFabric(name, f.price)}>
+                + {name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Description & Features */}
+        <div className="field span-2">
+          <label>Product Description</label>
+          <textarea className="textarea" style={{ minHeight: 70 }} value={f.description} onChange={set('description')} placeholder="Detailed description of the product, manufacturing standards, etc." />
+        </div>
+        <div className="field span-2">
+          <label>Primary Fabric Specification</label>
+          <input className="input" value={f.fabric || ''} onChange={set('fabric')} placeholder="e.g. 150 GSM Micro Polyester, Breathable & Quick Dry" />
+        </div>
+        <div className="field span-2">
+          <label>Key Features (one per line)</label>
+          <textarea className="textarea" style={{ minHeight: 80 }} value={f.features} onChange={set('features')} placeholder="Sublimation printing&#10;Breathable fabric&#10;Custom team name & numbers" />
+        </div>
+
+        {/* Badges */}
+        <div className="field span-2" style={{ flexDirection: 'row', gap: 24, padding: '10px 0' }}>
+          <label className="check"><input type="checkbox" checked={!!f.isNew} onChange={(e) => setF({ ...f, isNew: e.target.checked })} /> Mark as “New Arrival”</label>
+          <label className="check"><input type="checkbox" checked={!!f.featured} onChange={(e) => setF({ ...f, featured: e.target.checked })} /> Mark as “Best Seller / Top”</label>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="span-2" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 12, paddingTop: 14, borderTop: '1px solid var(--line)' }}>
+          <div>
+            {!isNewProduct && onDelete && (
+              <button type="button" className="btn btn--sm btn--ghost" style={{ color: 'var(--sale)' }} onClick={() => onDelete(product.slug)}>
+                <Trash width={15} height={15} /> Delete Product
+              </button>
+            )}
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button type="button" className="btn btn--ghost" onClick={onClose}>Cancel</button>
+            <button type="submit" className="btn btn--primary">Save Product</button>
+          </div>
         </div>
       </form>
     </Modal>
