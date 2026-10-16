@@ -8,3 +8,5 @@ WhatsApp Unknown*
 .env.local
 .env.*
 !.env.example
+*.zip
+* (2).*

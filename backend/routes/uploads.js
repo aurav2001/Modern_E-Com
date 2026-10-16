@@ -1,0 +1,87 @@
+import { Router } from 'express'
+import multer from 'multer'
+import path from 'path'
+import fs from 'fs'
+import { requireAdmin } from '../middleware/auth.js'
+
+const _dirname = typeof __dirname !== 'undefined' ? __dirname : process.cwd()
+const UPLOAD_DIR = process.env.VERCEL ? path.join('/tmp', 'uploads') : path.resolve(_dirname, '../uploads')
+try {
+  if (!fs.existsSync(UPLOAD_DIR)) {
+    fs.mkdirSync(UPLOAD_DIR, { recursive: true })
+  }
+} catch {}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, UPLOAD_DIR)
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname)
+    const base = path.basename(file.originalname, ext).replace(/[^a-z0-9]/gi, '-').toLowerCase()
+    cb(null, `${base}-${Date.now()}${ext}`)
+  },
+})
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 25 * 1024 * 1024 }, // 25MB limit
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true)
+    } else {
+      cb(new Error('Only image files are allowed'))
+    }
+  },
+})
+
+export const uploadRouter = Router()
+
+// POST /api/upload - Single image upload (Admin only)
+uploadRouter.post('/', requireAdmin, (req, res) => {
+  // If base64 JSON is sent
+  if (req.body && req.body.base64) {
+    try {
+      const { base64, filename } = req.body
+      const matches = base64.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/)
+      if (matches && matches.length === 3) {
+        const ext = matches[1].split('/')[1] || 'jpg'
+        const cleanName = (filename || 'upload').replace(/[^a-z0-9]/gi, '-').toLowerCase()
+        const fname = `${cleanName}-${Date.now()}.${ext}`
+        const fpath = path.join(UPLOAD_DIR, fname)
+        fs.writeFileSync(fpath, Buffer.from(matches[2], 'base64'))
+        return res.json({
+          success: true,
+          message: 'Image uploaded successfully',
+          url: `/uploads/${fname}`,
+          dataUrl: base64,
+          filename: fname,
+        })
+      }
+      return res.json({
+        success: true,
+        message: 'Image processed successfully',
+        url: base64,
+      })
+    } catch {
+      return res.json({ success: true, url: req.body.base64 })
+    }
+  }
+
+  // Handle standard multipart form data
+  upload.single('image')(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({ success: false, message: err.message })
+    }
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'No image file uploaded' })
+    }
+    const publicUrl = `/uploads/${req.file.filename}`
+    res.json({
+      success: true,
+      message: 'Image uploaded successfully',
+      url: publicUrl,
+      filename: req.file.filename,
+    })
+  })
+})
