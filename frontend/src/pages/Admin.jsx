@@ -912,7 +912,10 @@ function Products() {
 function ProductEditor({ product, onClose, onSave, onDelete }) {
   const isNewProduct = !product.id
   const { toast } = useStore()
-  const fileInputRef = useRef(null)
+  const mainFileInputRef = useRef(null)
+  const hoverFileInputRef = useRef(null)
+  const colorFileInputRef = useRef(null)
+  const [activeColorIdx, setActiveColorIdx] = useState(null)
   const [uploading, setUploading] = useState(false)
 
   const STANDARD_SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', 'Free Size']
@@ -930,6 +933,10 @@ function ProductEditor({ product, onClose, onSave, onDelete }) {
   ]
   const FABRIC_PRESETS = ['Superpoly', 'Dotknit', 'PMC', '4 Way Lycra', 'Dry-Fit Mesh', 'Interlock', 'Micro Polyester']
 
+  const existingHover = (product.gallery && Array.isArray(product.gallery))
+    ? product.gallery.find((g) => g !== product.image) || ''
+    : ''
+
   const [f, setF] = useState({
     ...product,
     price: product.price || 0,
@@ -940,18 +947,19 @@ function ProductEditor({ product, onClose, onSave, onDelete }) {
     subs: product.subs?.length ? product.subs : [SUBS.jerseys[0]],
     features: (product.features || []).join('\n'),
     image: product.image || '/products/jersey.png',
+    hoverImage: product.hoverImage || existingHover,
   })
 
-  // Colors State
+  // Colors State with individual image support
   const [colors, setColors] = useState(() => {
     if (product.colors && Array.isArray(product.colors) && product.colors.length) {
       return product.colors.map((c) => ({
         name: c.name || 'Color',
         hex: c.hex || '#0e2140',
-        image: c.image || product.image,
+        image: c.image || product.image || '',
       }))
     }
-    return [{ name: 'Navy Blue', hex: '#0e2140' }]
+    return [{ name: 'Navy Blue', hex: '#0e2140', image: product.image || '' }]
   })
   const [cName, setCName] = useState('')
   const [cHex, setCHex] = useState('#1e40af')
@@ -972,33 +980,67 @@ function ProductEditor({ product, onClose, onSave, onDelete }) {
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value })
   const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
 
-  // File Upload
-  const handlePhotoUpload = async (e) => {
+  // Generic File Upload with local fallback
+  const uploadGeneric = async (file) => {
+    if (!file) return null
+    return new Promise((resolve) => {
+      const reader = new FileReader()
+      reader.onload = async (ev) => {
+        const localPreview = ev.target?.result
+        try {
+          setUploading(true)
+          const res = await api.uploadImage(file)
+          resolve(res && res.url ? res.url : localPreview)
+        } catch {
+          resolve(localPreview)
+        } finally {
+          setUploading(false)
+        }
+      }
+      reader.readAsDataURL(file)
+    })
+  }
+
+  // Main Photo Upload
+  const handleMainPhotoUpload = async (e) => {
     const file = e.target.files?.[0]
     if (!file) return
-
-    // 1. Instant local preview so user sees their photo immediately
-    const reader = new FileReader()
-    reader.onload = (ev) => {
-      if (ev.target?.result) {
-        setF((prev) => ({ ...prev, image: ev.target.result }))
-      }
+    const url = await uploadGeneric(file)
+    if (url) {
+      setF((prev) => ({ ...prev, image: url }))
+      toast('Main front photo updated!')
     }
-    reader.readAsDataURL(file)
+    if (mainFileInputRef.current) mainFileInputRef.current.value = ''
+  }
 
-    try {
-      setUploading(true)
-      const res = await api.uploadImage(file)
-      if (res && res.url) {
-        setF((prev) => ({ ...prev, image: res.url }))
-        toast('Photo uploaded and optimized successfully!')
-      }
-    } catch (err) {
-      toast(err.message || 'Upload failed', { tone: 'error' })
-    } finally {
-      setUploading(false)
-      if (fileInputRef.current) fileInputRef.current.value = ''
+  // Hover / Back Photo Upload
+  const handleHoverPhotoUpload = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const url = await uploadGeneric(file)
+    if (url) {
+      setF((prev) => ({ ...prev, hoverImage: url }))
+      toast('Hover back photo updated!')
     }
+    if (hoverFileInputRef.current) hoverFileInputRef.current.value = ''
+  }
+
+  // Specific Color Variant Photo Upload
+  const triggerColorPhotoUpload = (idx) => {
+    setActiveColorIdx(idx)
+    colorFileInputRef.current?.click()
+  }
+
+  const handleColorPhotoUpload = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file || activeColorIdx === null) return
+    const url = await uploadGeneric(file)
+    if (url) {
+      setColors((prev) => prev.map((c, i) => i === activeColorIdx ? { ...c, image: url } : c))
+      toast(`Photo updated for ${colors[activeColorIdx]?.name || 'color'}!`)
+    }
+    setActiveColorIdx(null)
+    if (colorFileInputRef.current) colorFileInputRef.current.value = ''
   }
 
   // Toggle Size
@@ -1046,6 +1088,12 @@ function ProductEditor({ product, onClose, onSave, onDelete }) {
 
   const save = (e) => {
     e.preventDefault()
+    const fullGallery = [f.image, f.hoverImage].filter(Boolean)
+    colors.forEach((c) => {
+      if (c.image && !fullGallery.includes(c.image)) fullGallery.push(c.image)
+    })
+    const uniqueGallery = [...new Set(fullGallery)]
+
     onSave({
       ...product,
       name: f.name,
@@ -1055,13 +1103,18 @@ function ProductEditor({ product, onClose, onSave, onDelete }) {
       stock: +f.stock || 0,
       gst: Number(f.gst) || 5,
       image: f.image,
-      gallery: [f.image],
+      gallery: uniqueGallery.length ? uniqueGallery : [f.image],
       categories: [f.categories[0]],
       subs: f.subs,
       description: f.description,
       fabric: f.fabric || (fabricOptions[0]?.name ? `${fabricOptions[0].name} Performance Knit` : ''),
       features: f.features.split('\n').map((x) => x.trim()).filter(Boolean),
-      colors: colors.length ? colors : [{ name: 'Standard', hex: '#0e2140', image: f.image }],
+      colors: colors.length ? colors.map((c) => ({
+        name: c.name,
+        hex: c.hex,
+        image: c.image || f.image,
+        images: [c.image || f.image],
+      })) : [{ name: 'Standard', hex: '#0e2140', image: f.image, images: [f.image] }],
       sizes: sizes.length ? sizes : ['S', 'M', 'L', 'XL'],
       fabricOptions: fabricOptions,
       isNew: !!f.isNew,
@@ -1160,23 +1213,57 @@ function ProductEditor({ product, onClose, onSave, onDelete }) {
 
             {/* Right Column: Media, Colors, Sizes, Fabric Variants */}
             <div>
-              {/* Photo Upload Section */}
+              {/* Hidden file inputs */}
+              <input type="file" ref={mainFileInputRef} style={{ display: 'none' }} accept="image/*" onChange={handleMainPhotoUpload} />
+              <input type="file" ref={hoverFileInputRef} style={{ display: 'none' }} accept="image/*" onChange={handleHoverPhotoUpload} />
+              <input type="file" ref={colorFileInputRef} style={{ display: 'none' }} accept="image/*" onChange={handleColorPhotoUpload} />
+
+              {/* Photo Upload Section: Main + Hover Photo */}
               <div className="admin-card-section">
-                <h4>Product Image & Photo Upload</h4>
-                <div className="a-upload-zone">
-                  <img className="a-upload-prev" src={f.image} alt="Preview" onError={(e) => { e.target.src = '/products/jersey.png' }} />
-                  <div className="a-upload-info">
-                    <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="image/*" onChange={handlePhotoUpload} />
-                    <button type="button" className="a-upload-btn" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
-                      <Plus width={15} height={15} /> {uploading ? 'Uploading…' : 'Upload photo from device'}
-                    </button>
-                    <div style={{ marginTop: 8 }}>
-                      <input className="input" style={{ fontSize: '12px', height: '32px' }} value={f.image} onChange={set('image')} placeholder="Or enter image URL: /products/rs-prod-01.jpg" />
+                <h4>Product Photos (Front & Hover)</h4>
+                <div className="a-media-grid">
+                  {/* Main Front Photo */}
+                  <div className="a-media-card">
+                    <div className="a-media-card-title">
+                      <span>Front Photo (Main)</span>
+                      <span className="badge badge--new" style={{ fontSize: 10, padding: '2px 6px' }}>Default</span>
                     </div>
+                    <img className="a-media-card-prev" src={f.image} alt="Front View" onError={(e) => { e.target.src = '/products/jersey.png' }} />
+                    <button type="button" className="btn btn--sm btn--primary" style={{ width: '100%', fontSize: 11 }} onClick={() => mainFileInputRef.current?.click()} disabled={uploading}>
+                      <Upload width={12} height={12} /> {uploading ? 'Uploading…' : 'Upload Front Photo'}
+                    </button>
+                    <input className="input" style={{ fontSize: 11, height: 28 }} value={f.image} onChange={set('image')} placeholder="Image URL: /products/..." />
+                  </div>
+
+                  {/* Hover / Back Photo */}
+                  <div className="a-media-card">
+                    <div className="a-media-card-title">
+                      <span>Hover Photo (Back)</span>
+                      {f.hoverImage && (
+                        <button type="button" className="icon-btn" style={{ width: 20, height: 20, color: 'var(--sale)' }} onClick={() => setF({ ...f, hoverImage: '' })} title="Remove hover photo">
+                          <X width={12} height={12} />
+                        </button>
+                      )}
+                    </div>
+                    {f.hoverImage ? (
+                      <img className="a-media-card-prev" src={f.hoverImage} alt="Hover View" onError={(e) => { e.target.src = '/products/jersey.png' }} />
+                    ) : (
+                      <div className="a-media-card-empty" onClick={() => hoverFileInputRef.current?.click()} style={{ cursor: 'pointer' }}>
+                        <Plus width={18} height={18} />
+                        <span>Add Hover / Back Photo</span>
+                      </div>
+                    )}
+                    <button type="button" className="btn btn--sm btn--outline" style={{ width: '100%', fontSize: 11 }} onClick={() => hoverFileInputRef.current?.click()} disabled={uploading}>
+                      <Upload width={12} height={12} /> {uploading ? 'Uploading…' : (f.hoverImage ? 'Change Hover Photo' : 'Upload Hover Photo')}
+                    </button>
+                    <input className="input" style={{ fontSize: 11, height: 28 }} value={f.hoverImage || ''} onChange={set('hoverImage')} placeholder="Image URL: /products/..." />
                   </div>
                 </div>
+                <p className="small muted" style={{ margin: '4px 0 10px', fontSize: 11.5 }}>
+                  💡 <b>Hover Photo:</b> Card par mouse le jaane par yeh photo dikhegi aur product page par 2nd photo banegi.
+                </p>
 
-                <p className="small muted" style={{ margin: '10px 0 6px' }}>Or choose from existing catalogue photos:</p>
+                <p className="small muted" style={{ margin: '8px 0 6px', fontSize: 12 }}>Or pick from existing catalogue photos:</p>
                 <div className="aimgs">
                   {IMAGES.map((src) => (
                     <button type="button" key={src} className={cx('aimg', f.image === src && 'active')} onClick={() => setF({ ...f, image: src })}>
@@ -1186,27 +1273,37 @@ function ProductEditor({ product, onClose, onSave, onDelete }) {
                 </div>
               </div>
 
-              {/* Color Management */}
+              {/* Color Management with Individual Photo Upload */}
               <div className="admin-card-section">
-                <h4>Colors & Swatches ({colors.length})</h4>
-                <div className="a-color-grid">
+                <h4>Color Variants & Photos ({colors.length})</h4>
+                <p className="small muted" style={{ margin: '0 0 10px', fontSize: 12 }}>
+                  Har color ke liye alag photo set kar sakte hain — customer jab storefront par color chunta hai, photo automatically switch hoti hai.
+                </p>
+
+                <div className="a-color-table">
                   {colors.map((c, i) => (
-                    <div className="a-color-chip" key={i}>
+                    <div className="a-color-row" key={i}>
                       <span className="a-color-dot" style={{ background: c.hex }} />
-                      <span>{c.name}</span>
-                      <button type="button" className="a-color-del" onClick={() => removeColor(i)} title="Remove color"><X width={13} height={13} /></button>
+                      <b style={{ fontSize: 13, minWidth: 90 }}>{c.name}</b>
+                      <img className="a-color-thumb" src={c.image || f.image} alt={c.name} onError={(e) => { e.target.src = f.image }} />
+                      <button type="button" className="btn btn--sm btn--outline" style={{ fontSize: 11, padding: '3px 8px', height: 28 }} onClick={() => triggerColorPhotoUpload(i)} disabled={uploading} title="Upload photo for this color variant">
+                        <Upload width={12} height={12} /> {c.image && c.image !== f.image ? 'Change Photo' : 'Upload Color Photo'}
+                      </button>
+                      <button type="button" className="icon-btn" style={{ marginLeft: 'auto', color: 'var(--sale)', width: 28, height: 28 }} onClick={() => removeColor(i)} title="Remove color variant">
+                        <X width={13} height={13} />
+                      </button>
                     </div>
                   ))}
                 </div>
 
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', marginTop: 6 }}>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', marginTop: 10 }}>
                   <input className="input" style={{ width: 140, height: 34 }} placeholder="Color name" value={cName} onChange={(e) => setCName(e.target.value)} />
                   <input type="color" style={{ width: 40, height: 34, padding: 2, border: '1px solid var(--line)', borderRadius: 8, cursor: 'pointer' }} value={cHex} onChange={(e) => setCHex(e.target.value)} title="Pick hex code" />
                   <button type="button" className="btn btn--sm btn--outline" onClick={() => addColor()}><Plus width={14} height={14} /> Add Color</button>
                 </div>
 
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 8 }}>
-                  <span className="small muted" style={{ alignSelf: 'center', marginRight: 4 }}>Quick presets:</span>
+                  <span className="small muted" style={{ alignSelf: 'center', marginRight: 4, fontSize: 11 }}>Presets:</span>
                   {COLOR_PRESETS.map((p) => (
                     <button type="button" key={p.name} className="chip" style={{ fontSize: 11, height: 26, padding: '0 8px' }} onClick={() => addColor(p.name, p.hex)}>
                       <span className="a-color-dot" style={{ background: p.hex, width: 10, height: 10, marginRight: 4, display: 'inline-block' }} />
