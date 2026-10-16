@@ -448,6 +448,64 @@ function Products() {
     toast('📥 Sample Excel template downloaded!')
   }
 
+  // 1b. Export All Live Products to Excel
+  const exportProductsToExcel = () => {
+    const prods = db.getProducts()
+    if (!prods || prods.length === 0) {
+      toast('⚠️ No products available to export!')
+      return
+    }
+
+    const headers = [
+      'Name',
+      'Category',
+      'Subcategory',
+      'Price',
+      'MRP',
+      'Stock',
+      'Sizes',
+      'Colors',
+      'Fabric',
+      'Description',
+      'ImageURL'
+    ]
+
+    const rows = prods.map((p) => [
+      p.name || '',
+      p.categories?.[0] || 'jerseys',
+      p.subs?.[0] || '',
+      p.price ?? 0,
+      p.mrp || Math.round((p.price || 0) * 1.5),
+      p.stock ?? 100,
+      (p.sizes || []).join(', '),
+      (p.colors || []).map((c) => (typeof c === 'object' ? c.name : c)).filter(Boolean).join(', '),
+      (p.fabrics || []).map((f) => (typeof f === 'object' ? f.name : f)).filter(Boolean).join(', '),
+      p.description || '',
+      p.image || ''
+    ])
+
+    const ws = XLSX.utils.aoa_to_sheet([headers, ...rows])
+    ws['!cols'] = [
+      { wch: 34 }, // Name
+      { wch: 15 }, // Category
+      { wch: 20 }, // Subcategory
+      { wch: 10 }, // Price
+      { wch: 10 }, // MRP
+      { wch: 10 }, // Stock
+      { wch: 22 }, // Sizes
+      { wch: 25 }, // Colors
+      { wch: 25 }, // Fabric
+      { wch: 55 }, // Description
+      { wch: 35 }, // ImageURL
+    ]
+
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, 'Products')
+    const today = new Date().toISOString().slice(0, 10)
+    XLSX.writeFile(wb, `rishikar_products_export_${today}.xlsx`)
+    toast(`📥 Exported ${prods.length} products to Excel!`)
+  }
+
   // 2. Parse Uploaded Excel File
   const handleExcelUpload = (e) => {
     const file = e.target.files?.[0]
@@ -685,6 +743,9 @@ function Products() {
       <header className="admin__head">
         <div><h1>Products</h1><p className="muted">{products.length} products in catalogue · Database connected</p></div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+          <button className="btn btn--outline btn--sm" onClick={exportProductsToExcel} title="Export all catalogue products into Excel (.xlsx) file">
+            <Download width={14} height={14} /> Export Excel
+          </button>
           <button className="btn btn--outline btn--sm" onClick={downloadProductTemplate} title="Download sample Excel sheet format">
             <Download width={14} height={14} /> Sample Template
           </button>
@@ -1284,16 +1345,46 @@ function Enquiries() {
 
 function Customers() {
   useDb()
-  const users = db.getUsers()
+  const rawUsers = db.getUsers()
+  // Clean / deduplicate by email
+  const seen = new Set()
+  const users = rawUsers.filter((u) => {
+    if (!u || !u.email) return false
+    const em = String(u.email).toLowerCase().trim()
+    if (seen.has(em)) return false
+    seen.add(em)
+    return true
+  })
+
   const orders = db.getOrders()
   const rows = users.map((u) => {
-    const mine = orders.filter((o) => o.email === u.email)
-    return { ...u, orders: mine.length, spent: mine.reduce((a, o) => a + o.total, 0) }
+    const mine = orders.filter((o) => o.email && u.email && o.email.toLowerCase() === u.email.toLowerCase())
+    return { ...u, orders: mine.length, spent: mine.reduce((a, o) => a + (o.total || 0), 0) }
   }).sort((a, b) => b.spent - a.spent)
+
+  const handleClean = () => {
+    db.cleanDuplicateUsers()
+    window.location.reload()
+  }
+
+  const handleDelete = (email) => {
+    if (confirm(`Delete customer (${email})?`)) {
+      db.deleteUser(email)
+    }
+  }
+
   return (
     <>
       <header className="admin__head">
-        <div><h1>Customers</h1><p className="muted">{users.length} registered accounts</p></div>
+        <div>
+          <h1>Customers</h1>
+          <p className="muted">{users.length} unique registered {users.length === 1 ? 'account' : 'accounts'}</p>
+        </div>
+        {rawUsers.length > users.length && (
+          <button className="btn btn--sm btn--outline" onClick={handleClean} style={{ color: 'var(--sale)', borderColor: 'var(--sale)' }} title="Click to clear all repeated duplicate records">
+            🧹 Clean Duplicates ({rawUsers.length - users.length} removed)
+          </button>
+        )}
       </header>
       {rows.length === 0 ? (
         <div className="acard"><p className="muted small" style={{ padding: '24px 0', textAlign: 'center' }}>No customers yet. Sign up on the store to see one here.</p></div>
@@ -1301,16 +1392,26 @@ function Customers() {
         <div className="acard" style={{ padding: 0 }}>
           <div className="atable-wrap">
             <table className="atable">
-              <thead><tr><th>Customer</th><th>Email</th><th>Mobile</th><th>Orders</th><th>Spent</th><th>Joined</th></tr></thead>
+              <thead><tr><th>Customer</th><th>Email</th><th>Mobile</th><th>Orders</th><th>Spent</th><th>Joined</th><th></th></tr></thead>
               <tbody>
                 {rows.map((u) => (
-                  <tr key={u.email}>
-                    <td><div className="aprod"><span className="avatar">{u.name[0]}</span><b>{u.name}</b></div></td>
+                  <tr key={u.id || u.email}>
+                    <td><div className="aprod"><span className="avatar">{u.name?.[0] || 'U'}</span><b>{u.name || 'Anonymous'}</b></div></td>
                     <td className="small">{u.email}</td>
-                    <td className="small">{u.phone}</td>
+                    <td className="small">{u.phone || '—'}</td>
                     <td>{u.orders}</td>
                     <td><b>{formatPrice(u.spent)}</b></td>
                     <td className="small">{u.createdAt ? fmtDate(u.createdAt) : '—'}</td>
+                    <td style={{ textAlign: 'right' }}>
+                      <button
+                        className="btn btn--sm btn--ghost"
+                        style={{ color: 'var(--sale)' }}
+                        title="Delete customer"
+                        onClick={() => handleDelete(u.email)}
+                      >
+                        <Trash width={14} height={14} />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>

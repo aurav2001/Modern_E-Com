@@ -88,7 +88,34 @@ export function deleteOrder(id) {
 }
 
 // ── Customers ─────────────────────────────────────────────
-export const getUsers = () => loadLS(KEYS.users, [])
+export const getUsers = () => {
+  const raw = loadLS(KEYS.users, [])
+  if (!Array.isArray(raw)) return []
+  const seen = new Set()
+  const unique = raw.filter((u) => {
+    if (!u || !u.email) return false
+    const em = String(u.email).toLowerCase().trim()
+    if (seen.has(em)) return false
+    seen.add(em)
+    return true
+  })
+  if (unique.length !== raw.length) {
+    saveLS(KEYS.users, unique)
+  }
+  return unique
+}
+export function deleteUser(email) {
+  const list = getUsers().filter((u) => u.email.toLowerCase() !== String(email).toLowerCase())
+  saveLS(KEYS.users, list)
+  notify()
+  return list
+}
+export function cleanDuplicateUsers() {
+  const list = getUsers()
+  saveLS(KEYS.users, list)
+  notify()
+  return list
+}
 
 // ── Enquiries (bulk quote + contact form) ─────────────────
 export const getEnquiries = () => loadLS(KEYS.enquiries, [])

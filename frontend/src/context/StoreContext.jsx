@@ -9,16 +9,30 @@ const { freeShipAbove: FREE_SHIP_ABOVE, shippingFee: SHIPPING_FEE, codFee: COD_F
 
 const StoreContext = createContext(null)
 
-const initial = () => ({
-  cart: loadLS('rs.cart', []),
-  wishlist: loadLS('rs.wishlist', []),
-  user: loadLS('rs.user', null),
-  users: loadLS('rs.users', []),
-  orders: loadLS('rs.orders', []),
-  addresses: loadLS('rs.addresses', []),
-  coupon: loadLS('rs.coupon', null),
-  recent: loadLS('rs.recent', []),
-})
+const initial = () => {
+  const rawUsers = loadLS('rs.users', [])
+  const seenEmails = new Set()
+  const cleanUsers = Array.isArray(rawUsers)
+    ? rawUsers.filter((u) => {
+        if (!u || !u.email) return false
+        const em = String(u.email).toLowerCase().trim()
+        if (seenEmails.has(em)) return false
+        seenEmails.add(em)
+        return true
+      })
+    : []
+
+  return {
+    cart: loadLS('rs.cart', []),
+    wishlist: loadLS('rs.wishlist', []),
+    user: loadLS('rs.user', null),
+    users: cleanUsers,
+    orders: loadLS('rs.orders', []),
+    addresses: loadLS('rs.addresses', []),
+    coupon: loadLS('rs.coupon', null),
+    recent: loadLS('rs.recent', []),
+  }
+}
 
 const lineKey = (slug, color, size, fabric) => `${slug}__${color || '-'}__${size || '-'}__${fabric || '-'}`
 
@@ -63,8 +77,14 @@ function reducer(state, action) {
       return { ...state, coupon: action.code }
     case 'LOGIN':
       return { ...state, user: action.user }
-    case 'REGISTER':
-      return { ...state, users: [...state.users, action.user], user: action.user }
+    case 'REGISTER': {
+      const email = action.user?.email ? String(action.user.email).toLowerCase().trim() : null
+      const idx = email ? state.users.findIndex((u) => u.email && String(u.email).toLowerCase().trim() === email) : -1
+      const users = idx >= 0
+        ? state.users.map((u, i) => (i === idx ? { ...u, ...action.user } : u))
+        : [...state.users, action.user]
+      return { ...state, users, user: action.user }
+    }
     case 'UPDATE_USER': {
       const user = { ...state.user, ...action.patch }
       return { ...state, user, users: state.users.map((u) => (u.email === user.email ? user : u)) }
