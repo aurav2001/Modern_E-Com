@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, useRef } from 'react'
 import { Link, NavLink, useParams, useNavigate } from 'react-router-dom'
+import * as XLSX from 'xlsx'
 import * as db from '../lib/db'
 import { api } from '../lib/api'
 import { useStore } from '../context/StoreContext'
@@ -7,7 +8,7 @@ import { formatPrice, cx } from '../lib/utils'
 import { Modal } from '../components/Shared'
 import {
   Grid, Package, User, Mail, Lock, LogOut, Plus, Trash, Search, X, ArrowRight,
-  Scissors, Truck, Check, Shield,
+  Scissors, Truck, Check, Shield, Download, Upload,
 } from '../components/Icons'
 
 const STAGES = ['Placed', 'Packed', 'Shipped', 'Out for delivery', 'Delivered', 'Cancelled']
@@ -328,6 +329,9 @@ function Products() {
   const [cat, setCat] = useState('All')
   const [edit, setEdit] = useState(null)
   const [syncing, setSyncing] = useState(false)
+  const [excelPreview, setExcelPreview] = useState(null)
+  const [importing, setImporting] = useState(false)
+  const excelFileRef = useRef(null)
   const products = db.getProducts()
 
   // Smart Sync: If local has items not in MySQL, push all to database
@@ -363,6 +367,315 @@ function Products() {
     }
   }
 
+  // 1. Download Excel Template
+  const downloadProductTemplate = () => {
+    const headers = [
+      'Name*', 'Category*', 'Subcategory', 'Price*', 'MRP', 'Stock', 'Sizes', 'Colors', 'Fabric', 'Description', 'ImageURL'
+    ]
+    const sampleRows = [
+      [
+        'RS Pro Cricket Jersey',
+        'jerseys',
+        'cricket-jerseys',
+        350,
+        599,
+        100,
+        'S, M, L, XL, 2XL',
+        'Navy Blue, White',
+        'Dotknit',
+        'Professional match jersey with moisture wicking fabric and sublimation print',
+        '/products/rs/rs-prod-01.jpg'
+      ],
+      [
+        'RS Athletic Polo T-Shirt',
+        'tshirts',
+        'polo-tshirts',
+        399,
+        699,
+        80,
+        'M, L, XL',
+        'Black, Royal Blue',
+        'Honeycomb Cotton',
+        'Breathable pique polo t-shirt for daily workouts and coaching',
+        '/products/rs/rs-prod-02.jpg'
+      ],
+      [
+        'RS Elite Tracksuit (Top + Lower)',
+        'teamwear',
+        'tracksuits',
+        950,
+        1499,
+        50,
+        'S, M, L, XL',
+        'Navy Blue, Red',
+        'Micro Peach Poly',
+        'Complete tournament tracksuit with zip pockets and breathable mesh lining',
+        '/products/rs/rs-prod-04.jpg'
+      ],
+      [
+        'RS Official Sports Cap',
+        'accessories',
+        'caps',
+        250,
+        450,
+        120,
+        'Free Size',
+        'Navy Blue, Black',
+        'Cotton Twill',
+        '3D embroidered logo cap with adjustable rear metal buckle',
+        '/products/rs/rs-prod-03.jpg'
+      ]
+    ]
+
+    const ws = XLSX.utils.aoa_to_sheet([headers, ...sampleRows])
+    ws['!cols'] = [
+      { wch: 32 }, // Name
+      { wch: 14 }, // Category
+      { wch: 18 }, // Subcategory
+      { wch: 10 }, // Price
+      { wch: 10 }, // MRP
+      { wch: 10 }, // Stock
+      { wch: 20 }, // Sizes
+      { wch: 22 }, // Colors
+      { wch: 20 }, // Fabric
+      { wch: 45 }, // Description
+      { wch: 30 }, // ImageURL
+    ]
+
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, 'Products')
+    XLSX.writeFile(wb, 'rishikar_products_template.xlsx')
+    toast('📥 Sample Excel template downloaded!')
+  }
+
+  // 2. Parse Uploaded Excel File
+  const handleExcelUpload = (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = (evt) => {
+      try {
+        const data = new Uint8Array(evt.target.result)
+        const wb = XLSX.read(data, { type: 'array' })
+        const sheetName = wb.SheetNames[0]
+        const ws = wb.Sheets[sheetName]
+        const rawRows = XLSX.utils.sheet_to_json(ws, { defval: '' })
+
+        if (!rawRows || rawRows.length === 0) {
+          toast('⚠️ Selected Excel sheet is empty!')
+          return
+        }
+
+        const existingProducts = db.getProducts()
+        const existingMap = new Map(existingProducts.map((p) => [p.slug.toLowerCase(), p]))
+        const existingNameMap = new Map(existingProducts.map((p) => [p.name.toLowerCase().trim(), p]))
+
+        const parsedList = []
+        let newCount = 0
+        let updateCount = 0
+        let skippedCount = 0
+
+        rawRows.forEach((r) => {
+          const row = {}
+          for (const [k, v] of Object.entries(r)) {
+            row[k.toLowerCase().replace(/[^a-z0-9]/g, '')] = v
+          }
+
+          const name = String(row.name || row.productname || row.product || row.title || '').trim()
+          const price = Number(row.price || row.rate || row.sellingprice || 0)
+
+          if (!name || isNaN(price) || price <= 0) {
+            skippedCount++
+            return
+          }
+
+          const rawMrp = Number(row.mrp || row.originalprice || row.marketprice || 0)
+          const mrp = (!isNaN(rawMrp) && rawMrp > price) ? rawMrp : Math.round(price * 1.5)
+
+          const rawStock = Number(row.stock || row.quantity || row.qty || 100)
+          const stock = !isNaN(rawStock) && rawStock >= 0 ? rawStock : 100
+
+          let category = String(row.category || row.cat || 'jerseys').toLowerCase().trim()
+          if (category.includes('tshirt') || category.includes('polo')) category = 'tshirts'
+          else if (category.includes('team') || category.includes('track') || category.includes('lower') || category.includes('short')) category = 'teamwear'
+          else if (category.includes('cap') || category.includes('bag') || category.includes('access')) category = 'accessories'
+          else if (!['jerseys', 'tshirts', 'teamwear', 'accessories'].includes(category)) category = 'jerseys'
+
+          let sub = String(row.subcategory || row.sub || '').toLowerCase().trim()
+          if (!sub) {
+            if (category === 'jerseys') sub = 'cricket-jerseys'
+            else if (category === 'tshirts') sub = 'polo-tshirts'
+            else if (category === 'teamwear') sub = 'tracksuits'
+            else sub = 'caps'
+          }
+
+          let sizes = ['S', 'M', 'L', 'XL']
+          const rawSizes = row.sizes || row.size
+          if (rawSizes) {
+            const split = String(rawSizes).split(/[,/|]+/).map((s) => s.trim().toUpperCase()).filter(Boolean)
+            if (split.length > 0) sizes = split
+          }
+
+          let colors = [{ name: 'Navy Blue', hex: '#0e2140' }]
+          const rawColors = row.colors || row.color
+          if (rawColors) {
+            const split = String(rawColors).split(/[,/|]+/).map((c) => c.trim()).filter(Boolean)
+            if (split.length > 0) {
+              colors = split.map((c) => ({
+                name: c,
+                hex: c.toLowerCase().includes('black') ? '#111827' :
+                     c.toLowerCase().includes('white') ? '#ffffff' :
+                     c.toLowerCase().includes('red') ? '#dc2626' :
+                     c.toLowerCase().includes('royal') ? '#1e40af' :
+                     c.toLowerCase().includes('green') ? '#16a34a' :
+                     c.toLowerCase().includes('yellow') ? '#eab308' : '#0e2140'
+              }))
+            }
+          }
+
+          const fabric = String(row.fabric || row.material || 'Dotknit / Standard Poly').trim()
+          const description = String(row.description || row.desc || `${name} designed for optimal athletic performance and teamwear durability.`).trim()
+          const image = String(row.imageurl || row.image || row.photo || '/products/jersey.png').trim()
+
+          const baseSlug = String(row.slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''))
+          const existing = existingMap.get(baseSlug.toLowerCase()) || existingNameMap.get(name.toLowerCase())
+
+          if (existing) {
+            updateCount++
+            parsedList.push({
+              action: 'update',
+              slug: existing.slug,
+              id: existing.id,
+              name,
+              category,
+              sub,
+              price,
+              mrp,
+              stock,
+              sizes,
+              colors: existing.colors?.length ? existing.colors : colors,
+              fabric,
+              description,
+              image: existing.image || image,
+              oldPrice: existing.price,
+              oldStock: existing.stock,
+            })
+          } else {
+            newCount++
+            parsedList.push({
+              action: 'new',
+              slug: baseSlug,
+              name,
+              category,
+              sub,
+              price,
+              mrp,
+              stock,
+              sizes,
+              colors,
+              fabric,
+              description,
+              image,
+              isNew: true,
+              rating: 4.8,
+              reviews: 14,
+            })
+          }
+        })
+
+        if (parsedList.length === 0) {
+          toast('❌ No valid products found. Ensure columns "Name" and "Price" exist.')
+          return
+        }
+
+        setExcelPreview({
+          filename: file.name,
+          items: parsedList,
+          newCount,
+          updateCount,
+          skippedCount,
+        })
+      } catch (err) {
+        toast(`❌ Error parsing Excel: ${err.message}`)
+      } finally {
+        if (e.target) e.target.value = ''
+      }
+    }
+    reader.readAsArrayBuffer(file)
+  }
+
+  // 3. Confirm and Save Excel Products
+  const handleConfirmExcelImport = async () => {
+    if (!excelPreview || !excelPreview.items.length) return
+    try {
+      setImporting(true)
+      const currentProducts = db.getProducts()
+      let updatedList = [...currentProducts]
+      let maxId = Math.max(0, ...currentProducts.map((p) => Number(p.id) || 0))
+
+      excelPreview.items.forEach((item) => {
+        if (item.action === 'update') {
+          const idx = updatedList.findIndex((p) => p.slug === item.slug || p.id === item.id)
+          if (idx !== -1) {
+            updatedList[idx] = {
+              ...updatedList[idx],
+              price: item.price,
+              mrp: item.mrp,
+              stock: item.stock,
+              fabric: item.fabric || updatedList[idx].fabric,
+              description: item.description || updatedList[idx].description,
+              categories: [item.category],
+              subs: [item.sub],
+              sizes: item.sizes,
+            }
+          }
+        } else {
+          maxId += 1
+          updatedList.unshift({
+            id: maxId,
+            slug: item.slug,
+            name: item.name,
+            price: item.price,
+            mrp: item.mrp,
+            stock: item.stock,
+            categories: [item.category],
+            subs: [item.sub],
+            sizes: item.sizes,
+            colors: item.colors,
+            fabric: item.fabric,
+            description: item.description,
+            image: item.image,
+            gallery: [item.image],
+            rating: item.rating || 4.8,
+            reviews: item.reviews || 10,
+            isNew: true,
+            featured: false,
+            topSelling: false,
+            createdAt: new Date().toISOString(),
+          })
+        }
+      })
+
+      // Save to local storage
+      db.saveProducts(updatedList)
+
+      // Sync to MySQL Database
+      try {
+        await api.syncProducts(updatedList)
+        toast(`✅ Success! ${excelPreview.items.length} products imported and synced to MySQL!`)
+      } catch (apiErr) {
+        toast(`✅ Products saved! (MySQL sync: ${apiErr.message})`)
+      }
+
+      setExcelPreview(null)
+    } catch (err) {
+      toast(`❌ Import failed: ${err.message}`)
+    } finally {
+      setImporting(false)
+    }
+  }
+
   const list = products.filter((p) => (cat === 'All' || p.categories.includes(cat)) && (!q || p.name.toLowerCase().includes(q.toLowerCase())))
 
   const quick = (slug, patch) => { db.upsertProduct({ slug, ...patch }) }
@@ -371,9 +684,22 @@ function Products() {
     <>
       <header className="admin__head">
         <div><h1>Products</h1><p className="muted">{products.length} products in catalogue · Database connected</p></div>
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+          <button className="btn btn--outline btn--sm" onClick={downloadProductTemplate} title="Download sample Excel sheet format">
+            <Download width={14} height={14} /> Sample Template
+          </button>
+          <button className="btn btn--outline btn--sm" onClick={() => excelFileRef.current?.click()} title="Import products in bulk from Excel sheet">
+            <Upload width={14} height={14} /> Import Excel
+          </button>
+          <input
+            ref={excelFileRef}
+            type="file"
+            accept=".xlsx, .xls, .csv"
+            style={{ display: 'none' }}
+            onChange={handleExcelUpload}
+          />
           <button className="btn btn--outline btn--sm" onClick={handleManualSync} disabled={syncing} title="Push all catalogue products directly into cPanel MySQL">
-            {syncing ? 'Syncing to MySQL…' : `☁️ Sync to Database (${products.length})`}
+            {syncing ? 'Syncing…' : `☁️ Sync Database (${products.length})`}
           </button>
           <button className="btn btn--primary btn--sm" onClick={() => setEdit({ ...blankProduct })}><Plus width={15} height={15} /> Add product</button>
         </div>
@@ -431,6 +757,92 @@ function Products() {
             }
           }}
         />
+      )}
+
+      {excelPreview && (
+        <Modal width={980} title={`Import Products from Excel (${excelPreview.filename})`} onClose={() => setExcelPreview(null)}>
+          <div style={{ padding: '4px 0' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, marginBottom: 16 }}>
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 10, padding: '12px 16px' }}>
+                <span style={{ fontSize: 11, color: '#64748b', textTransform: 'uppercase', fontWeight: 700 }}>Total Detected</span>
+                <b style={{ display: 'block', fontSize: 22, color: '#0f172a', marginTop: 4 }}>{excelPreview.items.length} Products</b>
+              </div>
+              <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 10, padding: '12px 16px' }}>
+                <span style={{ fontSize: 11, color: '#16a34a', textTransform: 'uppercase', fontWeight: 700 }}>New Products</span>
+                <b style={{ display: 'block', fontSize: 22, color: '#15803d', marginTop: 4 }}>+{excelPreview.newCount} to Add</b>
+              </div>
+              <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 10, padding: '12px 16px' }}>
+                <span style={{ fontSize: 11, color: '#2563eb', textTransform: 'uppercase', fontWeight: 700 }}>Existing Products</span>
+                <b style={{ display: 'block', fontSize: 22, color: '#1d4ed8', marginTop: 4 }}>⟳ {excelPreview.updateCount} to Update</b>
+              </div>
+              {excelPreview.skippedCount > 0 && (
+                <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 10, padding: '12px 16px' }}>
+                  <span style={{ fontSize: 11, color: '#d97706', textTransform: 'uppercase', fontWeight: 700 }}>Skipped</span>
+                  <b style={{ display: 'block', fontSize: 22, color: '#b45309', marginTop: 4 }}>{excelPreview.skippedCount} Empty/Invalid</b>
+                </div>
+              )}
+            </div>
+
+            <div style={{ maxHeight: 360, overflowY: 'auto', border: '1px solid var(--line)', borderRadius: 10, marginBottom: 16 }}>
+              <table className="atable" style={{ minWidth: 640 }}>
+                <thead>
+                  <tr>
+                    <th>Action</th>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Selling Price</th>
+                    <th>MRP</th>
+                    <th>Stock</th>
+                    <th>Sizes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {excelPreview.items.map((item, idx) => (
+                    <tr key={idx}>
+                      <td>
+                        {item.action === 'new' ? (
+                          <span style={{ background: '#dcfce7', color: '#15803d', padding: '3px 8px', borderRadius: 6, fontSize: 11, fontWeight: 700 }}>
+                            + NEW
+                          </span>
+                        ) : (
+                          <span style={{ background: '#dbeafe', color: '#1d4ed8', padding: '3px 8px', borderRadius: 6, fontSize: 11, fontWeight: 700 }}>
+                            ⟳ UPDATE
+                          </span>
+                        )}
+                      </td>
+                      <td>
+                        <b>{item.name}</b>
+                        <div style={{ fontSize: 11, color: 'var(--muted)' }}>{item.fabric}</div>
+                      </td>
+                      <td style={{ textTransform: 'capitalize' }}>{item.category}</td>
+                      <td>
+                        <b>₹{item.price}</b>
+                        {item.action === 'update' && item.oldPrice !== item.price && (
+                          <span style={{ fontSize: 11, color: 'var(--muted)', textDecoration: 'line-through', marginLeft: 6 }}>
+                            ₹{item.oldPrice}
+                          </span>
+                        )}
+                      </td>
+                      <td>₹{item.mrp}</td>
+                      <td>{item.stock} pcs</td>
+                      <td style={{ fontSize: 12 }}>{item.sizes.join(', ')}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, alignItems: 'center' }}>
+              <button className="btn btn--ghost btn--sm" onClick={() => setExcelPreview(null)} disabled={importing}>
+                Cancel
+              </button>
+              <button className="btn btn--primary" onClick={handleConfirmExcelImport} disabled={importing}>
+                <Check width={16} height={16} />
+                {importing ? 'Importing & Syncing…' : `Confirm & Import ${excelPreview.items.length} Products`}
+              </button>
+            </div>
+          </div>
+        </Modal>
       )}
     </>
   )
