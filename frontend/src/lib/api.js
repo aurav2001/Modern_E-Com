@@ -54,7 +54,9 @@ async function request(endpoint, options = {}) {
     }
     return data
   } catch (err) {
-    console.warn(`API Error [${endpoint}]:`, err.message)
+    if (!options.silent) {
+      console.warn(`API Error [${endpoint}]:`, err.message)
+    }
     throw err
   }
 }
@@ -114,7 +116,7 @@ export const api = {
   // Payment Gateway (Razorpay & Dummy Mode with seamless offline/unconfigured fallback)
   getPaymentConfig: async () => {
     try {
-      return await request('/payment/config')
+      return await request('/payment/config', { silent: true })
     } catch (err) {
       return {
         success: true,
