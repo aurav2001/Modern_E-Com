@@ -86,7 +86,13 @@ export default function Header() {
   const closeMega = () => {
     if (hoverTimer.current) clearTimeout(hoverTimer.current)
     setOpenMega(null)
-    if (typeof document !== 'undefined' && document.activeElement && typeof document.activeElement.blur === 'function') {
+    if (
+      typeof document !== 'undefined' &&
+      document.activeElement &&
+      document.activeElement.closest &&
+      document.activeElement.closest('.nav') &&
+      typeof document.activeElement.blur === 'function'
+    ) {
       document.activeElement.blur()
     }
   }
@@ -100,7 +106,7 @@ export default function Header() {
   useEffect(() => {
     const onDocClick = (e) => {
       if (!e.target.closest('.nav')) {
-        closeMega()
+        setOpenMega((curr) => (curr !== null ? null : curr))
       }
     }
     document.addEventListener('click', onDocClick)
