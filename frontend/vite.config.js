@@ -8,7 +8,7 @@ export default defineConfig({
     open: false,
     proxy: {
       '/api': {
-        target: 'https://api.rishikarsports.com',
+        target: process.env.BACKEND_URL || 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
       },

@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useReducer, useState, useCallback } from 'react'
 import { loadLS, saveLS, uid } from '../lib/utils'
 import { getCoupons, getSettings, addEnquiry as dbAddEnquiry } from '../lib/db'
-import { api } from '../lib/api'
+import { api as backendApi } from '../lib/api'
 
 const COUPONS = getCoupons()
 const SETTINGS = getSettings()
@@ -124,7 +124,7 @@ export function StoreProvider({ children }) {
   useEffect(() => {
     const token = localStorage.getItem('rs.auth_token')
     if (token) {
-      api.getMe()
+      backendApi.getMe()
         .then((res) => {
           if (res.success && res.user) {
             dispatch({ type: 'LOGIN', user: res.user })
@@ -193,7 +193,7 @@ export function StoreProvider({ children }) {
       removeCoupon: () => dispatch({ type: 'SET_COUPON', code: null }),
       async login(email, password) {
         try {
-          const res = await api.login(email, password)
+          const res = await backendApi.login(email, password)
           if (res.success && res.user) {
             localStorage.setItem('rs.auth_token', res.token)
             dispatch({ type: 'LOGIN', user: res.user })
@@ -213,7 +213,7 @@ export function StoreProvider({ children }) {
       },
       async register(name, email, password, phone) {
         try {
-          const res = await api.register(name, email, phone, password)
+          const res = await backendApi.register(name, email, phone, password)
           if (res.success && res.user) {
             localStorage.setItem('rs.auth_token', res.token)
             dispatch({ type: 'REGISTER', user: res.user })
@@ -264,10 +264,7 @@ export function StoreProvider({ children }) {
 
         // Asynchronously sync with Node.js backend if not already created
         if (!backendOrder) {
-          fetch('/api/orders', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
+          backendApi.createOrder({
               customer: {
                 name: address.name,
                 phone: address.phone,
@@ -290,8 +287,7 @@ export function StoreProvider({ children }) {
               })),
               paymentMethod: payment ? payment.toUpperCase() : 'COD',
               couponCode: totals.discount ? state.coupon : null,
-            }),
-          }).catch((err) => console.warn('Node backend sync error:', err))
+            }).catch((err) => console.warn('Node backend sync error:', err))
         }
 
         return order

@@ -38,7 +38,7 @@ export function OrderSummary({ cta, onCta, ctaLabel, extra = 0, extraLabel }) {
         </>
       )}
 
-      {cta && <button className="btn btn--primary btn--lg btn--block" onClick={onCta}>{ctaLabel || `Checkout · ${formatPrice(grand)}`}</button>}
+      {cta && <button id="btn-order-cta" className="btn btn--primary btn--lg btn--block" onClick={onCta}>{ctaLabel || `Checkout · ${formatPrice(grand)}`}</button>}
       <div className="summary__secure"><Lock /> Secure 256-bit encrypted checkout</div>
     </aside>
   )
