@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
 import { formatPrice, cx } from '../lib/utils'
 import { getSettings } from '../lib/db'
+import { api } from '../lib/api'
 
 const COD_FEE = getSettings().codFee
 import { OrderSummary } from './Cart'
@@ -12,17 +13,37 @@ import { CreditCard, Wallet, Cash, Lock, Plus, Trash } from '../components/Icons
 const STATES = ['Andhra Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Delhi', 'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Odisha', 'Punjab', 'Rajasthan', 'Tamil Nadu', 'Telangana', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal']
 const empty = { name: '', phone: '', email: '', line1: '', line2: '', city: '', state: 'Uttar Pradesh', pincode: '', type: 'Home' }
 
+function loadRazorpayScript() {
+  return new Promise((resolve) => {
+    if (typeof window !== 'undefined' && window.Razorpay) return resolve(true)
+    const script = document.createElement('script')
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js'
+    script.onload = () => resolve(true)
+    script.onerror = () => resolve(false)
+    document.body.appendChild(script)
+  })
+}
+
 export default function Checkout() {
-  const { cart, totals, user, addresses, addAddress, removeAddress, placeOrder, toast } = useStore()
+  const { cart, totals, user, addresses, addAddress, removeAddress, placeOrder, toast, coupon } = useStore()
   const nav = useNavigate()
   const [selected, setSelected] = useState(addresses[0]?.id || null)
   const [adding, setAdding] = useState(addresses.length === 0)
   const [form, setForm] = useState({ ...empty, name: user?.name || '', email: user?.email || '', phone: user?.phone || '' })
   const [errors, setErrors] = useState({})
-  const [payment, setPayment] = useState('upi')
-  const [upi, setUpi] = useState('')
-  const [card, setCard] = useState({ num: '', name: '', exp: '', cvv: '' })
+  const [payment, setPayment] = useState('online')
   const [placing, setPlacing] = useState(false)
+  const [gwConfig, setGwConfig] = useState({ isConfigured: false, mode: 'dummy' })
+
+  useEffect(() => {
+    api.getPaymentConfig()
+      .then((cfg) => {
+        if (cfg && cfg.success) {
+          setGwConfig(cfg)
+        }
+      })
+      .catch(() => {})
+  }, [])
 
   useEffect(() => { if (cart.length === 0 && !placing) nav('/cart', { replace: true }) }, [cart.length, nav, placing])
 
@@ -48,22 +69,144 @@ export default function Checkout() {
   }
 
   const codFee = payment === 'cod' ? COD_FEE : 0
+
   const submit = async () => {
     let address = addresses.find((a) => a.id === selected)
     if (!address) {
-      if (adding && validateAddr()) { address = { ...form, id: 'tmp' }; addAddress(address) }
-      else return toast('Please add a delivery address', { tone: 'error' })
+      if (adding && validateAddr()) {
+        address = { ...form, id: 'tmp' }
+        addAddress(address)
+      } else {
+        return toast('Please add a delivery address', { tone: 'error' })
+      }
     }
-    if (payment === 'upi' && !/^[\w.\-]{2,}@[a-zA-Z]{2,}$/.test(upi)) return toast('Enter a valid UPI ID (e.g. name@upi)', { tone: 'error' })
-    if (payment === 'card') {
-      if (card.num.replace(/\s/g, '').length !== 16) return toast('Enter a valid 16-digit card number', { tone: 'error' })
-      if (!/^\d{2}\/\d{2}$/.test(card.exp)) return toast('Enter expiry as MM/YY', { tone: 'error' })
-      if (!/^\d{3}$/.test(card.cvv)) return toast('Enter a valid CVV', { tone: 'error' })
-    }
+
     setPlacing(true)
-    await new Promise((r) => setTimeout(r, 1400))
-    const order = placeOrder({ address, payment })
-    nav(`/order/${order.id}`, { replace: true, state: { fresh: true } })
+
+    // Option 1: Cash on Delivery
+    if (payment === 'cod') {
+      await new Promise((r) => setTimeout(r, 800))
+      const order = placeOrder({ address, payment: 'COD' })
+      toast('Order placed successfully via COD!')
+      nav(`/order/${order.id}`, { replace: true, state: { fresh: true } })
+      return
+    }
+
+    // Option 2: Online Payment via Razorpay (Live or Dummy Mode)
+    try {
+      const orderAmount = totals.total
+      const createRes = await api.createPaymentOrder({
+        amount: orderAmount,
+        currency: 'INR',
+        receipt: `rcpt_${Date.now()}`,
+        notes: {
+          customerName: address.name,
+          customerPhone: address.phone,
+        },
+      })
+
+      if (!createRes.success) {
+        throw new Error(createRes.message || 'Failed to initiate payment')
+      }
+
+      // SUBCASE A: LIVE RAZORPAY GATEWAY (When keys configured in .env)
+      if (createRes.mode === 'live') {
+        const loaded = await loadRazorpayScript()
+        if (!loaded) {
+          setPlacing(false)
+          return toast('Could not load Razorpay SDK. Please check internet connection.', { tone: 'error' })
+        }
+
+        const options = {
+          key: createRes.key_id,
+          amount: createRes.amount,
+          currency: createRes.currency || 'INR',
+          name: 'Rishikar Sports',
+          description: `Sportswear Order (${totals.count} items)`,
+          image: '/logo.png',
+          order_id: createRes.order_id,
+          prefill: {
+            name: address.name,
+            email: address.email,
+            contact: address.phone,
+          },
+          theme: { color: '#0e2140' },
+          handler: async function (response) {
+            try {
+              toast('Payment received! Finalizing order...')
+              const verifyRes = await api.verifyPayment({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                orderDetails: {
+                  customer: address,
+                  items: cart,
+                  couponCode: totals.discount ? coupon : null,
+                },
+              })
+
+              if (verifyRes.success) {
+                const order = placeOrder({
+                  address,
+                  payment: 'Razorpay',
+                  backendOrder: verifyRes.order,
+                })
+                toast('Payment verified! Order confirmed.')
+                nav(`/order/${order.id}`, { replace: true, state: { fresh: true } })
+              } else {
+                toast(verifyRes.message || 'Payment verification failed', { tone: 'error' })
+                setPlacing(false)
+              }
+            } catch (err) {
+              toast('Verification error: ' + err.message, { tone: 'error' })
+              setPlacing(false)
+            }
+          },
+          modal: {
+            ondismiss: function () {
+              setPlacing(false)
+              toast('Payment cancelled')
+            },
+          },
+        }
+
+        const rzp = new window.Razorpay(options)
+        rzp.on('payment.failed', function (resp) {
+          toast(`Payment failed: ${resp.error?.description || 'Transaction declined'}`, { tone: 'error' })
+          setPlacing(false)
+        })
+        rzp.open()
+        return
+      }
+
+      // SUBCASE B: SIMULATED DUMMY TEST MODE (When keys not in .env yet)
+      toast('💳 Processing simulated online payment...', { duration: 1800 })
+      await new Promise((r) => setTimeout(r, 1200))
+
+      const verifyRes = await api.verifyPayment({
+        razorpay_order_id: createRes.order_id,
+        razorpay_payment_id: `pay_dummy_${Date.now()}`,
+        razorpay_signature: 'dummy_simulated_sig',
+        orderDetails: {
+          customer: address,
+          items: cart,
+          couponCode: totals.discount ? coupon : null,
+        },
+      })
+
+      const order = placeOrder({
+        address,
+        payment: 'Online (Test Mode)',
+        backendOrder: verifyRes.order,
+      })
+
+      toast('✅ Payment simulated successfully! Order confirmed.')
+      nav(`/order/${order.id}`, { replace: true, state: { fresh: true } })
+    } catch (err) {
+      console.error('Payment Error:', err)
+      toast('Payment error: ' + err.message, { tone: 'error' })
+      setPlacing(false)
+    }
   }
 
   if (cart.length === 0) return null
@@ -123,20 +266,35 @@ export default function Checkout() {
           <div className="block">
             <h3>Payment method</h3>
             <div className="pay-opts">
-              <PayOpt id="upi" icon={<Wallet />} title="UPI" text="Google Pay, PhonePe, Paytm, BHIM" payment={payment} setPayment={setPayment}>
-                <input className="input" placeholder="yourname@upi" value={upi} onChange={(e) => setUpi(e.target.value)} aria-label="UPI ID" />
-              </PayOpt>
-              <PayOpt id="card" icon={<CreditCard />} title="Credit / Debit card" text="Visa, Mastercard, RuPay, Amex" payment={payment} setPayment={setPayment}>
-                <div className="form-grid">
-                  <div className="span-2"><input className="input" placeholder="Card number" value={card.num} onChange={(e) => setCard({ ...card, num: e.target.value.replace(/\D/g, '').slice(0, 16).replace(/(\d{4})(?=\d)/g, '$1 ') })} inputMode="numeric" aria-label="Card number" /></div>
-                  <div className="span-2"><input className="input" placeholder="Name on card" value={card.name} onChange={(e) => setCard({ ...card, name: e.target.value })} aria-label="Name on card" /></div>
-                  <input className="input" placeholder="MM/YY" value={card.exp} onChange={(e) => setCard({ ...card, exp: e.target.value.replace(/\D/g, '').slice(0, 4).replace(/(\d{2})(?=\d)/, '$1/') })} inputMode="numeric" aria-label="Expiry" />
-                  <input className="input" placeholder="CVV" type="password" value={card.cvv} onChange={(e) => setCard({ ...card, cvv: e.target.value.replace(/\D/g, '').slice(0, 3) })} inputMode="numeric" aria-label="CVV" />
+              <PayOpt
+                id="online"
+                icon={<Wallet />}
+                title="UPI / Cards / NetBanking (Online)"
+                text="Google Pay, PhonePe, Paytm, BHIM, Visa, Mastercard, NetBanking"
+                payment={payment}
+                setPayment={setPayment}
+              >
+                <div style={{ fontSize: 13, display: 'flex', alignItems: 'center', gap: 6, marginTop: 4 }}>
+                  <Lock width={13} height={13} />
+                  {gwConfig.isConfigured ? (
+                    <span style={{ color: '#16a34a', fontWeight: 600 }}>🟢 Official Razorpay Gateway Active</span>
+                  ) : (
+                    <span style={{ color: '#ea580c', fontWeight: 500 }}>
+                      ⚡ Test Mode Active — Dummy simulation running until Razorpay keys are added in .env
+                    </span>
+                  )}
                 </div>
               </PayOpt>
-              <PayOpt id="cod" icon={<Cash />} title="Cash on delivery" text={`Pay when it arrives · ₹${COD_FEE} handling fee`} payment={payment} setPayment={setPayment} />
+
+              <PayOpt
+                id="cod"
+                icon={<Cash />}
+                title="Cash on delivery (COD)"
+                text={`Pay cash when your parcel is delivered · ₹${COD_FEE} handling fee`}
+                payment={payment}
+                setPayment={setPayment}
+              />
             </div>
-            <p className="small muted" style={{ marginTop: 14, display: 'flex', gap: 6, alignItems: 'center' }}><Lock width={14} height={14} /> This is a demo store — no real payment is taken.</p>
           </div>
         </div>
 
@@ -154,7 +312,13 @@ export default function Checkout() {
             </div>
             <Link to="/cart" className="btn btn--link small">Edit bag</Link>
           </div>
-          <OrderSummary cta onCta={submit} ctaLabel={placing ? 'Placing order…' : `Place order · ${formatPrice(totals.total + codFee)}`} extra={codFee} extraLabel="COD handling fee" />
+          <OrderSummary
+            cta
+            onCta={submit}
+            ctaLabel={placing ? (payment === 'online' ? 'Processing payment…' : 'Placing order…') : (payment === 'online' ? `Pay online · ${formatPrice(totals.total)}` : `Place order · ${formatPrice(totals.total + codFee)}`)}
+            extra={codFee}
+            extraLabel="COD handling fee"
+          />
         </div>
       </div>
     </div>

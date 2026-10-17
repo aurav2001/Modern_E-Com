@@ -10,6 +10,7 @@ import { adminRouter } from './routes/admin.js'
 import { rateListRouter } from './routes/rateList.js'
 import { uploadRouter } from './routes/uploads.js'
 import { authRouter } from './routes/auth.js'
+import { paymentRouter } from './routes/payment.js'
 import { db } from './db.js'
 import { verifySmtpConnection } from './utils/mailer.js'
 
@@ -75,9 +76,10 @@ app.use('/api/admin', adminRouter)
 app.use('/api/rate-list', rateListRouter)
 app.use('/api/upload', uploadRouter)
 app.use('/api/auth', authRouter)
+app.use('/api/payment', paymentRouter)
 
 // Optional: If frontend dist is copied to backend/public, serve it
-const distPath = path.resolve(__dirname, 'public')
+const distPath = path.resolve(_dirname, 'public')
 if (fs.existsSync(distPath)) {
   app.use(express.static(distPath))
   app.use((req, res, next) => {

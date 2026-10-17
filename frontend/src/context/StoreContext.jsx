@@ -238,14 +238,19 @@ export function StoreProvider({ children }) {
       },
       addAddress: (address) => dispatch({ type: 'ADD_ADDRESS', address: { id: uid(), ...address } }),
       removeAddress: (id) => dispatch({ type: 'REMOVE_ADDRESS', id }),
-      placeOrder({ address, payment }) {
+      placeOrder({ address, payment, backendOrder }) {
         const codFee = payment === 'cod' ? COD_FEE : 0
-        const order = {
-          id: 'TYK' + Date.now().toString().slice(-8),
+        const order = backendOrder ? {
+          ...backendOrder,
+          placedAt: backendOrder.placedAt || Date.now(),
+          items: backendOrder.items || state.cart,
+          address: backendOrder.customer || address,
+        } : {
+          id: 'RS-ORD-' + Math.floor(1000 + Math.random() * 9000),
           placedAt: Date.now(),
           items: state.cart,
           address,
-          payment,
+          payment: payment || 'COD',
           coupon: totals.discount ? state.coupon : null,
           subtotal: totals.subtotal,
           discount: totals.discount,
@@ -257,35 +262,37 @@ export function StoreProvider({ children }) {
         }
         dispatch({ type: 'PLACE_ORDER', order })
 
-        // Asynchronously sync with Node.js backend
-        fetch('/api/orders', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            customer: {
-              name: address.name,
-              phone: address.phone,
-              email: address.email || state.user?.email || '',
-              address: address.line1 + (address.line2 ? ', ' + address.line2 : ''),
-              city: address.city || 'Chapra',
-              state: address.state || 'Bihar',
-              pincode: address.pin || '',
-            },
-            items: state.cart.map((it) => ({
-              id: it.id,
-              slug: it.slug,
-              name: it.name,
-              color: it.color,
-              size: it.size,
-              fabric: it.fabric || 'Standard',
-              price: it.price,
-              qty: it.qty,
-              image: it.image,
-            })),
-            paymentMethod: payment ? payment.toUpperCase() : 'COD',
-            couponCode: totals.discount ? state.coupon : null,
-          }),
-        }).catch((err) => console.warn('Node backend sync error:', err))
+        // Asynchronously sync with Node.js backend if not already created
+        if (!backendOrder) {
+          fetch('/api/orders', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              customer: {
+                name: address.name,
+                phone: address.phone,
+                email: address.email || state.user?.email || '',
+                address: address.line1 + (address.line2 ? ', ' + address.line2 : ''),
+                city: address.city || 'Chapra',
+                state: address.state || 'Bihar',
+                pincode: address.pincode || address.pin || '',
+              },
+              items: state.cart.map((it) => ({
+                id: it.id,
+                slug: it.slug,
+                name: it.name,
+                color: it.color,
+                size: it.size,
+                fabric: it.fabric || 'Standard',
+                price: it.price,
+                qty: it.qty,
+                image: it.image,
+              })),
+              paymentMethod: payment ? payment.toUpperCase() : 'COD',
+              couponCode: totals.discount ? state.coupon : null,
+            }),
+          }).catch((err) => console.warn('Node backend sync error:', err))
+        }
 
         return order
       },

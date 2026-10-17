@@ -96,6 +96,11 @@ export const api = {
       body: JSON.stringify({ status, adminNotes }),
     }),
 
+  // Payment Gateway (Razorpay & Dummy Mode)
+  getPaymentConfig: () => request('/payment/config'),
+  createPaymentOrder: (data) => request('/payment/create-order', { method: 'POST', body: JSON.stringify(data) }),
+  verifyPayment: (data) => request('/payment/verify', { method: 'POST', body: JSON.stringify(data) }),
+
   // Coupons
   getCoupons: () => request('/coupons'),
   validateCoupon: (code, amount) => request('/coupons/validate', { method: 'POST', body: JSON.stringify({ code, amount }) }),

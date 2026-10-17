@@ -19110,14 +19110,14 @@ var require_etag = __commonJS({
   "node_modules/etag/index.js"(exports2, module2) {
     "use strict";
     module2.exports = etag;
-    var crypto = require("crypto");
+    var crypto2 = require("crypto");
     var Stats = require("fs").Stats;
     var toString = Object.prototype.toString;
     function entitytag(entity) {
       if (entity.length === 0) {
         return '"0-2jmj7l5rSw0yVb/vlWAYkK/YBwk"';
       }
-      var hash = crypto.createHash("sha1").update(entity, "utf8").digest("base64").substring(0, 27);
+      var hash = crypto2.createHash("sha1").update(entity, "utf8").digest("base64").substring(0, 27);
       var len = typeof entity === "string" ? Buffer.byteLength(entity, "utf8") : entity.length;
       return '"' + len.toString(16) + "-" + hash + '"';
     }
@@ -20856,11 +20856,11 @@ var require_router = __commonJS({
     var slice = Array.prototype.slice;
     var flatten = Array.prototype.flat;
     var methods = METHODS.map((method) => method.toLowerCase());
-    module2.exports = Router9;
+    module2.exports = Router10;
     module2.exports.Route = Route;
-    function Router9(options) {
-      if (!(this instanceof Router9)) {
-        return new Router9(options);
+    function Router10(options) {
+      if (!(this instanceof Router10)) {
+        return new Router10(options);
       }
       const opts = options || {};
       function router(req, res, next) {
@@ -20874,9 +20874,9 @@ var require_router = __commonJS({
       router.stack = [];
       return router;
     }
-    Router9.prototype = function() {
+    Router10.prototype = function() {
     };
-    Router9.prototype.param = function param(name, fn) {
+    Router10.prototype.param = function param(name, fn) {
       if (!name) {
         throw new TypeError("argument name is required");
       }
@@ -20896,7 +20896,7 @@ var require_router = __commonJS({
       params.push(fn);
       return this;
     };
-    Router9.prototype.handle = function handle(req, res, callback) {
+    Router10.prototype.handle = function handle(req, res, callback) {
       if (!callback) {
         throw new TypeError("argument callback is required");
       }
@@ -21023,7 +21023,7 @@ var require_router = __commonJS({
         }
       }
     };
-    Router9.prototype.use = function use(handler) {
+    Router10.prototype.use = function use(handler) {
       let offset = 0;
       let path5 = "/";
       if (typeof handler !== "function") {
@@ -21056,7 +21056,7 @@ var require_router = __commonJS({
       }
       return this;
     };
-    Router9.prototype.route = function route(path5) {
+    Router10.prototype.route = function route(path5) {
       const route2 = new Route(path5);
       const layer = new Layer(path5, {
         sensitive: this.caseSensitive,
@@ -21071,7 +21071,7 @@ var require_router = __commonJS({
       return route2;
     };
     methods.concat("all").forEach(function(method) {
-      Router9.prototype[method] = function(path5) {
+      Router10.prototype[method] = function(path5) {
         const route = this.route(path5);
         route[method].apply(route, slice.call(arguments, 1));
         return this;
@@ -21254,7 +21254,7 @@ var require_application = __commonJS({
     var compileTrust = require_utils3().compileTrust;
     var resolve = require("node:path").resolve;
     var once = require_once();
-    var Router9 = require_router();
+    var Router10 = require_router();
     var slice = Array.prototype.slice;
     var flatten = Array.prototype.flat;
     var app2 = exports2 = module2.exports = {};
@@ -21270,7 +21270,7 @@ var require_application = __commonJS({
         enumerable: true,
         get: function getrouter() {
           if (router === null) {
-            router = new Router9({
+            router = new Router10({
               caseSensitive: this.enabled("case sensitive routing"),
               strict: this.enabled("strict routing")
             });
@@ -22683,17 +22683,17 @@ var require_content_disposition = __commonJS({
 // node_modules/cookie-signature/index.js
 var require_cookie_signature = __commonJS({
   "node_modules/cookie-signature/index.js"(exports2) {
-    var crypto = require("crypto");
+    var crypto2 = require("crypto");
     exports2.sign = function(val, secret) {
       if ("string" != typeof val) throw new TypeError("Cookie value must be provided as a string.");
       if (null == secret) throw new TypeError("Secret key must be provided.");
-      return val + "." + crypto.createHmac("sha256", secret).update(val).digest("base64").replace(/\=+$/, "");
+      return val + "." + crypto2.createHmac("sha256", secret).update(val).digest("base64").replace(/\=+$/, "");
     };
     exports2.unsign = function(input, secret) {
       if ("string" != typeof input) throw new TypeError("Signed cookie string must be provided.");
       if (null == secret) throw new TypeError("Secret key must be provided.");
       var tentativeValue = input.slice(0, input.lastIndexOf(".")), expectedInput = exports2.sign(tentativeValue, secret), expectedBuffer = Buffer.from(expectedInput), inputBuffer = Buffer.from(input);
-      return expectedBuffer.length === inputBuffer.length && crypto.timingSafeEqual(expectedBuffer, inputBuffer) ? tentativeValue : false;
+      return expectedBuffer.length === inputBuffer.length && crypto2.timingSafeEqual(expectedBuffer, inputBuffer) ? tentativeValue : false;
     };
   }
 });
@@ -24000,7 +24000,7 @@ var require_express = __commonJS({
     var EventEmitter = require("node:events").EventEmitter;
     var mixin = require_merge_descriptors();
     var proto = require_application();
-    var Router9 = require_router();
+    var Router10 = require_router();
     var req = require_request();
     var res = require_response();
     exports2 = module2.exports = createApplication;
@@ -24022,8 +24022,8 @@ var require_express = __commonJS({
     exports2.application = proto;
     exports2.request = req;
     exports2.response = res;
-    exports2.Route = Router9.Route;
-    exports2.Router = Router9;
+    exports2.Route = Router10.Route;
+    exports2.Router = Router10;
     exports2.json = bodyParser.json;
     exports2.raw = bodyParser.raw;
     exports2.static = require_serve_static();
@@ -25025,14 +25025,14 @@ var require_buffer_equal_constant_time = __commonJS({
 var require_jwa = __commonJS({
   "node_modules/jwa/index.js"(exports2, module2) {
     var Buffer2 = require_safe_buffer().Buffer;
-    var crypto = require("crypto");
+    var crypto2 = require("crypto");
     var formatEcdsa = require_ecdsa_sig_formatter();
     var util = require("util");
     var MSG_INVALID_ALGORITHM = '"%s" is not a valid algorithm.\n  Supported algorithms are:\n  "HS256", "HS384", "HS512", "RS256", "RS384", "RS512", "PS256", "PS384", "PS512", "ES256", "ES384", "ES512" and "none".';
     var MSG_INVALID_SECRET = "secret must be a string or buffer";
     var MSG_INVALID_VERIFIER_KEY = "key must be a string or a buffer";
     var MSG_INVALID_SIGNER_KEY = "key must be a string, a buffer or an object";
-    var supportsKeyObjects = typeof crypto.createPublicKey === "function";
+    var supportsKeyObjects = typeof crypto2.createPublicKey === "function";
     if (supportsKeyObjects) {
       MSG_INVALID_VERIFIER_KEY += " or a KeyObject";
       MSG_INVALID_SECRET += "or a KeyObject";
@@ -25122,17 +25122,17 @@ var require_jwa = __commonJS({
       return function sign(thing, secret) {
         checkIsSecretKey(secret);
         thing = normalizeInput(thing);
-        var hmac = crypto.createHmac("sha" + bits, secret);
+        var hmac = crypto2.createHmac("sha" + bits, secret);
         var sig = (hmac.update(thing), hmac.digest("base64"));
         return fromBase64(sig);
       };
     }
     var bufferEqual;
-    var timingSafeEqual = "timingSafeEqual" in crypto ? function timingSafeEqual2(a, b) {
+    var timingSafeEqual = "timingSafeEqual" in crypto2 ? function timingSafeEqual2(a, b) {
       if (a.byteLength !== b.byteLength) {
         return false;
       }
-      return crypto.timingSafeEqual(a, b);
+      return crypto2.timingSafeEqual(a, b);
     } : function timingSafeEqual2(a, b) {
       if (!bufferEqual) {
         bufferEqual = require_buffer_equal_constant_time();
@@ -25149,7 +25149,7 @@ var require_jwa = __commonJS({
       return function sign(thing, privateKey) {
         checkIsPrivateKey(privateKey);
         thing = normalizeInput(thing);
-        var signer = crypto.createSign("RSA-SHA" + bits);
+        var signer = crypto2.createSign("RSA-SHA" + bits);
         var sig = (signer.update(thing), signer.sign(privateKey, "base64"));
         return fromBase64(sig);
       };
@@ -25159,7 +25159,7 @@ var require_jwa = __commonJS({
         checkIsPublicKey(publicKey);
         thing = normalizeInput(thing);
         signature = toBase64(signature);
-        var verifier = crypto.createVerify("RSA-SHA" + bits);
+        var verifier = crypto2.createVerify("RSA-SHA" + bits);
         verifier.update(thing);
         return verifier.verify(publicKey, signature, "base64");
       };
@@ -25168,11 +25168,11 @@ var require_jwa = __commonJS({
       return function sign(thing, privateKey) {
         checkIsPrivateKey(privateKey);
         thing = normalizeInput(thing);
-        var signer = crypto.createSign("RSA-SHA" + bits);
+        var signer = crypto2.createSign("RSA-SHA" + bits);
         var sig = (signer.update(thing), signer.sign({
           key: privateKey,
-          padding: crypto.constants.RSA_PKCS1_PSS_PADDING,
-          saltLength: crypto.constants.RSA_PSS_SALTLEN_DIGEST
+          padding: crypto2.constants.RSA_PKCS1_PSS_PADDING,
+          saltLength: crypto2.constants.RSA_PSS_SALTLEN_DIGEST
         }, "base64"));
         return fromBase64(sig);
       };
@@ -25182,12 +25182,12 @@ var require_jwa = __commonJS({
         checkIsPublicKey(publicKey);
         thing = normalizeInput(thing);
         signature = toBase64(signature);
-        var verifier = crypto.createVerify("RSA-SHA" + bits);
+        var verifier = crypto2.createVerify("RSA-SHA" + bits);
         verifier.update(thing);
         return verifier.verify({
           key: publicKey,
-          padding: crypto.constants.RSA_PKCS1_PSS_PADDING,
-          saltLength: crypto.constants.RSA_PSS_SALTLEN_DIGEST
+          padding: crypto2.constants.RSA_PKCS1_PSS_PADDING,
+          saltLength: crypto2.constants.RSA_PSS_SALTLEN_DIGEST
         }, signature, "base64");
       };
     }
@@ -41740,7 +41740,7 @@ var require_disk = __commonJS({
     var fs4 = require("fs");
     var os = require("os");
     var path5 = require("path");
-    var crypto = require("crypto");
+    var crypto2 = require("crypto");
     var pipeline = require("stream").pipeline;
     var MulterError = require_multer_error();
     var openStreams = /* @__PURE__ */ new WeakMap();
@@ -41752,7 +41752,7 @@ var require_disk = __commonJS({
       if (flush.onClosed) flush.onClosed();
     }
     function getFilename(req, file, cb) {
-      crypto.randomBytes(16, function(err, raw) {
+      crypto2.randomBytes(16, function(err, raw) {
         cb(err, err ? void 0 : raw.toString("hex"));
       });
     }
@@ -41999,7 +41999,7 @@ __export(backend_exports, {
   default: () => backend_default
 });
 module.exports = __toCommonJS(backend_exports);
-var import_express9 = __toESM(require_express2());
+var import_express10 = __toESM(require_express2());
 var import_cors = __toESM(require_lib3());
 var import_path4 = __toESM(require("path"));
 var import_fs3 = __toESM(require("fs"));
@@ -42012,2366 +42012,23 @@ var import_fs = __toESM(require("fs"));
 var import_path = __toESM(require("path"));
 var import_promise = __toESM(require("mysql2/promise"));
 var import_config = __toESM(require_config());
-
-// data/products.json
-var products_default = [
-  {
-    id: 1001,
-    name: "RS PRO Sublimated Match Jersey",
-    slug: "rs-pro-sublimated-jersey",
-    price: 420,
-    mrp: 699,
-    image: "/products/rs/rs-prod-35.jpg",
-    gallery: [
-      "/products/rs/rs-prod-35.jpg",
-      "/products/rs/rs-prod-37.jpg",
-      "/products/rs/rs-prod-39.jpg",
-      "/products/rs/rs-prod-59.jpg",
-      "/products/rs/rs-prod-56.jpg"
-    ],
-    colors: [
-      {
-        name: "Navy & Orange",
-        hex: "#0e2140",
-        image: "/products/rs/rs-prod-35.jpg",
-        images: [
-          "/products/rs/rs-prod-35.jpg"
-        ]
-      },
-      {
-        name: "Royal Blue & Gold",
-        hex: "#1e4fa3",
-        image: "/products/rs/rs-prod-37.jpg",
-        images: [
-          "/products/rs/rs-prod-37.jpg",
-          "/products/rs/rs-prod-39.jpg"
-        ]
-      },
-      {
-        name: "Gold Wave Edition",
-        hex: "#d97706",
-        image: "/products/rs/rs-prod-59.jpg",
-        images: [
-          "/products/rs/rs-prod-59.jpg",
-          "/products/rs/rs-prod-56.jpg"
-        ]
-      }
-    ],
-    fabricOptions: [
-      {
-        name: "Superpoly",
-        rate: 350
-      },
-      {
-        name: "PMC",
-        rate: 400
-      },
-      {
-        name: "Dotknit",
-        rate: 420
-      },
-      {
-        name: "4 Way Lycra",
-        rate: 450
-      },
-      {
-        name: "Fusion",
-        rate: 450
-      },
-      {
-        name: "Airmesh",
-        rate: 500
-      },
-      {
-        name: "Jacquard",
-        rate: 550
-      },
-      {
-        name: "Jacquard Lite",
-        rate: 600
-      }
-    ],
-    sizes: [
-      "XS",
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL",
-      "XXXL"
-    ],
-    stock: 228,
-    categories: [
-      "jerseys"
-    ],
-    subs: [
-      "sublimation-jerseys",
-      "cricket-jerseys",
-      "football-jerseys"
-    ],
-    description: "Full-sublimation match jersey printed edge-to-edge. Fabric rates per Rishikar Sports Rate List. Breathable, sweat-wicking, with unlimited team colours, logos, player name and number.",
-    fabric: "Dotknit / Micro Polyester (Optional upgrade to Jacquard / Airmesh / Lycra)",
-    features: [
-      "Exact pricing according to Rishikar Sports Excel Rate List",
-      "Full digital sublimation \u2014 unlimited colours, player name & number included",
-      "Choice of 8 fabrics: Superpoly, PMC, Dotknit, 4 Way Lycra, Fusion, Airmesh, Jacquard, Jacquard Lite",
-      "Anti-bacterial, fast-drying, colour-fast durability"
-    ],
-    rating: 4.8,
-    reviews: 184,
-    isNew: true,
-    featured: true,
-    topSelling: true,
-    createdAt: null
-  },
-  {
-    id: 1002,
-    name: "RS Sublimated Cricket Full Kit (Jersey + Lower + Cap)",
-    slug: "rs-sublimated-cricket-full-kit",
-    price: 1220,
-    mrp: 1799,
-    image: "/products/rs/rs-prod-15.jpg",
-    gallery: [
-      "/products/rs/rs-prod-15.jpg",
-      "/products/rs/rs-prod-10.jpg",
-      "/products/rs/rs-prod-14.jpg",
-      "/products/rs/rs-prod-16.jpg",
-      "/products/rs/rs-prod-12.jpg",
-      "/products/rs/rs-prod-13.jpg",
-      "/products/rs/rs-prod-11.jpg"
-    ],
-    colors: [
-      {
-        name: "Navy Blue & Orange",
-        hex: "#1d3557",
-        image: "/products/rs/rs-prod-15.jpg",
-        images: [
-          "/products/rs/rs-prod-15.jpg"
-        ]
-      },
-      {
-        name: "Black & Gold",
-        hex: "#d4af37",
-        image: "/products/rs/rs-prod-10.jpg",
-        images: [
-          "/products/rs/rs-prod-10.jpg"
-        ]
-      },
-      {
-        name: "Black & Red",
-        hex: "#b91c1c",
-        image: "/products/rs/rs-prod-14.jpg",
-        images: [
-          "/products/rs/rs-prod-14.jpg"
-        ]
-      },
-      {
-        name: "Sky Blue & Yellow",
-        hex: "#38bdf8",
-        image: "/products/rs/rs-prod-16.jpg",
-        images: [
-          "/products/rs/rs-prod-16.jpg"
-        ]
-      },
-      {
-        name: "Black & Neon Green",
-        hex: "#22c55e",
-        image: "/products/rs/rs-prod-12.jpg",
-        images: [
-          "/products/rs/rs-prod-12.jpg"
-        ]
-      },
-      {
-        name: "Charcoal & Pink",
-        hex: "#ec4899",
-        image: "/products/rs/rs-prod-13.jpg",
-        images: [
-          "/products/rs/rs-prod-13.jpg"
-        ]
-      },
-      {
-        name: "Brown & Grey",
-        hex: "#5c4033",
-        image: "/products/rs/rs-prod-11.jpg",
-        images: [
-          "/products/rs/rs-prod-11.jpg"
-        ]
-      }
-    ],
-    sizes: [
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL",
-      "XXXL"
-    ],
-    stock: 195,
-    categories: [
-      "jerseys",
-      "teamwear"
-    ],
-    subs: [
-      "sublimation-jerseys",
-      "cricket-jerseys"
-    ],
-    description: "Complete 3-piece cricket match combo: Full-sleeve collar sublimated jersey (\u20B9370+), Sublimation Track Lower (\u20B9550), and matching RS Embroidered Cap (\u20B9300). Built strictly to Rishikar Sports factory rate card.",
-    fabric: "Full Sublimation Performance Poly + 4-Way Stretch Lower",
-    features: [
-      "Includes Collar Full Sleeve Jersey, Sublimation Lower & Custom Cap",
-      "Full team customization with name, number and sponsor badge",
-      "Elastic waistband with inner drawcord on trousers",
-      "Tested for all-day cricket match performance"
-    ],
-    rating: 4.9,
-    reviews: 142,
-    isNew: true,
-    featured: true,
-    topSelling: true,
-    createdAt: null
-  },
-  {
-    id: 1003,
-    name: "RS Match Winner Full Sleeve Jersey & Trouser Kit",
-    slug: "rs-match-winner-cricket-kit",
-    price: 1020,
-    mrp: 1499,
-    image: "/products/rs/rs-prod-23.jpg",
-    gallery: [
-      "/products/rs/rs-prod-23.jpg",
-      "/products/rs/rs-prod-21.jpg",
-      "/products/rs/rs-prod-26.jpg",
-      "/products/rs/rs-prod-27.jpg",
-      "/products/rs/rs-prod-29.jpg",
-      "/products/rs/rs-prod-30.jpg",
-      "/products/rs/rs-prod-32.jpg",
-      "/products/rs/rs-prod-24.jpg"
-    ],
-    colors: [
-      {
-        name: "Black & Grey Stealth",
-        hex: "#334155",
-        image: "/products/rs/rs-prod-23.jpg",
-        images: [
-          "/products/rs/rs-prod-23.jpg"
-        ]
-      },
-      {
-        name: "Red & Black Flare",
-        hex: "#dc2626",
-        image: "/products/rs/rs-prod-21.jpg",
-        images: [
-          "/products/rs/rs-prod-21.jpg",
-          "/products/rs/rs-prod-22.jpg"
-        ]
-      },
-      {
-        name: "Black & Blaze Orange",
-        hex: "#ea580c",
-        image: "/products/rs/rs-prod-26.jpg",
-        images: [
-          "/products/rs/rs-prod-26.jpg"
-        ]
-      },
-      {
-        name: "Navy & Gold Victory",
-        hex: "#0e2140",
-        image: "/products/rs/rs-prod-27.jpg",
-        images: [
-          "/products/rs/rs-prod-27.jpg"
-        ]
-      },
-      {
-        name: "Navy & Neon Pink",
-        hex: "#f43f5e",
-        image: "/products/rs/rs-prod-29.jpg",
-        images: [
-          "/products/rs/rs-prod-29.jpg"
-        ]
-      },
-      {
-        name: "Navy & Parrot Green",
-        hex: "#84cc16",
-        image: "/products/rs/rs-prod-30.jpg",
-        images: [
-          "/products/rs/rs-prod-30.jpg",
-          "/products/rs/rs-prod-31.jpg"
-        ]
-      },
-      {
-        name: "Forest Green & Black",
-        hex: "#15803d",
-        image: "/products/rs/rs-prod-24.jpg",
-        images: [
-          "/products/rs/rs-prod-24.jpg"
-        ]
-      },
-      {
-        name: "Cyan & Black Strike",
-        hex: "#06b6d4",
-        image: "/products/rs/rs-prod-19.jpg",
-        images: [
-          "/products/rs/rs-prod-19.jpg"
-        ]
-      }
-    ],
-    sizes: [
-      "XS",
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL",
-      "XXXL"
-    ],
-    stock: 210,
-    categories: [
-      "jerseys",
-      "teamwear"
-    ],
-    subs: [
-      "sublimation-jerseys",
-      "cricket-jerseys",
-      "football-jerseys"
-    ],
-    description: "Premium full sleeve collar sublimated jersey with matching trousers. Collar detail, reinforced shoulder strip, lower logo and side panels with precision digital printing.",
-    fabric: "Dotknit / 4-Way Lycra jersey + 4-Way Diagonal Lower",
-    features: [
-      "Excel Rate: Full Sleeve Collar (\u20B9470) + Sublimation Lower (\u20B9550)",
-      "High grade moisture wicking yarn",
-      "Custom squad numbers (01-99) & player names included",
-      "Comfort fit engineered for running between wickets"
-    ],
-    rating: 4.9,
-    reviews: 167,
-    isNew: true,
-    featured: true,
-    topSelling: true,
-    createdAt: null
-  },
-  {
-    id: 1004,
-    name: "RS Royal Blue & Gold Championship Sublimated Kit",
-    slug: "rs-championship-royal-blue-kit",
-    price: 1020,
-    mrp: 1499,
-    image: "/products/rs/rs-prod-34.jpg",
-    gallery: [
-      "/products/rs/rs-prod-34.jpg",
-      "/products/rs/rs-prod-33.jpg",
-      "/products/rs/rs-prod-36.jpg",
-      "/products/rs/rs-prod-49.jpg",
-      "/products/rs/rs-prod-17.jpg"
-    ],
-    colors: [
-      {
-        name: "Royal Blue & Gold",
-        hex: "#1e40af",
-        image: "/products/rs/rs-prod-34.jpg",
-        images: [
-          "/products/rs/rs-prod-34.jpg",
-          "/products/rs/rs-prod-33.jpg",
-          "/products/rs/rs-prod-36.jpg"
-        ]
-      }
-    ],
-    sizes: [
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL",
-      "XXXL"
-    ],
-    stock: 160,
-    categories: [
-      "jerseys",
-      "teamwear"
-    ],
-    subs: [
-      "sublimation-jerseys",
-      "cricket-jerseys"
-    ],
-    description: "Official real-life tournament photos! High dynamic motion graphics in rich Royal Blue with metallic gold accents. Complete collar jersey and lower combo.",
-    fabric: "High-density Dotknit with 4-Way Lycra side vents",
-    features: [
-      "Exact kit as photographed on active tournament cricket grounds",
-      "Breathable honeycomb micro-pores for temperature control",
-      "Includes printed pants with matching side flash",
-      "Pre-shrunk, colour-locked sublimation"
-    ],
-    rating: 4.8,
-    reviews: 98,
-    isNew: false,
-    featured: true,
-    topSelling: true,
-    createdAt: null
-  },
-  {
-    id: 1005,
-    name: "RS Premium Sublimation Half-Sleeve Match Kit (Set of 2)",
-    slug: "rs-premium-sublimation-uniform-set",
-    price: 950,
-    mrp: 1399,
-    image: "/products/rs/rs-prod-28.jpg",
-    gallery: [
-      "/products/rs/rs-prod-28.jpg",
-      "/products/rs/rs-prod-47.jpg",
-      "/products/rs/rs-prod-48.jpg",
-      "/products/rs/rs-prod-50.jpg",
-      "/products/rs/rs-prod-51.jpg"
-    ],
-    colors: [
-      {
-        name: "Black & Gold Luxury",
-        hex: "#18181b",
-        image: "/products/rs/rs-prod-28.jpg",
-        images: [
-          "/products/rs/rs-prod-28.jpg"
-        ]
-      },
-      {
-        name: "Royal Blue & Gold Winning",
-        hex: "#1e3a8a",
-        image: "/products/rs/rs-prod-47.jpg",
-        images: [
-          "/products/rs/rs-prod-47.jpg",
-          "/products/rs/rs-prod-48.jpg"
-        ]
-      },
-      {
-        name: "Purple & Gold Champion",
-        hex: "#6b21a8",
-        image: "/products/rs/rs-prod-28.jpg",
-        images: [
-          "/products/rs/rs-prod-28.jpg"
-        ]
-      }
-    ],
-    sizes: [
-      "XS",
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL"
-    ],
-    stock: 175,
-    categories: [
-      "jerseys",
-      "teamwear"
-    ],
-    subs: [
-      "sublimation-jerseys",
-      "cricket-jerseys"
-    ],
-    description: "Premium half-sleeve sublimation cricket kit. Features 3 iconic colour themes: Black & Gold (Luxury), Royal Blue & Gold (Professional), and Purple & Gold (Champion). Half sleeve polo jersey paired with matching sublimated lower.",
-    fabric: "PMC / Dotknit breathable performance polyester",
-    features: [
-      "Rate List: Collar Half Sleeve (\u20B9400) + Sublimation Lower (\u20B9550)",
-      "Half-sleeve freedom of motion for fast bowlers and power hitters",
-      "Side pocket zippers on matching lowers",
-      "Vibrant high-contrast gradient pattern"
-    ],
-    rating: 4.7,
-    reviews: 112,
-    isNew: true,
-    featured: false,
-    topSelling: true,
-    createdAt: null
-  },
-  {
-    id: 1006,
-    name: "RS Construction Athletic Polo Series (17 Designs)",
-    slug: "rs-construction-athletic-polo",
-    price: 420,
-    mrp: 699,
-    image: "/products/rs/rs-prod-38.jpg",
-    gallery: [
-      "/products/rs/rs-prod-38.jpg",
-      "/products/rs/rs-prod-25.jpg",
-      "/products/rs/rs-prod-42.jpg"
-    ],
-    colors: [
-      {
-        name: "Design 1 (Orange & Steel)",
-        hex: "#f97316",
-        image: "/products/rs/rs-prod-38.jpg",
-        images: [
-          "/products/rs/rs-prod-38.jpg"
-        ]
-      },
-      {
-        name: "Stealth Force (Black & Gold)",
-        hex: "#eab308",
-        image: "/products/rs/rs-prod-25.jpg",
-        images: [
-          "/products/rs/rs-prod-25.jpg"
-        ]
-      },
-      {
-        name: "Midnight Strike (Navy & Orange)",
-        hex: "#0e2140",
-        image: "/products/rs/rs-prod-25.jpg",
-        images: [
-          "/products/rs/rs-prod-25.jpg"
-        ]
-      },
-      {
-        name: "Steel Titanium (Charcoal & Lime)",
-        hex: "#84cc16",
-        image: "/products/rs/rs-prod-25.jpg",
-        images: [
-          "/products/rs/rs-prod-25.jpg"
-        ]
-      },
-      {
-        name: "Crimson Edge (Maroon & Gold)",
-        hex: "#881337",
-        image: "/products/rs/rs-prod-25.jpg",
-        images: [
-          "/products/rs/rs-prod-25.jpg"
-        ]
-      },
-      {
-        name: "Arctic Impact (Royal & White)",
-        hex: "#2563eb",
-        image: "/products/rs/rs-prod-25.jpg",
-        images: [
-          "/products/rs/rs-prod-25.jpg"
-        ]
-      },
-      {
-        name: "Sunset Blaze (Black & Red)",
-        hex: "#ef4444",
-        image: "/products/rs/rs-prod-25.jpg",
-        images: [
-          "/products/rs/rs-prod-25.jpg"
-        ]
-      },
-      {
-        name: "Ocean Depth (Cyan & Blue)",
-        hex: "#06b6d4",
-        image: "/products/rs/rs-prod-25.jpg",
-        images: [
-          "/products/rs/rs-prod-25.jpg"
-        ]
-      },
-      {
-        name: "Voltage (Neon Yellow & Black)",
-        hex: "#facc15",
-        image: "/products/rs/rs-prod-25.jpg",
-        images: [
-          "/products/rs/rs-prod-25.jpg"
-        ]
-      },
-      {
-        name: "Purple Haze (Purple & Gold)",
-        hex: "#9333ea",
-        image: "/products/rs/rs-prod-25.jpg",
-        images: [
-          "/products/rs/rs-prod-25.jpg"
-        ]
-      }
-    ],
-    fabricOptions: [
-      {
-        name: "Superpoly",
-        rate: 350
-      },
-      {
-        name: "PMC",
-        rate: 400
-      },
-      {
-        name: "Dotknit",
-        rate: 420
-      },
-      {
-        name: "4 Way Lycra",
-        rate: 450
-      },
-      {
-        name: "Fusion",
-        rate: 450
-      },
-      {
-        name: "Airmesh",
-        rate: 500
-      },
-      {
-        name: "Jacquard",
-        rate: 550
-      },
-      {
-        name: "Jacquard Lite",
-        rate: 600
-      }
-    ],
-    sizes: [
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL",
-      "XXXL"
-    ],
-    stock: 280,
-    categories: [
-      "tshirts",
-      "jerseys"
-    ],
-    subs: [
-      "polo-tshirts",
-      "sublimation-jerseys"
-    ],
-    description: "Built Strong. Delivered Right. 17 signature heavy-duty sublimation polo designs engineered for construction crews, corporate events, and sports leagues.",
-    fabric: "Dotknit Performance Pique (Rate: \u20B9420 from Rate List)",
-    features: [
-      "17 unique engineering & sports design patterns available",
-      "Button placket with tailored self-collar",
-      "Stain-release and quick-dry finish",
-      "Custom company or club logo on left chest and back"
-    ],
-    rating: 4.9,
-    reviews: 203,
-    isNew: true,
-    featured: true,
-    topSelling: true,
-    createdAt: null
-  },
-  {
-    id: 1007,
-    name: "Saran Cricket Association (SCA) Official Senior Match Kit",
-    slug: "saran-cricket-association-senior-kit",
-    price: 1020,
-    mrp: 1499,
-    image: "/products/rs/rs-prod-62.jpg",
-    gallery: [
-      "/products/rs/rs-prod-62.jpg",
-      "/products/rs/rs-prod-61.jpg",
-      "/products/rs/rs-prod-60.jpg"
-    ],
-    colors: [
-      {
-        name: "Navy & Orange Senior",
-        hex: "#0e2140",
-        image: "/products/rs/rs-prod-62.jpg",
-        images: [
-          "/products/rs/rs-prod-62.jpg",
-          "/products/rs/rs-prod-61.jpg"
-        ]
-      }
-    ],
-    sizes: [
-      "38",
-      "40",
-      "42",
-      "44",
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL"
-    ],
-    stock: 120,
-    categories: [
-      "jerseys",
-      "teamwear"
-    ],
-    subs: [
-      "cricket-jerseys",
-      "sublimation-jerseys"
-    ],
-    description: "Official BCCI/BCA district affiliate Saran Cricket Association Senior team kit. Features the official SCA crest, SARAN typography, custom numbering roster, and matching lowers.",
-    fabric: "High-grade Micro-Poly with moisture management",
-    features: [
-      "Official district association tournament jersey",
-      "Available with custom team roster sizing (38, 40, 42, 44)",
-      "Collar full sleeve jersey + Sublimation match lower",
-      "Direct factory production by Rishikar Sports"
-    ],
-    rating: 5,
-    reviews: 64,
-    isNew: true,
-    featured: true,
-    topSelling: false,
-    createdAt: null
-  },
-  {
-    id: 1008,
-    name: "Saran Cricket Association U-19 & U-23 Match Kit",
-    slug: "saran-u19-u23-cricket-match-kit",
-    price: 950,
-    mrp: 1399,
-    image: "/products/rs/rs-prod-57.jpg",
-    gallery: [
-      "/products/rs/rs-prod-57.jpg",
-      "/products/rs/rs-prod-58.jpg"
-    ],
-    colors: [
-      {
-        name: "Navy & Yellow (U-19)",
-        hex: "#eab308",
-        image: "/products/rs/rs-prod-57.jpg",
-        images: [
-          "/products/rs/rs-prod-57.jpg"
-        ]
-      },
-      {
-        name: "Navy & Sky Blue (U-23)",
-        hex: "#0284c7",
-        image: "/products/rs/rs-prod-58.jpg",
-        images: [
-          "/products/rs/rs-prod-58.jpg"
-        ]
-      }
-    ],
-    sizes: [
-      "XS",
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL"
-    ],
-    stock: 130,
-    categories: [
-      "jerseys",
-      "teamwear"
-    ],
-    subs: [
-      "cricket-jerseys",
-      "sublimation-jerseys"
-    ],
-    description: "Official Saran Cricket Association age-group kits for U-19 and U-23 tournaments. Engineered for high agility, breathability and durability in multi-day matches.",
-    fabric: "Dotknit Performance Polyester",
-    features: [
-      "Official Saran Cricket Association U-19 and U-23 crest",
-      "Collar half sleeve match jersey + matching trousers",
-      "Sublimation that withstands intense match conditions",
-      "Manufactured in Rishikar Sports manufacturing facility"
-    ],
-    rating: 4.9,
-    reviews: 47,
-    isNew: true,
-    featured: false,
-    topSelling: false,
-    createdAt: null
-  },
-  {
-    id: 1009,
-    name: "Solar Corner & Corporate Tournament Match Kit",
-    slug: "solar-corner-tournament-jersey-kit",
-    price: 950,
-    mrp: 1399,
-    image: "/products/rs/rs-prod-46.jpg",
-    gallery: [
-      "/products/rs/rs-prod-46.jpg"
-    ],
-    colors: [
-      {
-        name: "Royal Blue & Orange",
-        hex: "#1d4ed8",
-        image: "/products/rs/rs-prod-46.jpg",
-        images: [
-          "/products/rs/rs-prod-46.jpg"
-        ]
-      }
-    ],
-    sizes: [
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL"
-    ],
-    stock: 90,
-    categories: [
-      "jerseys",
-      "teamwear"
-    ],
-    subs: [
-      "cricket-jerseys",
-      "sublimation-jerseys"
-    ],
-    description: "Turnkey tournament uniform solution with multi-sponsor printing (Bharat Petroleum, Solar Corner), faceted polygon artwork, and matching orange-piped trousers.",
-    fabric: "160 GSM Sublimated Poly",
-    features: [
-      "Multi-sponsor logo printing on chest, back, and sleeves",
-      "Geometric faceted diamond print pattern",
-      "Player name and number printing included",
-      "Matching drawstring trousers included"
-    ],
-    rating: 4.8,
-    reviews: 38,
-    isNew: false,
-    featured: false,
-    topSelling: false,
-    createdAt: null
-  },
-  {
-    id: 1010,
-    name: "RS Pro Cricket Whites Match Kit (Full Sleeve + Lower)",
-    slug: "rs-pro-cricket-whites-kit",
-    price: 770,
-    mrp: 1199,
-    image: "/products/rs/rs-prod-18.jpg",
-    gallery: [
-      "/products/rs/rs-prod-18.jpg"
-    ],
-    colors: [
-      {
-        name: "Classic White & Royal",
-        hex: "#ffffff",
-        image: "/products/rs/rs-prod-18.jpg",
-        images: [
-          "/products/rs/rs-prod-18.jpg"
-        ]
-      }
-    ],
-    sizes: [
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL",
-      "XXXL"
-    ],
-    stock: 145,
-    categories: [
-      "jerseys",
-      "teamwear"
-    ],
-    subs: [
-      "cricket-jerseys",
-      "lowers"
-    ],
-    description: "Classic cricket match whites for league and club tournaments. Includes full sleeve collar white jersey with blue shoulder accents and matching white match trousers.",
-    fabric: "Superpoly / Dotknit White Fabric + Plain Lower (\u20B9370 + \u20B9400 = \u20B9770)",
-    features: [
-      "Excel Rate list combination: Full Sleeve White + Match Lower",
-      "Sun protection full sleeves with rib cuffs",
-      "Easy-clean stain-resistant treatment",
-      "Comfort elasticated waist trousers"
-    ],
-    rating: 4.7,
-    reviews: 82,
-    isNew: false,
-    featured: false,
-    topSelling: true,
-    createdAt: null
-  },
-  {
-    id: 1011,
-    name: "RS Pro Sublimation Sports Shorts",
-    slug: "rs-sublimation-pro-match-shorts",
-    price: 300,
-    mrp: 499,
-    image: "/products/rs/rs-prod-02.jpg",
-    gallery: [
-      "/products/rs/rs-prod-02.jpg",
-      "/products/rs/rs-prod-05.jpg"
-    ],
-    colors: [
-      {
-        name: "Black & Gold",
-        hex: "#eab308",
-        image: "/products/rs/rs-prod-02.jpg",
-        images: [
-          "/products/rs/rs-prod-02.jpg"
-        ]
-      },
-      {
-        name: "Blue & Orange",
-        hex: "#f97316",
-        image: "/products/rs/rs-prod-05.jpg",
-        images: [
-          "/products/rs/rs-prod-05.jpg"
-        ]
-      }
-    ],
-    fabricOptions: [
-      {
-        name: "Superpoly",
-        rate: 250
-      },
-      {
-        name: "PMC",
-        rate: 280
-      },
-      {
-        name: "Dotknit",
-        rate: 300
-      },
-      {
-        name: "Airmesh",
-        rate: 350
-      },
-      {
-        name: "4 Way Lycra",
-        rate: 400
-      }
-    ],
-    sizes: [
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL"
-    ],
-    stock: 220,
-    categories: [
-      "teamwear"
-    ],
-    subs: [
-      "shorts"
-    ],
-    description: "Sublimation printed sports shorts with dynamic side curves, elastic waistband, deep side pockets, and double stitch hem. Built according to Rishikar Sports Excel rate list.",
-    fabric: "Dotknit / Micro Poly (Excel Rate: \u20B9300, Lycra: \u20B9400)",
-    features: [
-      "Excel Rate: Superpoly \u20B9250, PMC \u20B9280, Dotknit \u20B9300, Airmesh \u20B9350, 4-Way Lycra \u20B9400",
-      "Dual deep side pockets for balls & essentials",
-      "Reinforced elastic waistband with drawstring",
-      "Lightweight, breathable, moisture wicking"
-    ],
-    rating: 4.8,
-    reviews: 135,
-    isNew: true,
-    featured: false,
-    topSelling: true,
-    createdAt: null
-  },
-  {
-    id: 1012,
-    name: "RS Classic Training Plain Shorts",
-    slug: "rs-classic-training-plain-shorts",
-    price: 250,
-    mrp: 399,
-    image: "/products/rs/rs-prod-06.jpg",
-    gallery: [
-      "/products/rs/rs-prod-06.jpg",
-      "/products/rs/rs-prod-04.jpg",
-      "/products/rs/rs-prod-53.jpg"
-    ],
-    colors: [
-      {
-        name: "Royal Blue",
-        hex: "#2563eb",
-        image: "/products/rs/rs-prod-06.jpg",
-        images: [
-          "/products/rs/rs-prod-06.jpg"
-        ]
-      },
-      {
-        name: "Black",
-        hex: "#18181b",
-        image: "/products/rs/rs-prod-04.jpg",
-        images: [
-          "/products/rs/rs-prod-04.jpg"
-        ]
-      },
-      {
-        name: "Navy",
-        hex: "#0e2140",
-        image: "/products/rs/rs-prod-53.jpg",
-        images: [
-          "/products/rs/rs-prod-53.jpg"
-        ]
-      }
-    ],
-    fabricOptions: [
-      {
-        name: "Superpoly",
-        rate: 200
-      },
-      {
-        name: "PMC",
-        rate: 230
-      },
-      {
-        name: "Dotknit",
-        rate: 250
-      },
-      {
-        name: "Airmesh",
-        rate: 300
-      },
-      {
-        name: "4 Way Lycra",
-        rate: 320
-      }
-    ],
-    sizes: [
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL"
-    ],
-    stock: 260,
-    categories: [
-      "teamwear"
-    ],
-    subs: [
-      "shorts"
-    ],
-    description: "Solid athletic training shorts with embroidered RS logo. Perfect for daily net sessions, gym, running, and casual team wear.",
-    fabric: "Dotknit / Superpoly (Excel Rate: \u20B9200 to \u20B9320)",
-    features: [
-      "Excel Rate: Superpoly \u20B9200, PMC \u20B9230, Dotknit \u20B9250, Airmesh \u20B9300, 4 Way Lycra \u20B9320",
-      "Side pocket with secure stitching",
-      "Elastic waistband with drawcord",
-      "Ultra-soft feel that resists chafing"
-    ],
-    rating: 4.6,
-    reviews: 94,
-    isNew: false,
-    featured: false,
-    topSelling: false,
-    createdAt: null
-  },
-  {
-    id: 1013,
-    name: "RS Official Embroidered Sports Cap",
-    slug: "rs-official-embroidered-sports-cap",
-    price: 300,
-    mrp: 499,
-    image: "/products/rs/rs-prod-03.jpg",
-    gallery: [
-      "/products/rs/rs-prod-03.jpg"
-    ],
-    colors: [
-      {
-        name: "Royal Blue",
-        hex: "#1d4ed8",
-        image: "/products/rs/rs-prod-03.jpg",
-        images: [
-          "/products/rs/rs-prod-03.jpg"
-        ]
-      }
-    ],
-    sizes: [
-      "Free Size (Adjustable)"
-    ],
-    stock: 350,
-    categories: [
-      "accessories"
-    ],
-    subs: [
-      "caps"
-    ],
-    description: "Official Rishikar Sports 6-panel athletic cap with 3D embroidery of the RS emblem. Features breathable eyelets and an adjustable rear strap.",
-    fabric: "Heavy Cotton Twill / Polyester Blend",
-    features: [
-      "Excel Rate list: Cap with Logo \u20B9300, Cap with Name/Number \u20B9320",
-      "High density 3D embroidery that retains its sharp look",
-      "Pre-curved visor for glare shielding",
-      "Metal buckle adjustment fits all head sizes"
-    ],
-    rating: 4.9,
-    reviews: 215,
-    isNew: true,
-    featured: true,
-    topSelling: true,
-    createdAt: null
-  },
-  {
-    id: 1014,
-    name: "Bihar Cricket Association (BCA) Official Cap",
-    slug: "bihar-cricket-association-cap",
-    price: 300,
-    mrp: 549,
-    image: "/products/rs/rs-prod-09.jpg",
-    gallery: [
-      "/products/rs/rs-prod-09.jpg",
-      "/products/rs/rs-prod-07.jpg",
-      "/products/rs/rs-prod-08.jpg"
-    ],
-    colors: [
-      {
-        name: "Blue & Gold Visor",
-        hex: "#eab308",
-        image: "/products/rs/rs-prod-09.jpg",
-        images: [
-          "/products/rs/rs-prod-09.jpg"
-        ]
-      },
-      {
-        name: "Blue & Orange Visor",
-        hex: "#f97316",
-        image: "/products/rs/rs-prod-07.jpg",
-        images: [
-          "/products/rs/rs-prod-07.jpg"
-        ]
-      },
-      {
-        name: "Solid Royal Blue",
-        hex: "#1e40af",
-        image: "/products/rs/rs-prod-08.jpg",
-        images: [
-          "/products/rs/rs-prod-08.jpg"
-        ]
-      }
-    ],
-    sizes: [
-      "Free Size (Adjustable)"
-    ],
-    stock: 280,
-    categories: [
-      "accessories"
-    ],
-    subs: [
-      "caps"
-    ],
-    description: "Official Bihar Cricket Association embroidered state team cap. Features the circular BCA insignia on front, side RS branding, and contrast piped crown.",
-    fabric: "Premium Structured Twill",
-    features: [
-      "Official Bihar Cricket Association insignia embroidery",
-      "Contrast visor options: Gold, Orange, or Solid Blue",
-      "Brass buckle backstrap with tuck-in slot",
-      "Manufactured exclusively by Rishikar Sports"
-    ],
-    rating: 5,
-    reviews: 148,
-    isNew: true,
-    featured: true,
-    topSelling: true,
-    createdAt: null
-  },
-  {
-    id: 1015,
-    name: "RS Cricket Wide-Brim Sun Hat",
-    slug: "rs-cricket-wide-brim-sun-hat",
-    price: 310,
-    mrp: 499,
-    image: "/products/rs/rs-prod-01.jpg",
-    gallery: [
-      "/products/rs/rs-prod-01.jpg",
-      "/products/rs/rs-prod-54.jpg"
-    ],
-    colors: [
-      {
-        name: "Royal Blue",
-        hex: "#1d4ed8",
-        image: "/products/rs/rs-prod-01.jpg",
-        images: [
-          "/products/rs/rs-prod-01.jpg"
-        ]
-      },
-      {
-        name: "Navy Blue",
-        hex: "#0e2140",
-        image: "/products/rs/rs-prod-54.jpg",
-        images: [
-          "/products/rs/rs-prod-54.jpg"
-        ]
-      }
-    ],
-    sizes: [
-      "M (56cm)",
-      "L (58cm)",
-      "XL (60cm)"
-    ],
-    stock: 190,
-    categories: [
-      "accessories"
-    ],
-    subs: [
-      "caps"
-    ],
-    description: "360-degree wide brim cricket hat designed for full-day field play under the sun. Direct rate from Excel: Hat with Logo \u20B9310, with Name/No \u20B9330.",
-    fabric: "100% Breathable Heavy Cotton Canvas",
-    features: [
-      "Excel Rate list: Hat with Logo \u20B9310, with Name \u20B9310, Name No. \u20B9330",
-      "Full 360 wide brim keeps neck and face sheltered",
-      "Ventilation brass side eyelets for cross airflow",
-      "Sweat-wicking inner brow lining"
-    ],
-    rating: 4.8,
-    reviews: 79,
-    isNew: true,
-    featured: false,
-    topSelling: true,
-    createdAt: null
-  },
-  {
-    id: 1016,
-    name: "RS Sublimation Jaycart Sleeveless Jersey / Inner Vest",
-    slug: "rs-full-sublimation-jaycart-vest",
-    price: 450,
-    mrp: 699,
-    image: "/products/rs/rs-prod-40.jpg",
-    gallery: [
-      "/products/rs/rs-prod-40.jpg",
-      "/products/rs/rs-prod-41.jpg"
-    ],
-    colors: [
-      {
-        name: "Round Neck Jaycart",
-        hex: "#1d4ed8",
-        image: "/products/rs/rs-prod-40.jpg",
-        images: [
-          "/products/rs/rs-prod-40.jpg"
-        ]
-      },
-      {
-        name: "V-Neck Jaycart",
-        hex: "#2563eb",
-        image: "/products/rs/rs-prod-41.jpg",
-        images: [
-          "/products/rs/rs-prod-41.jpg"
-        ]
-      }
-    ],
-    sizes: [
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL"
-    ],
-    stock: 140,
-    categories: [
-      "tshirts",
-      "jerseys"
-    ],
-    subs: [
-      "sleeveless-tees",
-      "sublimation-jerseys"
-    ],
-    description: "High-spec Jacquard (Jaycart) full sublimation sleeveless training top. Features woven airflow texture that keeps skin cool under gear.",
-    fabric: "Jacquard / Jaycart Knit (Excel Rate: \u20B9450)",
-    features: [
-      "Excel Rate list: Jacquard Round Neck \u20B9450",
-      "Available in Round Neck and V-Neck necklines",
-      "Armhole drop optimized for bowling and gym workouts",
-      "Featherweight construction with rapid evaporate technology"
-    ],
-    rating: 4.7,
-    reviews: 53,
-    isNew: false,
-    featured: false,
-    topSelling: false,
-    createdAt: null
-  },
-  {
-    id: 1017,
-    name: "RS Pro Athletic Tracksuit (Zip Jacket + Track Pant Set)",
-    slug: "rs-pro-athletic-tracksuit",
-    price: 1700,
-    mrp: 2499,
-    image: "/products/rs/rs-prod-43.jpg",
-    gallery: [
-      "/products/rs/rs-prod-43.jpg"
-    ],
-    colors: [
-      {
-        name: "Navy & Sky Blue",
-        hex: "#0f172a",
-        image: "/products/rs/rs-prod-43.jpg",
-        images: [
-          "/products/rs/rs-prod-43.jpg"
-        ]
-      }
-    ],
-    sizes: [
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL",
-      "XXXL"
-    ],
-    stock: 110,
-    categories: [
-      "teamwear"
-    ],
-    subs: [
-      "tracksuits",
-      "track-jackets"
-    ],
-    description: "Full team travel and warmup tracksuit. Includes high-neck zip jacket and athletic track pants. Built to withstand rigors of tour travel and cool weather training.",
-    fabric: "Bonded Performance Poly with micro-fleece interior (Excel Rate: \u20B91700)",
-    features: [
-      "Exact Excel Rate list: TRACSUIT \u20B91700",
-      "Full front zipper with chin guard and side pockets",
-      "Ankle zips on track pants for easy on/off over cleats",
-      "Custom team crest and sponsor printing available"
-    ],
-    rating: 4.9,
-    reviews: 87,
-    isNew: true,
-    featured: true,
-    topSelling: true,
-    createdAt: null
-  },
-  {
-    id: 1018,
-    name: "RS Sports Sleeveless Half Sweater / Thermal Vest",
-    slug: "rs-sports-sleeveless-half-sweater",
-    price: 1100,
-    mrp: 1699,
-    image: "/products/rs/rs-prod-44.jpg",
-    gallery: [
-      "/products/rs/rs-prod-44.jpg"
-    ],
-    colors: [
-      {
-        name: "Royal & Navy",
-        hex: "#1e3a8a",
-        image: "/products/rs/rs-prod-44.jpg",
-        images: [
-          "/products/rs/rs-prod-44.jpg"
-        ]
-      }
-    ],
-    fabricOptions: [
-      {
-        name: "Standard Poly-Thermal",
-        rate: 1100
-      },
-      {
-        name: "Woolen Knit (Half Sweater Wollen)",
-        rate: 1400
-      }
-    ],
-    sizes: [
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL"
-    ],
-    stock: 85,
-    categories: [
-      "teamwear"
-    ],
-    subs: [
-      "teamwear"
-    ],
-    description: "Sleeveless cricket half sweater with quarter-zip stand collar. Provides core torso warmth during morning field sessions without hindering bowling action.",
-    fabric: "Thermal Micro-Knit (Excel Rate: Regular \u20B91100, Woolen \u20B91400)",
-    features: [
-      "Excel Rate list: HALF SWEATER \u20B91100, HALF SWEATER WOLLEN \u20B91400",
-      "Quarter zip stand-up collar for wind protection",
-      "Sleeveless cut for unrestricted bowling and batting motion",
-      "Ribbed hem to lock in body warmth"
-    ],
-    rating: 4.8,
-    reviews: 42,
-    isNew: false,
-    featured: false,
-    topSelling: false,
-    createdAt: null
-  },
-  {
-    id: 1019,
-    name: "RS Elite Pullover Performance Hoodie",
-    slug: "rs-elite-pullover-hoodie",
-    price: 1300,
-    mrp: 1899,
-    image: "/products/rs/rs-prod-52.jpg",
-    gallery: [
-      "/products/rs/rs-prod-52.jpg",
-      "/products/rs/rs-prod-45.jpg"
-    ],
-    colors: [
-      {
-        name: "Navy & Sky RS",
-        hex: "#0f172a",
-        image: "/products/rs/rs-prod-52.jpg",
-        images: [
-          "/products/rs/rs-prod-52.jpg"
-        ]
-      },
-      {
-        name: "India Cricket Edition",
-        hex: "#1d4ed8",
-        image: "/products/rs/rs-prod-45.jpg",
-        images: [
-          "/products/rs/rs-prod-45.jpg"
-        ]
-      }
-    ],
-    sizes: [
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL",
-      "XXXL"
-    ],
-    stock: 130,
-    categories: [
-      "teamwear"
-    ],
-    subs: [
-      "hoodies"
-    ],
-    description: "Heavyweight athletic pullover hoodie with sleeve 3-stripes, kangaroo pouch, drawstring hood, and ribbed cuffs. Direct factory price from Excel rate sheet.",
-    fabric: "320 GSM Cotton-Poly Brushed Fleece (Excel Rate: \u20B91300)",
-    features: [
-      "Exact Excel Rate list: HOODIES \u20B91300",
-      "Plush fleeced interior for winter practice and gym sessions",
-      "Reinforced pouch pocket with bar-tack stitching",
-      "Pre-shrunk fabric to prevent sizing distortion"
-    ],
-    rating: 4.9,
-    reviews: 118,
-    isNew: true,
-    featured: false,
-    topSelling: true,
-    createdAt: null
-  },
-  {
-    id: 1020,
-    name: "RS Classic Solid Collar Polo T-Shirt",
-    slug: "rs-classic-solid-polo",
-    price: 400,
-    mrp: 599,
-    image: "/products/rs/rs-prod-55.jpg",
-    gallery: [
-      "/products/rs/rs-prod-55.jpg"
-    ],
-    colors: [
-      {
-        name: "Solid Navy",
-        hex: "#0e2140",
-        image: "/products/rs/rs-prod-55.jpg",
-        images: [
-          "/products/rs/rs-prod-55.jpg"
-        ]
-      }
-    ],
-    fabricOptions: [
-      {
-        name: "Superpoly",
-        rate: 350
-      },
-      {
-        name: "PMC",
-        rate: 400
-      },
-      {
-        name: "Dotknit",
-        rate: 420
-      },
-      {
-        name: "4 Way Lycra",
-        rate: 450
-      },
-      {
-        name: "Airmesh",
-        rate: 500
-      }
-    ],
-    sizes: [
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL"
-    ],
-    stock: 210,
-    categories: [
-      "tshirts"
-    ],
-    subs: [
-      "polo-tshirts"
-    ],
-    description: "Classic solid sports polo with ribbed collar and contrast placket trim. Ideal for tournament coaching staff, support personnel, and travel apparel.",
-    fabric: "PMC Poly Pique (Excel Rate: \u20B9350 - \u20B9450)",
-    features: [
-      "Excel Rate list: Collar Half Sleeve PMC \u20B9400, Dotknit \u20B9420",
-      "Embroidered RS logo on chest",
-      "Breathable and durable knit",
-      "Retains collar stiffness wash after wash"
-    ],
-    rating: 4.6,
-    reviews: 69,
-    isNew: false,
-    featured: false,
-    topSelling: false,
-    createdAt: null
-  },
-  {
-    id: 1021,
-    name: "RS Pro Sublimation Cricket Lowers / Track Pants",
-    slug: "rs-pro-sublimation-lowers",
-    price: 550,
-    mrp: 799,
-    image: "/products/rs/rs-prod-33.jpg",
-    gallery: [
-      "/products/rs/rs-prod-33.jpg",
-      "/products/rs/rs-prod-23.jpg"
-    ],
-    colors: [
-      {
-        name: "Royal Blue & Gold",
-        hex: "#1e40af",
-        image: "/products/rs/rs-prod-33.jpg",
-        images: [
-          "/products/rs/rs-prod-33.jpg"
-        ]
-      },
-      {
-        name: "Black & Grey",
-        hex: "#1f2937",
-        image: "/products/rs/rs-prod-23.jpg",
-        images: [
-          "/products/rs/rs-prod-23.jpg"
-        ]
-      }
-    ],
-    fabricOptions: [
-      {
-        name: "4 Way Stretch",
-        rate: 550
-      },
-      {
-        name: "Diagonal",
-        rate: 550
-      },
-      {
-        name: "Waffle",
-        rate: 550
-      }
-    ],
-    sizes: [
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL",
-      "XXXL"
-    ],
-    stock: 190,
-    categories: [
-      "teamwear"
-    ],
-    subs: [
-      "lowers"
-    ],
-    description: "Sublimation cricket track lowers engineered for cricket and athletic training. Built in 4-Way, Diagonal, and Waffle fabrics as listed in Rishikar Sports Rate List.",
-    fabric: "4-Way / Waffle / Diagonal Stretch Polyester (Excel Rate: \u20B9550)",
-    features: [
-      "Excel Rate list: SUBLIMATION LOWER (4 Way, Diagonal, Waffle) \u20B9550",
-      "Printed side panel inserts that match team jerseys",
-      "Deep zipper pockets on both sides",
-      "Ankle rib cuffs for snug fit over cricket shoes"
-    ],
-    rating: 4.8,
-    reviews: 93,
-    isNew: false,
-    featured: false,
-    topSelling: true,
-    createdAt: null
-  },
-  {
-    id: 1022,
-    name: "RS Heavy-Duty Player Kit Bag",
-    slug: "rs-heavy-duty-kit-bag",
-    price: 4500,
-    mrp: 5999,
-    image: "/products/bag.png",
-    gallery: [
-      "/products/bag.png"
-    ],
-    colors: [
-      {
-        name: "Black & Orange",
-        hex: "#ea580c",
-        image: "/products/bag.png",
-        images: [
-          "/products/bag.png"
-        ]
-      }
-    ],
-    sizes: [
-      "Full Senior Size"
-    ],
-    stock: 50,
-    categories: [
-      "accessories"
-    ],
-    subs: [
-      "kit-bags"
-    ],
-    description: "Full-capacity cricket player wheelie kit bag. Engineered with 1680D nylon, dedicated internal bat compartment, heavy-duty tractor wheels, and shoe tunnel. Built to exact factory rate.",
-    fabric: "1680D Ballistic Heavy-Duty Cordura (Excel Rate: \u20B94500, GST 18%)",
-    features: [
-      "Exact Excel Rate list: KIT BAG \u20B94500 (GST at 18% applicable)",
-      "Padded bat sleeves holds up to 3 full-size bats",
-      "Heavy-duty tractor wheels with skid rails",
-      "Separate ventilated footwear and helmet sections"
-    ],
-    rating: 4.9,
-    reviews: 61,
-    isNew: false,
-    featured: true,
-    topSelling: false,
-    createdAt: null
-  },
-  {
-    id: 1023,
-    name: "RS Player Pro Team Backpack",
-    slug: "rs-player-pro-backpack",
-    price: 1500,
-    mrp: 2199,
-    image: "/products/bag.png",
-    gallery: [
-      "/products/bag.png"
-    ],
-    colors: [
-      {
-        name: "Black & Charcoal",
-        hex: "#374151",
-        image: "/products/bag.png",
-        images: [
-          "/products/bag.png"
-        ]
-      }
-    ],
-    sizes: [
-      "Standard 35L"
-    ],
-    stock: 120,
-    categories: [
-      "accessories"
-    ],
-    subs: [
-      "kit-bags"
-    ],
-    description: "Compact multi-sport gear backpack with bat/stick sleeve, padded back support, laptop compartment, and gear separator. Factory priced directly from rate sheet.",
-    fabric: "900D Water-Resistant Poly (Excel Rate: \u20B91500)",
-    features: [
-      "Exact Excel Rate list: BAG PACK \u20B91500",
-      "Side bat sleeve and water bottle mesh pockets",
-      "Breathable cushioned mesh back panel",
-      "Reinforced heavy-duty zippers and haul loop"
-    ],
-    rating: 4.7,
-    reviews: 73,
-    isNew: false,
-    featured: false,
-    topSelling: false,
-    createdAt: null
-  },
-  {
-    id: 1024,
-    name: "RS Performance Cushioned Sports Socks (Pack of 3)",
-    slug: "rs-performance-sports-socks",
-    price: 250,
-    mrp: 399,
-    image: "/products/bottle.png",
-    gallery: [
-      "/products/bottle.png"
-    ],
-    colors: [
-      {
-        name: "White & Navy",
-        hex: "#f8fafc",
-        image: "/products/bottle.png",
-        images: [
-          "/products/bottle.png"
-        ]
-      }
-    ],
-    sizes: [
-      "Free Size (UK 6-11)"
-    ],
-    stock: 300,
-    categories: [
-      "accessories"
-    ],
-    subs: [
-      "accessories"
-    ],
-    description: "High performance ribbed sports crew socks with terry cushioning on sole and heel. Absorbs high-impact shocks during bowling and running.",
-    fabric: "Cotton-Lycra Terry Cushion (Excel Rate: \u20B9250)",
-    features: [
-      "Exact Excel Rate list: SHOCKS \u20B9250",
-      "High shock-absorbing terry footbed",
-      "Arch compression band prevents slippage inside shoes",
-      "Reinforced heel and toe for prolonged durability"
-    ],
-    rating: 4.8,
-    reviews: 140,
-    isNew: false,
-    featured: false,
-    topSelling: false,
-    createdAt: null
-  },
-  {
-    id: 1025,
-    name: "RS Pro Round Neck Half Sleeve Performance Tee",
-    slug: "rs-round-neck-dryfit-tee",
-    price: 300,
-    mrp: 499,
-    image: "/products/rs/rs-prod-40.jpg",
-    gallery: [
-      "/products/rs/rs-prod-40.jpg",
-      "/products/rs/rs-prod-20.jpg"
-    ],
-    colors: [
-      {
-        name: "Royal Blue Print",
-        hex: "#1d4ed8",
-        image: "/products/rs/rs-prod-40.jpg",
-        images: [
-          "/products/rs/rs-prod-40.jpg"
-        ]
-      },
-      {
-        name: "Navy & Orange",
-        hex: "#0e2140",
-        image: "/products/rs/rs-prod-20.jpg",
-        images: [
-          "/products/rs/rs-prod-20.jpg"
-        ]
-      }
-    ],
-    fabricOptions: [
-      {
-        name: "Superpoly",
-        rate: 300
-      },
-      {
-        name: "PMC",
-        rate: 320
-      },
-      {
-        name: "Dotknit",
-        rate: 350
-      },
-      {
-        name: "4 Way Lycra",
-        rate: 390
-      },
-      {
-        name: "Fusion",
-        rate: 390
-      },
-      {
-        name: "Airmesh",
-        rate: 420
-      },
-      {
-        name: "Jacquard",
-        rate: 450
-      },
-      {
-        name: "Jacquard Lite",
-        rate: 480
-      }
-    ],
-    sizes: [
-      "XS",
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL"
-    ],
-    stock: 220,
-    categories: [
-      "tshirts"
-    ],
-    subs: [
-      "round-neck-tees",
-      "sublimation-jerseys",
-      "football-jerseys"
-    ],
-    description: "Round neck half sleeve performance tee. Direct factory pricing from Rishikar Sports Excel Rate List starting at \u20B9300 (Superpoly) up to \u20B9480 (Jacquard Lite).",
-    fabric: "Superpoly / Dotknit / Lycra / Jacquard",
-    features: [
-      "Excel Rate list: Superpoly \u20B9300, PMC \u20B9320, Dotknit \u20B9350, Lycra \u20B9390, Fusion \u20B9390, Airmesh \u20B9420, Jacquard \u20B9450, Jacquard Lite \u20B9480",
-      "Comfort round collar with sweat tape",
-      "Full digital sublimation print support",
-      "Durable double needle hem"
-    ],
-    rating: 4.8,
-    reviews: 104,
-    isNew: true,
-    featured: false,
-    topSelling: true,
-    createdAt: null
-  },
-  {
-    id: 1026,
-    name: "RS Round Neck Full Sleeve Training Tee",
-    slug: "rs-round-neck-full-sleeve",
-    price: 320,
-    mrp: 549,
-    image: "/products/rs/rs-prod-20.jpg",
-    gallery: [
-      "/products/rs/rs-prod-20.jpg"
-    ],
-    colors: [
-      {
-        name: "Navy & Orange",
-        hex: "#0e2140",
-        image: "/products/rs/rs-prod-20.jpg",
-        images: [
-          "/products/rs/rs-prod-20.jpg"
-        ]
-      }
-    ],
-    fabricOptions: [
-      {
-        name: "Superpoly",
-        rate: 320
-      },
-      {
-        name: "PMC",
-        rate: 340
-      },
-      {
-        name: "Dotknit",
-        rate: 370
-      },
-      {
-        name: "4 Way Lycra",
-        rate: 410
-      },
-      {
-        name: "Fusion",
-        rate: 410
-      },
-      {
-        name: "Airmesh",
-        rate: 440
-      },
-      {
-        name: "Jacquard",
-        rate: 470
-      },
-      {
-        name: "Jacquard Lite",
-        rate: 500
-      }
-    ],
-    sizes: [
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL",
-      "XXXL"
-    ],
-    stock: 180,
-    categories: [
-      "tshirts"
-    ],
-    subs: [
-      "round-neck-tees",
-      "sublimation-jerseys"
-    ],
-    description: "Full sleeve round neck jersey offering complete sun protection and warmth. Priced directly according to the Rishikar Sports Excel rate list.",
-    fabric: "Superpoly / Dotknit (Excel Rate: \u20B9320 - \u20B9500)",
-    features: [
-      "Excel Rate: Superpoly \u20B9320, PMC \u20B9340, Dotknit \u20B9370, Lycra \u20B9410, Fusion \u20B9410, Airmesh \u20B9440, Jacquard \u20B9470, Jacquard Lite \u20B9500",
-      "Full sleeve coverage with ribbed wrist cuffs",
-      "Moisture-wicking yarn for intense training sessions",
-      "Custom name and number printing available"
-    ],
-    rating: 4.7,
-    reviews: 76,
-    isNew: true,
-    featured: false,
-    topSelling: false,
-    createdAt: null
-  },
-  {
-    id: 1027,
-    name: "RS Dual-Combo Hybrid Fabric Sublimation Jersey",
-    slug: "rs-combo-fabric-sublimated-jersey",
-    price: 420,
-    mrp: 699,
-    image: "/products/rs/rs-prod-29.jpg",
-    gallery: [
-      "/products/rs/rs-prod-29.jpg",
-      "/products/rs/rs-prod-30.jpg",
-      "/products/rs/rs-prod-32.jpg"
-    ],
-    colors: [
-      {
-        name: "Navy & Neon Pink (Player 18)",
-        hex: "#f43f5e",
-        image: "/products/rs/rs-prod-29.jpg",
-        images: [
-          "/products/rs/rs-prod-29.jpg"
-        ]
-      },
-      {
-        name: "Navy & Lime (Player RS)",
-        hex: "#84cc16",
-        image: "/products/rs/rs-prod-30.jpg",
-        images: [
-          "/products/rs/rs-prod-30.jpg"
-        ]
-      },
-      {
-        name: "Red & Black Raglan (Player 10)",
-        hex: "#dc2626",
-        image: "/products/rs/rs-prod-32.jpg",
-        images: [
-          "/products/rs/rs-prod-32.jpg"
-        ]
-      }
-    ],
-    fabricOptions: [
-      {
-        name: "PMC + Fusion (Collar Half)",
-        rate: 420
-      },
-      {
-        name: "PMC + Fusion (Collar Full)",
-        rate: 450
-      },
-      {
-        name: "PMC + Airmesh (Collar Half)",
-        rate: 500
-      },
-      {
-        name: "PMC + Airmesh (Collar Full)",
-        rate: 550
-      },
-      {
-        name: "PMC + Jacquard (Collar Half)",
-        rate: 550
-      },
-      {
-        name: "PMC + Jacquard (Collar Full)",
-        rate: 600
-      }
-    ],
-    sizes: [
-      "XS",
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL",
-      "XXXL"
-    ],
-    stock: 190,
-    categories: [
-      "jerseys"
-    ],
-    subs: [
-      "sublimation-jerseys",
-      "football-jerseys",
-      "cricket-jerseys"
-    ],
-    description: "Official 'COMBO FABRIC JERSEY' line from Excel Rate List! Combines PMC body fabric with high-airflow Fusion, Airmesh, or Jacquard panels for ultimate thermoregulation.",
-    fabric: "PMC + Fusion / Airmesh / Jacquard Hybrid (Excel Rate: \u20B9350 - \u20B9600)",
-    features: [
-      "Excel Rate: PMC + Fusion \u20B9350-450, PMC + Airmesh \u20B9400-550, PMC + Jacquard \u20B9450-600",
-      "Engineered hybrid mesh zoning under arms and back",
-      "Ultra light and breathable in humid summer tournaments",
-      "Player name, number, team and sponsor print included"
-    ],
-    rating: 4.9,
-    reviews: 126,
-    isNew: true,
-    featured: true,
-    topSelling: true,
-    createdAt: null
-  },
-  {
-    id: 1028,
-    name: "RS 4-Way Diagonal & Waffle Plain Lower",
-    slug: "rs-plain-athletic-training-lower",
-    price: 400,
-    mrp: 649,
-    image: "/products/rs/rs-prod-04.jpg",
-    gallery: [
-      "/products/rs/rs-prod-04.jpg",
-      "/products/rs/rs-prod-53.jpg",
-      "/products/rs/rs-prod-18.jpg"
-    ],
-    colors: [
-      {
-        name: "Solid Black",
-        hex: "#18181b",
-        image: "/products/rs/rs-prod-04.jpg",
-        images: [
-          "/products/rs/rs-prod-04.jpg"
-        ]
-      },
-      {
-        name: "Solid Navy",
-        hex: "#0e2140",
-        image: "/products/rs/rs-prod-53.jpg",
-        images: [
-          "/products/rs/rs-prod-53.jpg"
-        ]
-      },
-      {
-        name: "Cricket Match White",
-        hex: "#ffffff",
-        image: "/products/rs/rs-prod-18.jpg",
-        images: [
-          "/products/rs/rs-prod-18.jpg"
-        ]
-      }
-    ],
-    fabricOptions: [
-      {
-        name: "4 Way Diagonal",
-        rate: 400
-      },
-      {
-        name: "Waffle Stretch",
-        rate: 400
-      }
-    ],
-    sizes: [
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL",
-      "XXXL"
-    ],
-    stock: 250,
-    categories: [
-      "teamwear"
-    ],
-    subs: [
-      "lowers"
-    ],
-    description: "Official 'PLAIN LOWER' from Rishikar Sports Rate List. Made in 4-Way Diagonal and Waffle knit fabrics at factory rate of \u20B9400.",
-    fabric: "4-Way Diagonal / Waffle Knit (Excel Rate: \u20B9400)",
-    features: [
-      "Exact Excel Rate list: PLAIN LOWER (4 Way Diagonal / Waffle) \u20B9400",
-      "4-way stretch moves naturally with every stride and dive",
-      "Zippered side pockets keep keys and phone safe",
-      "Elastic waist with internal drawstring"
-    ],
-    rating: 4.8,
-    reviews: 88,
-    isNew: false,
-    featured: false,
-    topSelling: true,
-    createdAt: null
-  }
-];
-
-// data/rateList.json
-var rateList_default = {
-  title: "RISHIKAR SPORTS - SPORTSWEAR RATE LIST",
-  jerseys: {
-    "ROUND NECK HALF SLEEVE": [
-      {
-        fabric: "SUPERPOLY",
-        rate: 300
-      },
-      {
-        fabric: "PMC",
-        rate: 320
-      },
-      {
-        fabric: "DOTKNIT",
-        rate: 350
-      },
-      {
-        fabric: "4 WAY LYCRA",
-        rate: 390
-      },
-      {
-        fabric: "FUSION",
-        rate: 390
-      },
-      {
-        fabric: "AIRMESH",
-        rate: 420
-      },
-      {
-        fabric: "JACQUARD",
-        rate: 450
-      },
-      {
-        fabric: "JACQUARD LITE",
-        rate: 480
-      }
-    ],
-    "ROUND NECK FULL SLEEVE": [
-      {
-        fabric: "SUPERPOLY",
-        rate: 320
-      },
-      {
-        fabric: "PMC",
-        rate: 340
-      },
-      {
-        fabric: "DOTKNIT",
-        rate: 370
-      },
-      {
-        fabric: "4 WAY LYCRA",
-        rate: 410
-      },
-      {
-        fabric: "FUSION",
-        rate: 410
-      },
-      {
-        fabric: "AIRMESH",
-        rate: 440
-      },
-      {
-        fabric: "JACQUARD",
-        rate: 470
-      },
-      {
-        fabric: "JACQUARD LITE",
-        rate: 500
-      }
-    ],
-    "COLLAR HALF SLEEVE": [
-      {
-        fabric: "SUPERPOLY",
-        rate: 350
-      },
-      {
-        fabric: "PMC",
-        rate: 400
-      },
-      {
-        fabric: "DOTKNIT",
-        rate: 420
-      },
-      {
-        fabric: "4 WAY LYCRA",
-        rate: 450
-      },
-      {
-        fabric: "FUSION",
-        rate: 450
-      },
-      {
-        fabric: "AIRMESH",
-        rate: 500
-      },
-      {
-        fabric: "JACQUARD",
-        rate: 550
-      },
-      {
-        fabric: "JACQUARD LITE",
-        rate: 600
-      }
-    ],
-    "COLLAR FULL SLEEVE": [
-      {
-        fabric: "SUPERPOLY",
-        rate: 370
-      },
-      {
-        fabric: "PMC",
-        rate: 420
-      },
-      {
-        fabric: "DOTKNIT",
-        rate: 450
-      },
-      {
-        fabric: "4 WAY LYCRA",
-        rate: 470
-      },
-      {
-        fabric: "FUSION",
-        rate: 470
-      },
-      {
-        fabric: "AIRMESH",
-        rate: 530
-      },
-      {
-        fabric: "JACQUARD",
-        rate: 580
-      },
-      {
-        fabric: "JACQUARD LITE",
-        rate: 620
-      }
-    ]
-  },
-  comboJerseys: [
-    {
-      fabric: "PMC + FUSION",
-      roundNeckHalf: 350,
-      roundNeckFull: 400,
-      collarHalf: 420,
-      collarFull: 450
-    },
-    {
-      fabric: "PMC + AIRMESH",
-      roundNeckHalf: 400,
-      roundNeckFull: 450,
-      collarHalf: 500,
-      collarFull: 550
-    },
-    {
-      fabric: "PMC + JACQUARD",
-      roundNeckHalf: 450,
-      roundNeckFull: 480,
-      collarHalf: 550,
-      collarFull: 600
-    }
-  ],
-  bottoms: {
-    plainShorts: [
-      {
-        fabric: "SUPERPOLY",
-        rate: 200
-      },
-      {
-        fabric: "PMC",
-        rate: 230
-      },
-      {
-        fabric: "DOTKNIT",
-        rate: 250
-      },
-      {
-        fabric: "AIRMESH",
-        rate: 300
-      },
-      {
-        fabric: "4 WAY LYCRA",
-        rate: 320
-      }
-    ],
-    sublimationShorts: [
-      {
-        fabric: "SUPERPOLY",
-        rate: 250
-      },
-      {
-        fabric: "PMC",
-        rate: 280
-      },
-      {
-        fabric: "DOTKNIT",
-        rate: 300
-      },
-      {
-        fabric: "AIRMESH",
-        rate: 350
-      },
-      {
-        fabric: "4 WAY LYCRA",
-        rate: 400
-      }
-    ],
-    plainLower: [
-      {
-        fabric: "4 WAY DIAGONAL",
-        rate: 400
-      },
-      {
-        fabric: "WAFFLE",
-        rate: 400
-      }
-    ],
-    sublimationLower: [
-      {
-        fabric: "4 WAY",
-        rate: 550
-      },
-      {
-        fabric: "DIAGONAL",
-        rate: 550
-      },
-      {
-        fabric: "WAFFLE",
-        rate: 550
-      }
-    ]
-  },
-  otherDetails: [
-    {
-      item: "CAP WITH LOGO",
-      rate: 300,
-      category: "caps"
-    },
-    {
-      item: "CAP WITH NAME",
-      rate: 300,
-      category: "caps"
-    },
-    {
-      item: "CAP WITH NAME NO.",
-      rate: 320,
-      category: "caps"
-    },
-    {
-      item: "HAT WITH LOGO",
-      rate: 310,
-      category: "caps"
-    },
-    {
-      item: "HAT WITH NAME",
-      rate: 310,
-      category: "caps"
-    },
-    {
-      item: "HAT WITH NAME NO.",
-      rate: 330,
-      category: "caps"
-    },
-    {
-      item: "SOCKS (SHOCKS)",
-      rate: 250,
-      category: "accessories"
-    },
-    {
-      item: "HALF SWEATER",
-      rate: 1100,
-      category: "teamwear"
-    },
-    {
-      item: "HALF SWEATER WOLLEN",
-      rate: 1400,
-      category: "teamwear"
-    },
-    {
-      item: "TRACKSUIT (TRACSUIT)",
-      rate: 1700,
-      category: "teamwear"
-    },
-    {
-      item: "HOODIES",
-      rate: 1300,
-      category: "teamwear"
-    },
-    {
-      item: "BACKPACK (BAG PACK)",
-      rate: 1500,
-      category: "accessories"
-    },
-    {
-      item: "KIT BAG",
-      rate: 4500,
-      category: "accessories"
-    }
-  ],
-  terms: [
-    "Transport charges and GST will be charged separately and are not included in the above mentioned rates.",
-    "GST at 5% will be applicable on all apparel items, while GST at 18% will be applicable on Kit Bag.",
-    "Transportation charges will depend on the delivery location."
-  ]
-};
-
-// db.js
 var import_dotenv = __toESM(require_dist5());
 var _dirname = typeof __dirname !== "undefined" ? __dirname : process.cwd();
 var DATA_DIR = process.env.VERCEL ? import_path.default.join("/tmp", "rs_data") : import_path.default.resolve(_dirname, "data");
+var initialProducts = [];
+var initialRateList = [];
+try {
+  const pPath = import_path.default.resolve(DATA_DIR, "products.json");
+  if (import_fs.default.existsSync(pPath)) initialProducts = JSON.parse(import_fs.default.readFileSync(pPath, "utf-8"));
+} catch (e) {
+  console.warn("[Initial Products Load Notice]", e.message);
+}
+try {
+  const rPath = import_path.default.resolve(DATA_DIR, "rateList.json");
+  if (import_fs.default.existsSync(rPath)) initialRateList = JSON.parse(import_fs.default.readFileSync(rPath, "utf-8"));
+} catch (e) {
+  console.warn("[Initial RateList Load Notice]", e.message);
+}
 try {
   if (!import_fs.default.existsSync(DATA_DIR)) {
     import_fs.default.mkdirSync(DATA_DIR, { recursive: true });
@@ -44473,10 +42130,10 @@ var DEFAULT_ENQUIRIES = [
     status: "Quote Sent"
   }
 ];
-import_dotenv.default.config({ path: import_path.default.resolve(__dirname, ".env") });
+import_dotenv.default.config({ path: import_path.default.resolve(_dirname, ".env") });
 var memoryStore = {
-  products: products_default,
-  rateList: rateList_default,
+  products: initialProducts,
+  rateList: initialRateList,
   coupons: DEFAULT_COUPONS,
   settings: DEFAULT_SETTINGS,
   orders: DEFAULT_ORDERS,
@@ -44600,7 +42257,7 @@ async function syncFromMySQL() {
     if (pRows.length > 0) {
       memoryStore.products = pRows.map((r) => JSON.parse(r.data));
     } else {
-      for (const p of products_default) {
+      for (const p of initialProducts) {
         const cat = p.category || (Array.isArray(p.categories) ? p.categories[0] : "") || "";
         await pool.query(
           "INSERT INTO rs_products (id, slug, name, category, price, data) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE name = VALUES(name), category = VALUES(category), price = VALUES(price), data = VALUES(data)",
@@ -44658,7 +42315,7 @@ async function syncFromMySQL() {
     if (rlRows.length > 0 && rlRows[0].data) {
       memoryStore.rateList = JSON.parse(rlRows[0].data);
     } else {
-      await pool.query("INSERT INTO rs_rate_list (data) VALUES (?)", [JSON.stringify(rateList_default)]);
+      await pool.query("INSERT INTO rs_rate_list (data) VALUES (?)", [JSON.stringify(initialRateList)]);
     }
   } catch (err) {
     console.warn("[MySQL] Sync notice:", err.message);
@@ -44811,7 +42468,7 @@ async function persistUsersToMySQL(users) {
 initMySQL();
 var db = {
   getProducts() {
-    return memoryStore.products || readJsonFile(getFilePath("products"), products_default);
+    return memoryStore.products || readJsonFile(getFilePath("products"), initialProducts);
   },
   saveProducts(data) {
     memoryStore.products = data;
@@ -44879,7 +42536,7 @@ var db = {
     return true;
   },
   getRateList() {
-    return memoryStore.rateList || rateList_default;
+    return memoryStore.rateList || initialRateList;
   },
   getUsers() {
     const list = readJsonFile(getFilePath("users"), null);
@@ -46064,13 +43721,216 @@ authRouter.post("/admin-login", (req, res) => {
   }
 });
 
+// routes/payment.js
+var import_express9 = __toESM(require_express2());
+var import_crypto = __toESM(require("crypto"));
+var import_razorpay = __toESM(require("razorpay"));
+var paymentRouter = (0, import_express9.Router)();
+function getRazorpayConfig() {
+  const keyId = process.env.RAZORPAY_KEY_ID ? String(process.env.RAZORPAY_KEY_ID).trim() : "";
+  const keySecret = process.env.RAZORPAY_KEY_SECRET ? String(process.env.RAZORPAY_KEY_SECRET).trim() : "";
+  const isConfigured = Boolean(
+    keyId && keySecret && !keyId.includes("<") && !keySecret.includes("<") && keyId.startsWith("rzp_")
+  );
+  return { keyId, keySecret, isConfigured };
+}
+paymentRouter.get("/config", (req, res) => {
+  const { keyId, isConfigured } = getRazorpayConfig();
+  res.json({
+    success: true,
+    isConfigured,
+    mode: isConfigured ? "live" : "dummy",
+    key_id: isConfigured ? keyId : null,
+    gateway: "Razorpay",
+    message: isConfigured ? "Razorpay credentials active" : "Razorpay running in dummy/test mode (Add RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET to .env for real payments)"
+  });
+});
+paymentRouter.post("/create-order", async (req, res) => {
+  try {
+    const { amount, currency = "INR", receipt, notes } = req.body;
+    if (!amount || Number(amount) <= 0) {
+      return res.status(400).json({ success: false, message: "Valid amount is required" });
+    }
+    const { keyId, keySecret, isConfigured } = getRazorpayConfig();
+    const amountInPaise = Math.round(Number(amount) * 100);
+    if (isConfigured) {
+      try {
+        const razorpay = new import_razorpay.default({
+          key_id: keyId,
+          key_secret: keySecret
+        });
+        const options = {
+          amount: amountInPaise,
+          currency: currency.toUpperCase(),
+          receipt: receipt || `rcpt_${Date.now()}`,
+          notes: notes || {}
+        };
+        const rzpOrder = await razorpay.orders.create(options);
+        return res.json({
+          success: true,
+          mode: "live",
+          order_id: rzpOrder.id,
+          amount: rzpOrder.amount,
+          currency: rzpOrder.currency,
+          key_id: keyId
+        });
+      } catch (err) {
+        console.error("[Razorpay Order Error]", err);
+        return res.status(500).json({
+          success: false,
+          message: err.error?.description || err.message || "Error creating Razorpay order"
+        });
+      }
+    }
+    const dummyOrderId = `order_dummy_${Date.now()}_${Math.floor(100 + Math.random() * 900)}`;
+    return res.json({
+      success: true,
+      mode: "dummy",
+      order_id: dummyOrderId,
+      amount: amountInPaise,
+      currency: currency.toUpperCase(),
+      key_id: "rzp_test_dummy",
+      notice: "Running in simulated dummy mode. Add Razorpay keys to .env to take real payments."
+    });
+  } catch (err) {
+    console.error("[Payment Create Order Error]", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+paymentRouter.post("/verify", async (req, res) => {
+  try {
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      orderDetails
+    } = req.body;
+    const { keySecret, isConfigured } = getRazorpayConfig();
+    if (isConfigured) {
+      if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+        return res.status(400).json({
+          success: false,
+          message: "razorpay_order_id, razorpay_payment_id, and razorpay_signature are required for verification"
+        });
+      }
+      const body = `${razorpay_order_id}|${razorpay_payment_id}`;
+      const expectedSignature = import_crypto.default.createHmac("sha256", keySecret).update(body.toString()).digest("hex");
+      if (expectedSignature !== razorpay_signature) {
+        return res.status(400).json({
+          success: false,
+          verified: false,
+          message: "Payment verification failed: Invalid signature"
+        });
+      }
+    }
+    let createdOrder = null;
+    if (orderDetails && orderDetails.customer && Array.isArray(orderDetails.items)) {
+      const { customer, items, couponCode, notes } = orderDetails;
+      const settings = db.getSettings();
+      const coupons = db.getCoupons();
+      const subtotal = items.reduce((acc, it) => acc + (Number(it.price) || 0) * (Number(it.qty) || 1), 0);
+      let discount = 0;
+      if (couponCode) {
+        const matched = coupons.find((c) => c.code.toUpperCase() === couponCode.toUpperCase());
+        if (matched && subtotal >= (matched.minOrder || 0)) {
+          if (matched.type === "percent") {
+            discount = Math.min(matched.maxDiscount || Infinity, Math.round(subtotal * matched.discount / 100));
+          } else {
+            discount = matched.discount;
+          }
+        }
+      }
+      const shippingFee = subtotal >= settings.freeShipAbove ? 0 : settings.shippingFee;
+      const taxableAmount = Math.max(0, subtotal - discount);
+      const tax = Math.round(taxableAmount * 0.05);
+      const total = taxableAmount + shippingFee;
+      const randomSuffix = Math.floor(1e3 + Math.random() * 9e3);
+      const orderId = `RS-ORD-${randomSuffix}`;
+      createdOrder = {
+        id: orderId,
+        orderNumber: String(randomSuffix),
+        createdAt: (/* @__PURE__ */ new Date()).toISOString(),
+        customer: {
+          name: customer.name,
+          phone: customer.phone,
+          email: customer.email || "",
+          address: customer.address,
+          city: customer.city || "Chapra",
+          state: customer.state || "Bihar",
+          pincode: customer.pincode || ""
+        },
+        items: items.map((it) => ({
+          id: it.id,
+          slug: it.slug,
+          name: it.name,
+          color: it.color || "",
+          size: it.size || "",
+          fabric: it.fabric || "Standard",
+          price: Number(it.price),
+          qty: Number(it.qty) || 1,
+          image: it.image || ""
+        })),
+        subtotal,
+        discount,
+        shippingFee,
+        codFee: 0,
+        tax,
+        total,
+        paymentMethod: isConfigured ? "Razorpay (Online)" : "Online (Test Mode)",
+        paymentStatus: "Paid",
+        paymentDetails: {
+          gateway: "Razorpay",
+          mode: isConfigured ? "live" : "dummy",
+          razorpay_order_id: razorpay_order_id || null,
+          razorpay_payment_id: razorpay_payment_id || `pay_dummy_${Date.now()}`,
+          paidAt: (/* @__PURE__ */ new Date()).toISOString()
+        },
+        status: "In Production",
+        notes: notes || "",
+        timeline: [
+          { title: "Payment Received", time: (/* @__PURE__ */ new Date()).toISOString(), desc: isConfigured ? "Payment successfully verified via Razorpay." : "Online payment verified in simulated test mode." },
+          { title: "Order Placed", time: (/* @__PURE__ */ new Date()).toISOString(), desc: "Order confirmed and registered in production system." }
+        ]
+      };
+      const orders = db.getOrders();
+      orders.unshift(createdOrder);
+      db.saveOrders(orders);
+      const products = db.getProducts();
+      let productsUpdated = false;
+      items.forEach((it) => {
+        const p = products.find((prod) => prod.slug === it.slug || prod.id === it.id);
+        if (p && p.stock !== void 0) {
+          p.stock = Math.max(0, p.stock - (Number(it.qty) || 1));
+          productsUpdated = true;
+        }
+      });
+      if (productsUpdated) {
+        db.saveProducts(products);
+      }
+      sendOrderConfirmationEmail(createdOrder).catch(
+        (err) => console.error("[Payment Email Error]", err.message)
+      );
+    }
+    res.json({
+      success: true,
+      verified: true,
+      mode: isConfigured ? "live" : "dummy",
+      order: createdOrder,
+      message: isConfigured ? "Payment verified successfully via Razorpay" : "Payment simulated successfully in test mode"
+    });
+  } catch (err) {
+    console.error("[Payment Verification Error]", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // index.js
 var _dirname4 = typeof __dirname !== "undefined" ? __dirname : process.cwd();
-var app = (0, import_express9.default)();
+var app = (0, import_express10.default)();
 var PORT = process.env.PORT || 5e3;
 app.use((0, import_cors.default)());
-app.use(import_express9.default.json({ limit: "50mb" }));
-app.use(import_express9.default.urlencoded({ limit: "50mb", extended: true }));
+app.use(import_express10.default.json({ limit: "50mb" }));
+app.use(import_express10.default.urlencoded({ limit: "50mb", extended: true }));
 app.use((req, res, next) => {
   const start = Date.now();
   res.on("finish", () => {
@@ -46082,8 +43942,8 @@ app.use((req, res, next) => {
   next();
 });
 var uploadDir = process.env.VERCEL ? import_path4.default.join("/tmp", "uploads") : import_path4.default.resolve(_dirname4, "uploads");
-app.use("/uploads", import_express9.default.static(uploadDir));
-app.use("/api/uploads", import_express9.default.static(uploadDir));
+app.use("/uploads", import_express10.default.static(uploadDir));
+app.use("/api/uploads", import_express10.default.static(uploadDir));
 app.get("/", (req, res) => {
   res.json({
     status: "online",
@@ -46114,9 +43974,10 @@ app.use("/api/admin", adminRouter);
 app.use("/api/rate-list", rateListRouter);
 app.use("/api/upload", uploadRouter);
 app.use("/api/auth", authRouter);
-var distPath = import_path4.default.resolve(__dirname, "public");
+app.use("/api/payment", paymentRouter);
+var distPath = import_path4.default.resolve(_dirname4, "public");
 if (import_fs3.default.existsSync(distPath)) {
-  app.use(import_express9.default.static(distPath));
+  app.use(import_express10.default.static(distPath));
   app.use((req, res, next) => {
     if (req.method === "GET" && !req.path.startsWith("/api")) {
       const indexPath = import_path4.default.join(distPath, "index.html");

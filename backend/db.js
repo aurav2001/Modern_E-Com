@@ -2,11 +2,24 @@ import fs from 'fs'
 import path from 'path'
 import mysql from 'mysql2/promise'
 import 'dotenv/config'
-import initialProducts from './data/products.json'
-import initialRateList from './data/rateList.json'
 
 const _dirname = typeof __dirname !== 'undefined' ? __dirname : process.cwd()
 const DATA_DIR = process.env.VERCEL ? path.join('/tmp', 'rs_data') : path.resolve(_dirname, 'data')
+
+let initialProducts = []
+let initialRateList = []
+try {
+  const pPath = path.resolve(DATA_DIR, 'products.json')
+  if (fs.existsSync(pPath)) initialProducts = JSON.parse(fs.readFileSync(pPath, 'utf-8'))
+} catch (e) {
+  console.warn('[Initial Products Load Notice]', e.message)
+}
+try {
+  const rPath = path.resolve(DATA_DIR, 'rateList.json')
+  if (fs.existsSync(rPath)) initialRateList = JSON.parse(fs.readFileSync(rPath, 'utf-8'))
+} catch (e) {
+  console.warn('[Initial RateList Load Notice]', e.message)
+}
 
 try {
   if (!fs.existsSync(DATA_DIR)) {
@@ -118,7 +131,7 @@ const DEFAULT_ENQUIRIES = [
 
 // In-memory cache
 import dotenv from 'dotenv'
-dotenv.config({ path: path.resolve(__dirname, '.env') })
+dotenv.config({ path: path.resolve(_dirname, '.env') })
 
 // In-memory cache
 const memoryStore = {
