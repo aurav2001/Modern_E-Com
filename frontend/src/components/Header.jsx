@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
 import { MENU, PRODUCTS } from '../lib/catalog'
@@ -69,10 +69,48 @@ function AnnouncementBar() {
 export default function Header() {
   const { totals, wishlist, user, setCartOpen, setSearchOpen, setMenuOpen } = useStore()
   const loc = useLocation()
+  const [openMega, setOpenMega] = useState(null)
+  const hoverTimer = useRef(null)
+
+  const handleMouseEnter = (slug) => {
+    if (hoverTimer.current) clearTimeout(hoverTimer.current)
+    setOpenMega(slug)
+  }
+
+  const handleMouseLeave = () => {
+    hoverTimer.current = setTimeout(() => {
+      setOpenMega(null)
+    }, 180)
+  }
+
+  const closeMega = () => {
+    if (hoverTimer.current) clearTimeout(hoverTimer.current)
+    setOpenMega(null)
+    if (typeof document !== 'undefined' && document.activeElement && typeof document.activeElement.blur === 'function') {
+      document.activeElement.blur()
+    }
+  }
+
+  // Auto-close mega menu whenever route changes
+  useEffect(() => {
+    closeMega()
+  }, [loc.pathname, loc.search])
+
+  // Close when clicking outside header navigation
+  useEffect(() => {
+    const onDocClick = (e) => {
+      if (!e.target.closest('.nav')) {
+        closeMega()
+      }
+    }
+    document.addEventListener('click', onDocClick)
+    return () => document.removeEventListener('click', onDocClick)
+  }, [])
 
   useEffect(() => {
     const onKey = (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); setSearchOpen(true) }
+      if (e.key === 'Escape') closeMega()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -87,8 +125,17 @@ export default function Header() {
           <Logo />
           <nav className="nav" aria-label="Primary">
             {MENU.map((cat) => (
-              <div className="nav__item" key={cat.slug}>
-                <NavLink to={`/c/${cat.slug}`} className={({ isActive }) => cx('nav__link', isActive && 'active')}>
+              <div
+                className={cx('nav__item', openMega === cat.slug && 'is-open')}
+                key={cat.slug}
+                onMouseEnter={() => handleMouseEnter(cat.slug)}
+                onMouseLeave={handleMouseLeave}
+              >
+                <NavLink
+                  to={`/c/${cat.slug}`}
+                  onClick={closeMega}
+                  className={({ isActive }) => cx('nav__link', (isActive || openMega === cat.slug) && 'active')}
+                >
                   {cat.name}
                 </NavLink>
                 <div className="mega" role="menu">
@@ -100,14 +147,19 @@ export default function Header() {
                       </div>
                       <div className="mega__cards">
                         {cat.groups.flatMap((g) => g.items).filter((i) => i.count > 0).map((it) => (
-                          <Link key={it.slug} to={`/c/${cat.slug}/${it.slug}`} className="mega__card-link">
+                          <Link
+                            key={it.slug}
+                            to={`/c/${cat.slug}/${it.slug}`}
+                            className="mega__card-link"
+                            onClick={closeMega}
+                          >
                             <span className="mega__card-name">{it.name}</span>
                             <span className="mega__card-badge">{it.count}</span>
                             <ChevronRight className="mega__card-arrow" />
                           </Link>
                         ))}
                       </div>
-                      <Link className="mega__all-btn" to={`/c/${cat.slug}`}>
+                      <Link className="mega__all-btn" to={`/c/${cat.slug}`} onClick={closeMega}>
                         Explore all {cat.name} <ArrowRight />
                       </Link>
                     </div>
@@ -130,7 +182,7 @@ export default function Header() {
                             </li>
                           ))}
                         </ul>
-                        <Link to="/custom" className="mega__custom-btn">
+                        <Link to="/custom" className="mega__custom-btn" onClick={closeMega}>
                           <span>Custom Team Order (MOQ 11)</span>
                           <ArrowRight />
                         </Link>
@@ -142,7 +194,11 @@ export default function Header() {
                       <div className="mega__label">
                         <span className="mega__dot mega__dot--lime" /> Featured
                       </div>
-                      <Link to={FEATURE[cat.slug]?.to || `/c/${cat.slug}`} className="mega__feature-box">
+                      <Link
+                        to={FEATURE[cat.slug]?.to || `/c/${cat.slug}`}
+                        className="mega__feature-box"
+                        onClick={closeMega}
+                      >
                         <div className="mega__feature-media">
                           <img src={FEATURE[cat.slug]?.img} alt={FEATURE[cat.slug]?.title} loading="lazy" />
                           <span className="mega__feature-tag">
@@ -171,6 +227,7 @@ export default function Header() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="mega__wa-link"
+                      onClick={closeMega}
                     >
                       <WhatsApp /> Instant WhatsApp Quote
                     </a>
@@ -178,8 +235,8 @@ export default function Header() {
                 </div>
               </div>
             ))}
-            <div className="nav__item"><NavLink to="/custom" className={({ isActive }) => cx('nav__link', isActive && 'active')}>Custom Kits</NavLink></div>
-            <div className="nav__item"><NavLink to="/sale" className={({ isActive }) => cx('nav__link nav__link--hot', isActive && 'active')}>Offers</NavLink></div>
+            <div className="nav__item"><NavLink to="/custom" onClick={closeMega} className={({ isActive }) => cx('nav__link', isActive && 'active')}>Custom Kits</NavLink></div>
+            <div className="nav__item"><NavLink to="/sale" onClick={closeMega} className={({ isActive }) => cx('nav__link nav__link--hot', isActive && 'active')}>Offers</NavLink></div>
           </nav>
           <div className="header__actions">
             <button className="header__search-btn" onClick={() => setSearchOpen(true)}>
