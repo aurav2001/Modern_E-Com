@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useReducer, useState, useCallback } from 'react'
-import { loadLS, saveLS, uid } from '../lib/utils'
+import { loadLS, saveLS, uid, deliveryDate } from '../lib/utils'
 import { getCoupons, getSettings, addEnquiry as dbAddEnquiry } from '../lib/db'
 import { api as backendApi } from '../lib/api'
 
@@ -240,11 +240,16 @@ export function StoreProvider({ children }) {
       removeAddress: (id) => dispatch({ type: 'REMOVE_ADDRESS', id }),
       placeOrder({ address, payment, backendOrder }) {
         const codFee = payment === 'cod' ? COD_FEE : 0
+        const pin = address?.pincode || address?.pin || ''
+        const expDate = /^\d{6}$/.test(pin) ? deliveryDate(+pin[0] <= 4 ? 4 : 6) : deliveryDate(5)
         const order = backendOrder ? {
           ...backendOrder,
           placedAt: backendOrder.placedAt || Date.now(),
           items: backendOrder.items || state.cart,
           address: backendOrder.customer || address,
+          expectedDelivery: backendOrder.expectedDelivery || expDate,
+          courier: backendOrder.courier || '',
+          trackingNumber: backendOrder.trackingNumber || '',
         } : {
           id: 'RS-ORD-' + Math.floor(1000 + Math.random() * 9000),
           placedAt: Date.now(),
@@ -259,6 +264,9 @@ export function StoreProvider({ children }) {
           total: totals.total + codFee,
           status: 'Placed',
           email: state.user?.email || address.email,
+          expectedDelivery: expDate,
+          courier: '',
+          trackingNumber: '',
         }
         dispatch({ type: 'PLACE_ORDER', order })
 

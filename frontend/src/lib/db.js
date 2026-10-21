@@ -80,6 +80,12 @@ export function setOrderStatus(id, status) {
   notify()
   return orders
 }
+export function updateOrderTracking(id, updates) {
+  const orders = getOrders().map((o) => (o.id === id ? { ...o, ...updates } : o))
+  saveLS(KEYS.orders, orders)
+  notify()
+  return orders
+}
 export function deleteOrder(id) {
   const orders = getOrders().filter((o) => o.id !== id)
   saveLS(KEYS.orders, orders)

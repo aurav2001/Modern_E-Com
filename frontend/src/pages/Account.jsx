@@ -126,7 +126,27 @@ export function OrderCard({ o }) {
       <div className="track">
         {STAGES.map((s, i) => <span key={s} className={cx(i <= idx && 'done')}><i />{s}</span>)}
       </div>
-      {idx < STAGES.length - 1 && <p className="small muted" style={{ padding: '0 18px 16px' }}>Expected delivery by {deliveryDate(5)}.</p>}
+      {idx < STAGES.length - 1 && (
+        <div style={{ padding: '0 18px 16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <p className="small muted">Expected delivery by <b>{o.expectedDelivery || deliveryDate(5)}</b>.</p>
+          {o.courier && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', background: '#f8fafc', padding: '10px 14px', borderRadius: '8px', border: '1px solid var(--line)', flexWrap: 'wrap' }}>
+              <span>🚚 Shipped via: <b>{o.courier}</b></span>
+              {o.trackingNumber && <span>· AWB: <code style={{ background: 'rgba(0,0,0,0.06)', padding: '2px 6px', borderRadius: '4px' }}>{o.trackingNumber}</code></span>}
+              {o.trackingNumber && (
+                <a
+                  href={`https://www.google.com/search?q=${encodeURIComponent(o.courier + ' tracking ' + o.trackingNumber)}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ marginLeft: 'auto', fontSize: '12px', fontWeight: 600, color: 'var(--orange)' }}
+                >
+                  Track Package →
+                </a>
+              )}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }

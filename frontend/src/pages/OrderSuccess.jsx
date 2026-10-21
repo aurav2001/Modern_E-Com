@@ -31,7 +31,7 @@ export default function OrderSuccess() {
           <div><b>Order ID</b>#{order.id}</div>
           <div><b>Payment</b>{PAY[order.payment]}</div>
           <div><b>Total</b>{formatPrice(order.total)}</div>
-          <div><b>Expected by</b>{deliveryDate(5)}</div>
+          <div><b>Expected by</b>{order?.expectedDelivery || deliveryDate(5)}</div>
         </div>
         <div className="mini-lines" style={{ maxHeight: 'none' }}>
           {order.items.map((l) => (

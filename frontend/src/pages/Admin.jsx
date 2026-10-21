@@ -297,9 +297,68 @@ function Orders() {
               <h3>Deliver to</h3>
               <p className="small">{open.address.name}<br />{open.address.line1}{open.address.line2 ? `, ${open.address.line2}` : ''}<br />{open.address.city}, {open.address.state} – {open.address.pincode}<br />{open.address.phone} · {open.email}</p>
             </div>
+            <div className="acard" style={{ marginTop: 16, background: '#f8fafc', border: '1px solid var(--line)' }}>
+              <h3 style={{ fontSize: 14, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Truck width={16} height={16} /> Delivery & Courier Tracking
+              </h3>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 10 }}>
+                <div>
+                  <label className="label" style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase' }}>Courier Partner</label>
+                  <input
+                    className="input input--sm"
+                    placeholder="e.g. Delhivery, Blue Dart"
+                    defaultValue={open.courier || ''}
+                    id={`courier-${open.id}`}
+                  />
+                </div>
+                <div>
+                  <label className="label" style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase' }}>Tracking / AWB #</label>
+                  <input
+                    className="input input--sm"
+                    placeholder="e.g. DEL987654321"
+                    defaultValue={open.trackingNumber || ''}
+                    id={`tracking-${open.id}`}
+                  />
+                </div>
+                <div>
+                  <label className="label" style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase' }}>Expected Delivery Date</label>
+                  <input
+                    className="input input--sm"
+                    placeholder="e.g. Mon, 27 Oct"
+                    defaultValue={open.expectedDelivery || ''}
+                    id={`delivery-${open.id}`}
+                  />
+                </div>
+              </div>
+              <div style={{ marginTop: 12 }}>
+                <button
+                  type="button"
+                  className="btn btn--primary btn--sm"
+                  onClick={() => {
+                    const courier = document.getElementById(`courier-${open.id}`)?.value?.trim() || ''
+                    const trackingNumber = document.getElementById(`tracking-${open.id}`)?.value?.trim() || ''
+                    const expectedDelivery = document.getElementById(`delivery-${open.id}`)?.value?.trim() || ''
+                    db.updateOrderTracking(open.id, { courier, trackingNumber, expectedDelivery })
+                    setOpen({ ...open, courier, trackingNumber, expectedDelivery })
+                    toast('Tracking details updated successfully!')
+                  }}
+                >
+                  Save Tracking Details
+                </button>
+              </div>
+            </div>
             <div style={{ display: 'flex', gap: 8, marginTop: 16, flexWrap: 'wrap' }}>
               <a className="btn btn--accent btn--sm" href={`tel:${open.address.phone}`}>Call customer</a>
-              <a className="btn btn--outline btn--sm" href={`https://wa.me/91${open.address.phone}?text=${encodeURIComponent(`Hi ${open.address.name}, your Rishikar Sports order #${open.id} is on the way.`)}`} target="_blank" rel="noreferrer">WhatsApp update</a>
+              <a
+                className="btn btn--outline btn--sm"
+                href={`https://wa.me/91${open.address.phone}?text=${encodeURIComponent(
+                  `Hi ${open.address.name}, your Rishikar Sports order #${open.id} status is: ${open.status || 'Placed'}.${open.courier ? ` Shipped via ${open.courier} (AWB: ${open.trackingNumber}).` : ''}${open.expectedDelivery ? ` Expected delivery by ${open.expectedDelivery}.` : ''}`
+                )}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                WhatsApp update
+              </a>
               <button className="btn btn--sm btn--ghost" style={{ marginLeft: 'auto', color: 'var(--sale)' }} onClick={() => { if (confirm('Delete this order permanently?')) { db.deleteOrder(open.id); setOpen(null) } }}><Trash width={14} height={14} /> Delete</button>
             </div>
           </div>
