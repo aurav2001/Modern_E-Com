@@ -1220,22 +1220,44 @@ function ProductEditor({ product, onClose, onSave, onDelete }) {
                   <div className="field">
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
                       <label style={{ margin: 0 }}>Primary Category</label>
-                      <button
-                        type="button"
-                        className="btn btn--link btn--sm"
-                        style={{ fontSize: 11, fontWeight: 700, color: 'var(--orange)', padding: 0, textDecoration: 'none' }}
-                        onClick={() => {
-                          const name = window.prompt('Enter new category name (e.g. Footwear, Badminton, Caps, Gym Wear):')
-                          if (name && name.trim()) {
-                            db.addCategory(name.trim())
-                            const newSlug = name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
-                            setF({ ...f, categories: [newSlug], subs: [] })
-                            toast(`Category "${name.trim()}" added successfully!`)
-                          }
-                        }}
-                      >
-                        + Add Category
-                      </button>
+                      <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                        <button
+                          type="button"
+                          className="btn btn--link btn--sm"
+                          style={{ fontSize: 11, fontWeight: 700, color: 'var(--orange)', padding: 0, textDecoration: 'none' }}
+                          onClick={() => {
+                            const name = window.prompt('Enter new category name (e.g. Footwear, Badminton, Caps, Gym Wear):')
+                            if (name && name.trim()) {
+                              db.addCategory(name.trim())
+                              const newSlug = name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+                              setF({ ...f, categories: [newSlug], subs: [] })
+                              toast(`Category "${name.trim()}" added successfully!`)
+                            }
+                          }}
+                        >
+                          + Add Category
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn--link btn--sm"
+                          title="Delete currently selected category"
+                          style={{ fontSize: 11, fontWeight: 700, color: 'var(--sale, #dc2626)', padding: 0, textDecoration: 'none' }}
+                          onClick={() => {
+                            const curCatObj = CATS.find((c) => c.slug === cat)
+                            const curCatName = curCatObj?.name || cat
+                            if (window.confirm(`Are you sure you want to delete category "${curCatName}"? All its sub-categories will also be removed.`)) {
+                              db.deleteCategory(cat)
+                              const remaining = CATS.filter((c) => c.slug !== cat)
+                              const fallbackCat = remaining[0]?.slug || 'jerseys'
+                              const fallbackSubs = SUBS[fallbackCat] || []
+                              setF({ ...f, categories: [fallbackCat], subs: fallbackSubs[0] ? [fallbackSubs[0]] : [] })
+                              toast(`Category "${curCatName}" deleted!`)
+                            }
+                          }}
+                        >
+                          🗑️ Delete
+                        </button>
+                      </div>
                     </div>
                     <select
                       className="select"
@@ -1277,21 +1299,56 @@ function ProductEditor({ product, onClose, onSave, onDelete }) {
                       </button>
                     </div>
                     <div className="achips" style={{ flexWrap: 'wrap', gap: 6 }}>
-                      {(SUBS[cat] || []).map((s) => (
-                        <button
-                          type="button"
-                          key={s}
-                          className={cx('chip', (f.subs || []).includes(s) && 'active')}
-                          onClick={() => setF({
-                            ...f,
-                            subs: (f.subs || []).includes(s)
-                              ? f.subs.filter((x) => x !== s)
-                              : [...(f.subs || []), s]
-                          })}
-                        >
-                          {s.replace(/-/g, ' ')}
-                        </button>
-                      ))}
+                      {(SUBS[cat] || []).map((s) => {
+                        const isSubActive = (f.subs || []).includes(s)
+                        return (
+                          <div
+                            key={s}
+                            className={cx('chip', isSubActive && 'active')}
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, cursor: 'pointer', paddingRight: 6 }}
+                          >
+                            <span
+                              onClick={() => setF({
+                                ...f,
+                                subs: isSubActive
+                                  ? f.subs.filter((x) => x !== s)
+                                  : [...(f.subs || []), s]
+                              })}
+                            >
+                              {s.replace(/-/g, ' ')}
+                            </span>
+                            <span
+                              title={`Delete sub-category "${s.replace(/-/g, ' ')}"`}
+                              style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                width: 14,
+                                height: 14,
+                                borderRadius: '50%',
+                                fontSize: 11,
+                                fontWeight: 'bold',
+                                lineHeight: 1,
+                                opacity: 0.6,
+                                cursor: 'pointer',
+                              }}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                if (window.confirm(`Delete sub-category "${s.replace(/-/g, ' ')}"?`)) {
+                                  db.deleteSubCategory(cat, s)
+                                  setF({
+                                    ...f,
+                                    subs: (f.subs || []).filter((x) => x !== s)
+                                  })
+                                  toast(`Sub-category "${s.replace(/-/g, ' ')}" deleted!`)
+                                }
+                              }}
+                            >
+                              ✕
+                            </span>
+                          </div>
+                        )
+                      })}
                       {(!SUBS[cat] || SUBS[cat].length === 0) && (
                         <span className="muted small" style={{ fontStyle: 'italic', padding: '4px 0' }}>
                           No sub-categories yet. Click "+ Add Sub-category" above to add one.

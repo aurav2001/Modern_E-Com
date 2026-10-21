@@ -90,6 +90,35 @@ export function addSubCategory(catSlug, subName) {
   return next
 }
 
+export function deleteCategory(slug) {
+  const cur = getCategories()
+  const nextCats = cur.cats.filter((c) => c.slug !== slug)
+  const nextSubs = { ...cur.subs }
+  delete nextSubs[slug]
+  const next = {
+    cats: nextCats.length > 0 ? nextCats : BASE_CATS,
+    subs: nextSubs,
+  }
+  saveLS(KEYS.categories, next)
+  notify()
+  return next
+}
+
+export function deleteSubCategory(catSlug, subSlug) {
+  const cur = getCategories()
+  const existing = cur.subs[catSlug] || []
+  const next = {
+    ...cur,
+    subs: {
+      ...cur.subs,
+      [catSlug]: existing.filter((s) => s !== subSlug),
+    },
+  }
+  saveLS(KEYS.categories, next)
+  notify()
+  return next
+}
+
 // ── Products ──────────────────────────────────────────────
 export const getProducts = () => loadLS(KEYS.products, null) || baseProducts
 export function saveProducts(list) {
