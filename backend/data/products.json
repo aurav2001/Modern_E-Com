@@ -1648,17 +1648,17 @@
     "slug": "rs-performance-sports-socks",
     "price": 250,
     "mrp": 399,
-    "image": "/products/bottle.png",
+    "image": "/products/socks.png",
     "gallery": [
-      "/products/bottle.png"
+      "/products/socks.png"
     ],
     "colors": [
       {
         "name": "White & Navy",
         "hex": "#f8fafc",
-        "image": "/products/bottle.png",
+        "image": "/products/socks.png",
         "images": [
-          "/products/bottle.png"
+          "/products/socks.png"
         ]
       }
     ],
