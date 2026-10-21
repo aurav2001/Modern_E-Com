@@ -14,12 +14,7 @@ import {
 const STAGES = ['Placed', 'Packed', 'Shipped', 'Out for delivery', 'Delivered', 'Cancelled']
 const ENQ_STATUS = ['New', 'Contacted', 'Quoted', 'Won', 'Closed']
 const PAY = { upi: 'UPI', card: 'Card', cod: 'COD' }
-const CATS = [
-  { slug: 'jerseys', name: 'Jerseys' },
-  { slug: 'tshirts', name: 'T-Shirts & Polos' },
-  { slug: 'teamwear', name: 'Teamwear' },
-  { slug: 'accessories', name: 'Accessories' },
-]
+const CATS = db.getCategories().cats
 const fmtDate = (t) => new Date(t).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: '2-digit' })
 const fmtTime = (t) => new Date(t).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })
 
@@ -373,16 +368,12 @@ const blankProduct = {
   categories: ['jerseys'], subs: ['football-jerseys'], description: '', fabric: '', features: [],
   colors: [{ name: 'Navy', hex: '#0e2140' }], sizes: ['S', 'M', 'L', 'XL'], rating: 4.5, reviews: 0, isNew: true,
 }
-const SUBS = {
-  jerseys: ['sublimation-jerseys', 'football-jerseys', 'cricket-jerseys'],
-  tshirts: ['polo-tshirts', 'round-neck-tees', 'sleeveless-tees'],
-  teamwear: ['tracksuits', 'track-jackets', 'hoodies', 'lowers', 'shorts'],
-  accessories: ['kit-bags', 'caps', 'bottles'],
-}
+const SUBS = db.getCategories().subs
 const IMAGES = ['jersey', 'polo', 'jacket', 'hoodie', 'pants', 'shorts', 'bag', 'cap', 'bottle'].map((n) => `/products/${n}.png`)
 
 function Products() {
   useDb()
+  const { cats: CATS, subs: SUBS } = db.getCategories()
   const { toast } = useStore()
   const [q, setQ] = useState('')
   const [cat, setCat] = useState('All')
@@ -969,6 +960,7 @@ function Products() {
 }
 
 function ProductEditor({ product, onClose, onSave, onDelete }) {
+  const { cats: CATS, subs: SUBS } = db.getCategories()
   const isNewProduct = !product.id
   const { toast } = useStore()
   const mainFileInputRef = useRef(null)
@@ -996,14 +988,17 @@ function ProductEditor({ product, onClose, onSave, onDelete }) {
     ? product.gallery.find((g) => g !== product.image) || ''
     : ''
 
+  const defaultCat = product.categories?.length ? product.categories[0] : (CATS[0]?.slug || 'jerseys')
+  const defaultSubs = product.subs?.length ? product.subs : ((SUBS[defaultCat] || [])[0] ? [(SUBS[defaultCat] || [])[0]] : [])
+
   const [f, setF] = useState({
     ...product,
     price: product.price || 0,
     mrp: product.mrp || '',
     stock: product.stock !== undefined ? product.stock : 100,
     gst: product.gst !== undefined ? product.gst : 5,
-    categories: product.categories?.length ? product.categories : ['jerseys'],
-    subs: product.subs?.length ? product.subs : [SUBS.jerseys[0]],
+    categories: product.categories?.length ? product.categories : [defaultCat],
+    subs: defaultSubs,
     features: (product.features || []).join('\n'),
     image: product.image || '/products/jersey.png',
     hoverImage: product.hoverImage || existingHover,
@@ -1223,8 +1218,34 @@ function ProductEditor({ product, onClose, onSave, onDelete }) {
                   </div>
 
                   <div className="field">
-                    <label>Primary Category</label>
-                    <select className="select" value={cat} onChange={(e) => setF({ ...f, categories: [e.target.value], subs: [SUBS[e.target.value][0]] })}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                      <label style={{ margin: 0 }}>Primary Category</label>
+                      <button
+                        type="button"
+                        className="btn btn--link btn--sm"
+                        style={{ fontSize: 11, fontWeight: 700, color: 'var(--orange)', padding: 0, textDecoration: 'none' }}
+                        onClick={() => {
+                          const name = window.prompt('Enter new category name (e.g. Footwear, Badminton, Caps, Gym Wear):')
+                          if (name && name.trim()) {
+                            db.addCategory(name.trim())
+                            const newSlug = name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+                            setF({ ...f, categories: [newSlug], subs: [] })
+                            toast(`Category "${name.trim()}" added successfully!`)
+                          }
+                        }}
+                      >
+                        + Add Category
+                      </button>
+                    </div>
+                    <select
+                      className="select"
+                      value={cat}
+                      onChange={(e) => {
+                        const newCat = e.target.value
+                        const availableSubs = SUBS[newCat] || []
+                        setF({ ...f, categories: [newCat], subs: availableSubs[0] ? [availableSubs[0]] : [] })
+                      }}
+                    >
                       {CATS.map((c) => <option key={c.slug} value={c.slug}>{c.name}</option>)}
                     </select>
                   </div>
@@ -1234,14 +1255,48 @@ function ProductEditor({ product, onClose, onSave, onDelete }) {
                   </div>
 
                   <div className="field span-2">
-                    <label>Sub-categories</label>
-                    <div className="achips">
-                      {SUBS[cat].map((s) => (
-                        <button type="button" key={s} className={cx('chip', f.subs.includes(s) && 'active')}
-                          onClick={() => setF({ ...f, subs: f.subs.includes(s) ? f.subs.filter((x) => x !== s) : [...f.subs, s] })}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                      <label style={{ margin: 0 }}>Sub-categories</label>
+                      <button
+                        type="button"
+                        className="btn btn--link btn--sm"
+                        style={{ fontSize: 11, fontWeight: 700, color: 'var(--orange)', padding: 0, textDecoration: 'none' }}
+                        onClick={() => {
+                          const currentCatObj = CATS.find((c) => c.slug === cat)
+                          const currentCatName = currentCatObj?.name || cat
+                          const subName = window.prompt(`Enter new sub-category for "${currentCatName}" (e.g. Running Shoes, Spikes, Training Kit):`)
+                          if (subName && subName.trim()) {
+                            db.addSubCategory(cat, subName.trim())
+                            const subSlug = subName.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+                            setF({ ...f, subs: [...(f.subs || []), subSlug] })
+                            toast(`Sub-category "${subName.trim()}" added to ${currentCatName}!`)
+                          }
+                        }}
+                      >
+                        + Add Sub-category
+                      </button>
+                    </div>
+                    <div className="achips" style={{ flexWrap: 'wrap', gap: 6 }}>
+                      {(SUBS[cat] || []).map((s) => (
+                        <button
+                          type="button"
+                          key={s}
+                          className={cx('chip', (f.subs || []).includes(s) && 'active')}
+                          onClick={() => setF({
+                            ...f,
+                            subs: (f.subs || []).includes(s)
+                              ? f.subs.filter((x) => x !== s)
+                              : [...(f.subs || []), s]
+                          })}
+                        >
                           {s.replace(/-/g, ' ')}
                         </button>
                       ))}
+                      {(!SUBS[cat] || SUBS[cat].length === 0) && (
+                        <span className="muted small" style={{ fontStyle: 'italic', padding: '4px 0' }}>
+                          No sub-categories yet. Click "+ Add Sub-category" above to add one.
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>

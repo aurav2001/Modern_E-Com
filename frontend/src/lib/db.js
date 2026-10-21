@@ -14,6 +14,7 @@ export const KEYS = {
   settings: 'rs.settings',
   coupons: 'rs.coupons',
   admin: 'rs.admin',
+  categories: 'rs.categories',
 }
 
 export const DEFAULT_SETTINGS = {
@@ -33,6 +34,61 @@ export const DEFAULT_SETTINGS = {
 const listeners = new Set()
 export const subscribe = (fn) => { listeners.add(fn); return () => listeners.delete(fn) }
 const notify = () => listeners.forEach((fn) => fn())
+
+// ── Categories & Sub-categories ───────────────────────────
+export const BASE_CATS = [
+  { slug: 'jerseys', name: 'Jerseys' },
+  { slug: 'tshirts', name: 'T-Shirts & Polos' },
+  { slug: 'teamwear', name: 'Teamwear' },
+  { slug: 'accessories', name: 'Accessories' },
+]
+
+export const BASE_SUBS = {
+  jerseys: ['sublimation-jerseys', 'football-jerseys', 'cricket-jerseys'],
+  tshirts: ['polo-tshirts', 'round-neck-tees', 'sleeveless-tees'],
+  teamwear: ['tracksuits', 'track-jackets', 'hoodies', 'lowers', 'shorts'],
+  accessories: ['kit-bags', 'caps', 'bottles'],
+}
+
+export function getCategories() {
+  const custom = loadLS(KEYS.categories, null)
+  if (!custom) return { cats: BASE_CATS, subs: BASE_SUBS }
+  return {
+    cats: custom.cats || BASE_CATS,
+    subs: custom.subs || BASE_SUBS,
+  }
+}
+
+export function addCategory(name) {
+  const cur = getCategories()
+  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+  if (!slug || cur.cats.some((c) => c.slug === slug)) return cur
+  const next = {
+    cats: [...cur.cats, { slug, name: name.trim() }],
+    subs: { ...cur.subs, [slug]: [] },
+  }
+  saveLS(KEYS.categories, next)
+  notify()
+  return next
+}
+
+export function addSubCategory(catSlug, subName) {
+  const cur = getCategories()
+  const subSlug = subName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+  if (!subSlug) return cur
+  const existing = cur.subs[catSlug] || []
+  if (existing.includes(subSlug)) return cur
+  const next = {
+    ...cur,
+    subs: {
+      ...cur.subs,
+      [catSlug]: [...existing, subSlug],
+    },
+  }
+  saveLS(KEYS.categories, next)
+  notify()
+  return next
+}
 
 // ── Products ──────────────────────────────────────────────
 export const getProducts = () => loadLS(KEYS.products, null) || baseProducts
@@ -65,7 +121,24 @@ export const resetProducts = () => { localStorage.removeItem(KEYS.products); not
 export function getMenu() {
   const products = getProducts()
   const count = (sub) => products.filter((p) => p.subs.includes(sub)).length
-  return baseMenu.map((cat) => ({
+  const { cats, subs } = getCategories()
+  const baseSlugs = new Set(baseMenu.map((m) => m.slug))
+  const extraCats = cats.filter((c) => !baseSlugs.has(c.slug)).map((c) => ({
+    name: c.name,
+    slug: c.slug,
+    groups: [
+      {
+        name: `Shop ${c.name}`,
+        items: (subs[c.slug] || []).map((s) => ({
+          name: s.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
+          slug: s,
+          count: count(s),
+        })),
+      },
+    ],
+  }))
+  const fullMenu = [...baseMenu, ...extraCats]
+  return fullMenu.map((cat) => ({
     ...cat,
     groups: cat.groups.map((g) => ({ ...g, items: g.items.map((it) => ({ ...it, count: count(it.slug) })) })),
   }))
