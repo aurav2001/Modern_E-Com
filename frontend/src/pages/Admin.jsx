@@ -381,6 +381,7 @@ function Products() {
   const [syncing, setSyncing] = useState(false)
   const [excelPreview, setExcelPreview] = useState(null)
   const [importing, setImporting] = useState(false)
+  const [managingCats, setManagingCats] = useState(false)
   const excelFileRef = useRef(null)
   const products = db.getProducts()
 
@@ -812,6 +813,9 @@ function Products() {
           <button className="btn btn--outline btn--sm" onClick={handleManualSync} disabled={syncing} title="Push all catalogue products directly into cPanel MySQL">
             {syncing ? 'Syncing…' : `☁️ Sync Database (${products.length})`}
           </button>
+          <button className="btn btn--outline btn--sm" onClick={() => setManagingCats(true)} title="Manage and delete individual categories">
+            <Trash width={14} height={14} /> Categories
+          </button>
           <button className="btn btn--primary btn--sm" onClick={() => setEdit({ ...blankProduct })}><Plus width={15} height={15} /> Add product</button>
         </div>
       </header>
@@ -955,12 +959,70 @@ function Products() {
           </div>
         </Modal>
       )}
+      {managingCats && <CategoryManagerModal onClose={() => setManagingCats(false)} />}
     </>
   )
 }
 
+function CategoryManagerModal({ onClose, onCategoryDeleted }) {
+  const { cats: CATS } = db.getCategories()
+  const { toast } = useStore()
+  useDb()
+
+  return (
+    <Modal title="Manage & Delete Categories" onClose={onClose}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 14, minWidth: 320, padding: '4px 0' }}>
+        <p className="small muted">
+          Click <b>Delete</b> next to any category to permanently remove it from the store:
+        </p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 380, overflowY: 'auto' }}>
+          {CATS.map((c) => {
+            const isBase = ['jerseys', 'tshirts', 'teamwear', 'accessories'].includes(c.slug)
+            return (
+              <div
+                key={c.slug}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '10px 14px',
+                  borderRadius: 8,
+                  background: 'var(--paper, #fff)',
+                  border: '1px solid var(--line, #e2e8f0)',
+                  gap: 12,
+                }}
+              >
+                <div>
+                  <b style={{ fontSize: 14 }}>{c.name}</b>
+                  <div className="small muted">slug: <code>{c.slug}</code> {isBase ? '· (Standard)' : '· (Custom)'}</div>
+                </div>
+                <button
+                  type="button"
+                  className="btn btn--sm btn--ghost"
+                  style={{ color: 'var(--sale, #dc2626)', fontWeight: 600, fontSize: 12 }}
+                  onClick={() => {
+                    if (window.confirm(`Delete category "${c.name}"? All sub-categories under it will also be deleted.`)) {
+                      db.deleteCategory(c.slug)
+                      if (onCategoryDeleted) onCategoryDeleted(c.slug)
+                      toast(`Category "${c.name}" deleted successfully!`)
+                    }
+                  }}
+                >
+                  <Trash width={13} height={13} /> Delete
+                </button>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </Modal>
+  )
+}
+
 function ProductEditor({ product, onClose, onSave, onDelete }) {
+  useDb()
   const { cats: CATS, subs: SUBS } = db.getCategories()
+  const [managingCats, setManagingCats] = useState(false)
   const isNewProduct = !product.id
   const { toast } = useStore()
   const mainFileInputRef = useRef(null)
@@ -1240,22 +1302,11 @@ function ProductEditor({ product, onClose, onSave, onDelete }) {
                         <button
                           type="button"
                           className="btn btn--link btn--sm"
-                          title="Delete currently selected category"
+                          title="Manage and delete single categories"
                           style={{ fontSize: 11, fontWeight: 700, color: 'var(--sale, #dc2626)', padding: 0, textDecoration: 'none' }}
-                          onClick={() => {
-                            const curCatObj = CATS.find((c) => c.slug === cat)
-                            const curCatName = curCatObj?.name || cat
-                            if (window.confirm(`Are you sure you want to delete category "${curCatName}"? All its sub-categories will also be removed.`)) {
-                              db.deleteCategory(cat)
-                              const remaining = CATS.filter((c) => c.slug !== cat)
-                              const fallbackCat = remaining[0]?.slug || 'jerseys'
-                              const fallbackSubs = SUBS[fallbackCat] || []
-                              setF({ ...f, categories: [fallbackCat], subs: fallbackSubs[0] ? [fallbackSubs[0]] : [] })
-                              toast(`Category "${curCatName}" deleted!`)
-                            }
-                          }}
+                          onClick={() => setManagingCats(true)}
                         >
-                          🗑️ Delete
+                          🗑️ Manage / Delete Categories
                         </button>
                       </div>
                     </div>
@@ -1554,6 +1605,19 @@ function ProductEditor({ product, onClose, onSave, onDelete }) {
             <button type="submit" className="btn btn--primary" style={{ minWidth: 130 }}>Save Product</button>
           </div>
         </div>
+        {managingCats && (
+          <CategoryManagerModal
+            onClose={() => setManagingCats(false)}
+            onCategoryDeleted={(deletedSlug) => {
+              if (cat === deletedSlug) {
+                const remaining = db.getCategories().cats
+                const fallbackCat = remaining[0]?.slug || 'jerseys'
+                const fallbackSubs = db.getCategories().subs[fallbackCat] || []
+                setF({ ...f, categories: [fallbackCat], subs: fallbackSubs[0] ? [fallbackSubs[0]] : [] })
+              }
+            }}
+          />
+        )}
       </form>
     </Modal>
   )
