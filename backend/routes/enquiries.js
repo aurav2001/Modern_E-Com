@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { db } from '../db.js'
 import { requireAdmin } from '../middleware/auth.js'
 import { sendEnquiryEmail } from '../utils/mailer.js'
+import { sanitizeString } from '../middleware/security.js'
 
 export const enquiryRouter = Router()
 
@@ -15,7 +16,7 @@ enquiryRouter.get('/', requireAdmin, (req, res) => {
   }
 })
 
-// POST /api/enquiries - Submit bulk customization request
+// POST /api/enquiries - Submit bulk customization request (Sanitized)
 enquiryRouter.post('/', (req, res) => {
   try {
     const { name, phone, email, sport, teamName, quantity, fabricPreference, budgetPerPiece, notes } = req.body
@@ -24,19 +25,24 @@ enquiryRouter.post('/', (req, res) => {
       return res.status(400).json({ success: false, message: 'Name and phone are required' })
     }
 
+    const cleanPhone = String(phone).replace(/\D/g, '').slice(0, 10)
+    if (cleanPhone.length !== 10) {
+      return res.status(400).json({ success: false, message: 'Please enter a valid 10-digit mobile number' })
+    }
+
     const list = db.getEnquiries()
     const newEnquiry = {
       id: `ENQ-${Date.now().toString().slice(-4)}`,
       createdAt: new Date().toISOString(),
-      name,
-      phone,
-      email: email || '',
-      sport: sport || 'Cricket',
-      teamName: teamName || 'Not specified',
-      quantity: Number(quantity) || 11,
-      fabricPreference: fabricPreference || 'Any',
-      budgetPerPiece: budgetPerPiece || 'Standard',
-      notes: notes || '',
+      name: sanitizeString(name),
+      phone: cleanPhone,
+      email: email ? String(email).trim().toLowerCase().slice(0, 80) : '',
+      sport: sanitizeString(sport || 'Cricket'),
+      teamName: sanitizeString(teamName || 'Not specified'),
+      quantity: Math.min(10000, Math.max(1, Number(quantity) || 11)),
+      fabricPreference: sanitizeString(fabricPreference || 'Any'),
+      budgetPerPiece: sanitizeString(budgetPerPiece || 'Standard'),
+      notes: sanitizeString(notes || '').slice(0, 500),
       status: 'New',
     }
 

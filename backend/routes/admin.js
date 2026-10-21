@@ -1,22 +1,23 @@
 import { Router } from 'express'
 import { db } from '../db.js'
-import { requireAdmin, generateToken } from '../middleware/auth.js'
+import { requireAdmin, generateToken, isAdminRequest } from '../middleware/auth.js'
+import { authRateLimiter } from '../middleware/security.js'
 
 export const adminRouter = Router()
 
-// POST /api/admin/login - Verify PIN & return JWT
-adminRouter.post('/login', (req, res) => {
+// POST /api/admin/login - Verify PIN & return cryptographically signed JWT
+adminRouter.post('/login', authRateLimiter, (req, res) => {
   try {
     const { pin } = req.body
     const settings = db.getSettings()
 
-    if (String(pin).trim() === String(settings.adminPin).trim()) {
+    if (pin && String(pin).trim() === String(settings.adminPin).trim()) {
       const token = generateToken({ role: 'admin', name: 'Store Admin' }, '7d')
       return res.json({
         success: true,
         message: 'Admin access granted',
         token,
-        adminToken: `rs_adm_${Date.now()}_token`,
+        adminToken: token,
       })
     }
     res.status(401).json({ success: false, message: 'Invalid Admin PIN' })
@@ -70,17 +71,13 @@ adminRouter.get('/stats', requireAdmin, (req, res) => {
   }
 })
 
-// GET /api/admin/settings - Read store public settings (hides adminPin unless admin)
+// GET /api/admin/settings - Read store public settings (strictly hides adminPin unless verified admin)
 adminRouter.get('/settings', (req, res) => {
   try {
     const settings = { ...db.getSettings() }
 
-    // Check if requester is admin
-    const authHeader = req.headers.authorization
-    const pinHeader = req.headers['x-admin-pin']
-    const isAdmin =
-      (pinHeader && String(pinHeader).trim() === String(settings.adminPin).trim()) ||
-      (authHeader && (authHeader.includes('rs_adm_') || authHeader.startsWith('Bearer ')))
+    // Check if requester is verified admin
+    const isAdmin = isAdminRequest(req)
 
     // Hide admin PIN for non-admin viewers
     if (!isAdmin) {

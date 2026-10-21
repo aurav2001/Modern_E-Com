@@ -29,9 +29,10 @@ function getAuthHeaders() {
     }
     if (adminPin) {
       try { adminPin = JSON.parse(adminPin) } catch {}
-      headers['x-admin-pin'] = String(adminPin).replace(/['"]/g, '').trim()
-    } else {
-      headers['x-admin-pin'] = '1234'
+      const cleanPin = String(adminPin).replace(/['"]/g, '').trim()
+      if (cleanPin) {
+        headers['x-admin-pin'] = cleanPin
+      }
     }
   } catch {}
   return headers

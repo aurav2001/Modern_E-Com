@@ -1,48 +1,49 @@
 import { Router } from 'express'
 import { db } from '../db.js'
-import { requireAdmin, optionalAuth } from '../middleware/auth.js'
+import { requireAdmin, optionalAuth, isAdminRequest } from '../middleware/auth.js'
 import { sendOrderConfirmationEmail } from '../utils/mailer.js'
+import { orderRateLimiter, sanitizeString } from '../middleware/security.js'
 
 export const orderRouter = Router()
 
-// GET /api/orders - List orders (Admin gets all, customer gets by phone/email)
+// GET /api/orders - List orders (Admin gets all, customer gets only their own)
 orderRouter.get('/', optionalAuth, (req, res) => {
   try {
     let orders = db.getOrders()
-    const { status, phone, search, email } = req.query
+    const { status, phone, search } = req.query
+    const isAdmin = isAdminRequest(req)
 
-    // Check if user is an admin
-    const isAdmin = req.user?.role === 'admin' ||
-      (req.headers['x-admin-pin'] && String(req.headers['x-admin-pin']).trim() === String(db.getSettings().adminPin).trim()) ||
-      (req.headers.authorization && req.headers.authorization.includes('rs_adm_'))
-
-    // If not admin and no specific phone/email filter is provided, restrict access
-    if (!isAdmin && !phone && !email && !search) {
-      // If regular authenticated user, show only their orders
-      if (req.user?.email) {
-        orders = orders.filter((o) => o.customer?.email?.toLowerCase() === req.user.email.toLowerCase())
+    // Unauthenticated or non-admin access
+    if (!isAdmin) {
+      if (req.user?.email || req.user?.phone) {
+        orders = orders.filter(
+          (o) =>
+            (req.user.email && o.customer?.email?.toLowerCase() === req.user.email.toLowerCase()) ||
+            (req.user.phone && o.customer?.phone === req.user.phone)
+        )
       } else {
-        return res.status(403).json({
+        return res.status(401).json({
           success: false,
-          message: 'Admin authorization or customer lookup filter (phone/email) is required to view orders.',
+          message: 'Authentication required to view order history',
         })
       }
-    }
-
-    if (status) {
-      orders = orders.filter((o) => o.status.toLowerCase() === status.toLowerCase())
-    }
-    if (phone) {
-      orders = orders.filter((o) => o.customer && o.customer.phone.includes(phone))
-    }
-    if (search) {
-      const q = search.toLowerCase()
-      orders = orders.filter(
-        (o) =>
-          o.id.toLowerCase().includes(q) ||
-          (o.customer?.name && o.customer.name.toLowerCase().includes(q)) ||
-          (o.customer?.phone && o.customer.phone.includes(q))
-      )
+    } else {
+      // Admin filters
+      if (status) {
+        orders = orders.filter((o) => o.status.toLowerCase() === status.toLowerCase())
+      }
+      if (phone) {
+        orders = orders.filter((o) => o.customer && o.customer.phone.includes(phone))
+      }
+      if (search) {
+        const q = search.toLowerCase()
+        orders = orders.filter(
+          (o) =>
+            o.id.toLowerCase().includes(q) ||
+            (o.customer?.name && o.customer.name.toLowerCase().includes(q)) ||
+            (o.customer?.phone && o.customer.phone.includes(q))
+        )
+      }
     }
 
     res.json({
@@ -55,8 +56,8 @@ orderRouter.get('/', optionalAuth, (req, res) => {
   }
 })
 
-// GET /api/orders/:id - Single order tracking
-orderRouter.get('/:id', (req, res) => {
+// GET /api/orders/:id - Single order tracking (Protects private customer data)
+orderRouter.get('/:id', optionalAuth, (req, res) => {
   try {
     const orders = db.getOrders()
     const { id } = req.params
@@ -65,14 +66,48 @@ orderRouter.get('/:id', (req, res) => {
     if (!order) {
       return res.status(404).json({ success: false, message: 'Order not found' })
     }
-    res.json({ success: true, data: order })
+
+    const isAdmin = isAdminRequest(req)
+    const reqPhone = req.query.phone ? String(req.query.phone).replace(/\D/g, '') : null
+    const isOwner =
+      (req.user?.email && order.customer?.email?.toLowerCase() === req.user.email.toLowerCase()) ||
+      (req.user?.phone && order.customer?.phone === req.user.phone) ||
+      (reqPhone && order.customer?.phone && order.customer.phone.replace(/\D/g, '').endsWith(reqPhone.slice(-10)))
+
+    // If caller is Admin or verified owner, return complete order with full address
+    if (isAdmin || isOwner) {
+      return res.json({ success: true, data: order })
+    }
+
+    // For public tracking, return order tracking details without leaking customer's full address
+    res.json({
+      success: true,
+      data: {
+        id: order.id,
+        orderNumber: order.orderNumber,
+        status: order.status,
+        paymentStatus: order.paymentStatus,
+        paymentMethod: order.paymentMethod,
+        timeline: order.timeline || [],
+        tracking: order.tracking || null,
+        createdAt: order.createdAt,
+        items: (order.items || []).map((it) => ({
+          name: it.name,
+          color: it.color,
+          size: it.size,
+          qty: it.qty,
+        })),
+        customerCity: order.customer?.city,
+        customerState: order.customer?.state,
+      },
+    })
   } catch (err) {
     res.status(500).json({ success: false, message: err.message })
   }
 })
 
-// POST /api/orders - Place a new order
-orderRouter.post('/', (req, res) => {
+// POST /api/orders - Place a new order (Protected by rate limiting & validation)
+orderRouter.post('/', orderRateLimiter, (req, res) => {
   try {
     const { customer, items, paymentMethod, couponCode, notes } = req.body
 
@@ -81,6 +116,11 @@ orderRouter.post('/', (req, res) => {
     }
     if (!items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ success: false, message: 'Order must contain at least 1 item' })
+    }
+
+    const cleanPhone = String(customer.phone).replace(/\D/g, '').slice(0, 10)
+    if (cleanPhone.length !== 10) {
+      return res.status(400).json({ success: false, message: 'Please enter a valid 10-digit mobile number' })
     }
 
     const settings = db.getSettings()
@@ -92,7 +132,7 @@ orderRouter.post('/', (req, res) => {
     // Calculate discount
     let discount = 0
     if (couponCode) {
-      const matched = coupons.find((c) => c.code.toUpperCase() === couponCode.toUpperCase())
+      const matched = coupons.find((c) => c.code.toUpperCase() === String(couponCode).trim().toUpperCase())
       if (matched && subtotal >= (matched.minOrder || 0)) {
         if (matched.type === 'percent') {
           discount = Math.min(matched.maxDiscount || Infinity, Math.round((subtotal * matched.discount) / 100))
@@ -120,18 +160,18 @@ orderRouter.post('/', (req, res) => {
       orderNumber: String(randomSuffix),
       createdAt: new Date().toISOString(),
       customer: {
-        name: customer.name,
-        phone: customer.phone,
-        email: customer.email || '',
-        address: customer.address,
-        city: customer.city || 'Chapra',
-        state: customer.state || 'Bihar',
-        pincode: customer.pincode || '',
+        name: sanitizeString(customer.name),
+        phone: cleanPhone,
+        email: customer.email ? String(customer.email).trim().toLowerCase() : '',
+        address: sanitizeString(customer.address),
+        city: sanitizeString(customer.city || 'Chapra'),
+        state: sanitizeString(customer.state || 'Bihar'),
+        pincode: String(customer.pincode || '').replace(/\D/g, '').slice(0, 6),
       },
       items: items.map((it) => ({
         id: it.id,
         slug: it.slug,
-        name: it.name,
+        name: sanitizeString(it.name),
         color: it.color || '',
         size: it.size || '',
         fabric: it.fabric || 'Standard',
@@ -145,10 +185,10 @@ orderRouter.post('/', (req, res) => {
       codFee,
       tax,
       total,
-      paymentMethod: paymentMethod || 'COD',
-      paymentStatus: paymentMethod === 'COD' ? 'Pending' : 'Paid',
+      paymentMethod: paymentMethod === 'COD' ? 'COD' : 'Online',
+      paymentStatus: 'Pending', // Secure: Always Pending on order placement. Only verified via Razorpay webhook or Admin
       status: 'Placed',
-      notes: notes || '',
+      notes: sanitizeString(notes || ''),
       timeline: [
         { title: 'Order Placed', time: new Date().toISOString(), desc: 'Order confirmed and registered in production system.' },
       ],

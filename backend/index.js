@@ -13,11 +13,18 @@ import { authRouter } from './routes/auth.js'
 import { paymentRouter } from './routes/payment.js'
 import { db } from './db.js'
 import { verifySmtpConnection } from './utils/mailer.js'
+import { securityHeaders, generalApiLimiter } from './middleware/security.js'
 
 const _dirname = typeof __dirname !== 'undefined' ? __dirname : process.cwd()
 
 const app = express()
 const PORT = process.env.PORT || 5000
+
+// Security: Hide server technology header
+app.disable('x-powered-by')
+
+// Security: Set security headers on all responses
+app.use(securityHeaders)
 
 // Middlewares
 app.use((req, res, next) => {
@@ -34,8 +41,13 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization', 'x-admin-pin']
 }))
-app.use(express.json({ limit: '50mb' }))
-app.use(express.urlencoded({ limit: '50mb', extended: true }))
+
+// Body parser with safe payload limits
+app.use(express.json({ limit: '8mb' }))
+app.use(express.urlencoded({ limit: '8mb', extended: true }))
+
+// Apply general API rate limiting to prevent DDoS & scraping
+app.use('/api', generalApiLimiter)
 
 // Request logger
 app.use((req, res, next) => {
@@ -49,10 +61,16 @@ app.use((req, res, next) => {
   next()
 })
 
-// Static files for uploaded images
+// Static files for uploaded images (Served securely with nosniff)
 const uploadDir = process.env.VERCEL ? path.join('/tmp', 'uploads') : path.resolve(_dirname, 'uploads')
-app.use('/uploads', express.static(uploadDir))
-app.use('/api/uploads', express.static(uploadDir))
+const staticOptions = {
+  maxAge: '7d',
+  setHeaders: (res) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff')
+  },
+}
+app.use('/uploads', express.static(uploadDir, staticOptions))
+app.use('/api/uploads', express.static(uploadDir, staticOptions))
 
 // Root info
 app.get('/', (req, res) => {

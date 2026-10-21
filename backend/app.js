@@ -78380,21 +78380,17 @@ function requireAdmin(req, res, next) {
     const settings = db.getSettings();
     const rawPin = req.headers["x-admin-pin"];
     const cleanPin = rawPin ? String(rawPin).replace(/['"]/g, "").trim() : null;
-    const validPin = String(settings.adminPin || "1234").trim();
-    if (cleanPin && (cleanPin === validPin || cleanPin === "1234")) {
+    const validPin = settings?.adminPin ? String(settings.adminPin).trim() : null;
+    if (cleanPin && validPin && cleanPin === validPin) {
       req.user = { role: "admin", name: "Store Admin" };
       return next();
     }
     const authHeader = req.headers.authorization;
     if (authHeader && authHeader.startsWith("Bearer ")) {
       const token = authHeader.split(" ")[1];
-      if (token.startsWith("rs_adm_")) {
-        req.user = { role: "admin", name: "Store Admin" };
-        return next();
-      }
       try {
         const decoded = import_jsonwebtoken.default.verify(token, JWT_SECRET);
-        if (decoded.role === "admin") {
+        if (decoded && decoded.role === "admin") {
           req.user = decoded;
           return next();
         }
@@ -78408,6 +78404,23 @@ function requireAdmin(req, res, next) {
   } catch (err) {
     return res.status(500).json({ success: false, message: "Auth check error", error: err.message });
   }
+}
+function isAdminRequest(req) {
+  try {
+    const settings = db.getSettings();
+    const rawPin = req.headers["x-admin-pin"];
+    const cleanPin = rawPin ? String(rawPin).replace(/['"]/g, "").trim() : null;
+    const validPin = settings?.adminPin ? String(settings.adminPin).trim() : null;
+    if (cleanPin && validPin && cleanPin === validPin) return true;
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      const token = authHeader.split(" ")[1];
+      const decoded = import_jsonwebtoken.default.verify(token, JWT_SECRET);
+      if (decoded && decoded.role === "admin") return true;
+    }
+  } catch {
+  }
+  return false;
 }
 function optionalAuth(req, res, next) {
   try {
@@ -91262,34 +91275,124 @@ async function sendWelcomeEmail(user) {
   });
 }
 
+// middleware/security.js
+var rateLimitStores = /* @__PURE__ */ new Map();
+setInterval(() => {
+  const now = Date.now();
+  for (const [storeName, store] of rateLimitStores.entries()) {
+    for (const [ip, record] of store.entries()) {
+      if (now > record.resetTime) {
+        store.delete(ip);
+      }
+    }
+  }
+}, 10 * 60 * 1e3);
+function createRateLimiter({
+  windowMs = 15 * 60 * 1e3,
+  // 15 minutes
+  max = 100,
+  // max requests per window
+  message = "Too many requests from this IP, please try again later.",
+  name: name2 = "default"
+}) {
+  if (!rateLimitStores.has(name2)) {
+    rateLimitStores.set(name2, /* @__PURE__ */ new Map());
+  }
+  const store = rateLimitStores.get(name2);
+  return (req, res, next) => {
+    const clientIp = req.headers["x-forwarded-for"]?.split(",")[0].trim() || req.headers["x-real-ip"] || req.socket.remoteAddress || "unknown-ip";
+    const now = Date.now();
+    const record = store.get(clientIp);
+    if (!record || now > record.resetTime) {
+      store.set(clientIp, { count: 1, resetTime: now + windowMs });
+      res.setHeader("X-RateLimit-Limit", max);
+      res.setHeader("X-RateLimit-Remaining", max - 1);
+      return next();
+    }
+    if (record.count >= max) {
+      const retryAfterSec = Math.ceil((record.resetTime - now) / 1e3);
+      res.setHeader("Retry-After", retryAfterSec);
+      res.setHeader("X-RateLimit-Limit", max);
+      res.setHeader("X-RateLimit-Remaining", 0);
+      return res.status(429).json({
+        success: false,
+        message,
+        retryAfterSeconds: retryAfterSec
+      });
+    }
+    record.count += 1;
+    res.setHeader("X-RateLimit-Limit", max);
+    res.setHeader("X-RateLimit-Remaining", max - record.count);
+    next();
+  };
+}
+var authRateLimiter = createRateLimiter({
+  name: "auth",
+  windowMs: 15 * 60 * 1e3,
+  max: 15,
+  message: "Too many login attempts. For security reasons, please wait 15 minutes before trying again."
+});
+var orderRateLimiter = createRateLimiter({
+  name: "orders",
+  windowMs: 60 * 60 * 1e3,
+  max: 20,
+  message: "Order creation rate limit reached. Please wait before placing more orders."
+});
+var generalApiLimiter = createRateLimiter({
+  name: "general",
+  windowMs: 10 * 60 * 1e3,
+  max: 400,
+  message: "Too many requests. Please slow down."
+});
+function securityHeaders(req, res, next) {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "SAMEORIGIN");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  if (req.path.startsWith("/api/auth") || req.path.startsWith("/api/admin")) {
+    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
+  }
+  next();
+}
+function sanitizeString(val) {
+  if (typeof val !== "string") return val;
+  return val.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "").replace(/[<>]/g, (char) => char === "<" ? "&lt;" : "&gt;").trim();
+}
+
 // routes/orders.js
 var orderRouter = (0, import_express2.Router)();
 orderRouter.get("/", optionalAuth, (req, res) => {
   try {
     let orders = db.getOrders();
-    const { status, phone, search, email } = req.query;
-    const isAdmin = req.user?.role === "admin" || req.headers["x-admin-pin"] && String(req.headers["x-admin-pin"]).trim() === String(db.getSettings().adminPin).trim() || req.headers.authorization && req.headers.authorization.includes("rs_adm_");
-    if (!isAdmin && !phone && !email && !search) {
-      if (req.user?.email) {
-        orders = orders.filter((o) => o.customer?.email?.toLowerCase() === req.user.email.toLowerCase());
+    const { status, phone, search } = req.query;
+    const isAdmin = isAdminRequest(req);
+    if (!isAdmin) {
+      if (req.user?.email || req.user?.phone) {
+        orders = orders.filter(
+          (o) => req.user.email && o.customer?.email?.toLowerCase() === req.user.email.toLowerCase() || req.user.phone && o.customer?.phone === req.user.phone
+        );
       } else {
-        return res.status(403).json({
+        return res.status(401).json({
           success: false,
-          message: "Admin authorization or customer lookup filter (phone/email) is required to view orders."
+          message: "Authentication required to view order history"
         });
       }
-    }
-    if (status) {
-      orders = orders.filter((o) => o.status.toLowerCase() === status.toLowerCase());
-    }
-    if (phone) {
-      orders = orders.filter((o) => o.customer && o.customer.phone.includes(phone));
-    }
-    if (search) {
-      const q = search.toLowerCase();
-      orders = orders.filter(
-        (o) => o.id.toLowerCase().includes(q) || o.customer?.name && o.customer.name.toLowerCase().includes(q) || o.customer?.phone && o.customer.phone.includes(q)
-      );
+    } else {
+      if (status) {
+        orders = orders.filter((o) => o.status.toLowerCase() === status.toLowerCase());
+      }
+      if (phone) {
+        orders = orders.filter((o) => o.customer && o.customer.phone.includes(phone));
+      }
+      if (search) {
+        const q = search.toLowerCase();
+        orders = orders.filter(
+          (o) => o.id.toLowerCase().includes(q) || o.customer?.name && o.customer.name.toLowerCase().includes(q) || o.customer?.phone && o.customer.phone.includes(q)
+        );
+      }
     }
     res.json({
       success: true,
@@ -91300,7 +91403,7 @@ orderRouter.get("/", optionalAuth, (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 });
-orderRouter.get("/:id", (req, res) => {
+orderRouter.get("/:id", optionalAuth, (req, res) => {
   try {
     const orders = db.getOrders();
     const { id } = req.params;
@@ -91308,12 +91411,38 @@ orderRouter.get("/:id", (req, res) => {
     if (!order) {
       return res.status(404).json({ success: false, message: "Order not found" });
     }
-    res.json({ success: true, data: order });
+    const isAdmin = isAdminRequest(req);
+    const reqPhone = req.query.phone ? String(req.query.phone).replace(/\D/g, "") : null;
+    const isOwner = req.user?.email && order.customer?.email?.toLowerCase() === req.user.email.toLowerCase() || req.user?.phone && order.customer?.phone === req.user.phone || reqPhone && order.customer?.phone && order.customer.phone.replace(/\D/g, "").endsWith(reqPhone.slice(-10));
+    if (isAdmin || isOwner) {
+      return res.json({ success: true, data: order });
+    }
+    res.json({
+      success: true,
+      data: {
+        id: order.id,
+        orderNumber: order.orderNumber,
+        status: order.status,
+        paymentStatus: order.paymentStatus,
+        paymentMethod: order.paymentMethod,
+        timeline: order.timeline || [],
+        tracking: order.tracking || null,
+        createdAt: order.createdAt,
+        items: (order.items || []).map((it) => ({
+          name: it.name,
+          color: it.color,
+          size: it.size,
+          qty: it.qty
+        })),
+        customerCity: order.customer?.city,
+        customerState: order.customer?.state
+      }
+    });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 });
-orderRouter.post("/", (req, res) => {
+orderRouter.post("/", orderRateLimiter, (req, res) => {
   try {
     const { customer, items, paymentMethod, couponCode, notes } = req.body;
     if (!customer || !customer.name || !customer.phone || !customer.address) {
@@ -91322,12 +91451,16 @@ orderRouter.post("/", (req, res) => {
     if (!items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ success: false, message: "Order must contain at least 1 item" });
     }
+    const cleanPhone = String(customer.phone).replace(/\D/g, "").slice(0, 10);
+    if (cleanPhone.length !== 10) {
+      return res.status(400).json({ success: false, message: "Please enter a valid 10-digit mobile number" });
+    }
     const settings = db.getSettings();
     const coupons = db.getCoupons();
     const subtotal = items.reduce((acc, it) => acc + (Number(it.price) || 0) * (Number(it.qty) || 1), 0);
     let discount = 0;
     if (couponCode) {
-      const matched = coupons.find((c) => c.code.toUpperCase() === couponCode.toUpperCase());
+      const matched = coupons.find((c) => c.code.toUpperCase() === String(couponCode).trim().toUpperCase());
       if (matched && subtotal >= (matched.minOrder || 0)) {
         if (matched.type === "percent") {
           discount = Math.min(matched.maxDiscount || Infinity, Math.round(subtotal * matched.discount / 100));
@@ -91348,18 +91481,18 @@ orderRouter.post("/", (req, res) => {
       orderNumber: String(randomSuffix),
       createdAt: (/* @__PURE__ */ new Date()).toISOString(),
       customer: {
-        name: customer.name,
-        phone: customer.phone,
-        email: customer.email || "",
-        address: customer.address,
-        city: customer.city || "Chapra",
-        state: customer.state || "Bihar",
-        pincode: customer.pincode || ""
+        name: sanitizeString(customer.name),
+        phone: cleanPhone,
+        email: customer.email ? String(customer.email).trim().toLowerCase() : "",
+        address: sanitizeString(customer.address),
+        city: sanitizeString(customer.city || "Chapra"),
+        state: sanitizeString(customer.state || "Bihar"),
+        pincode: String(customer.pincode || "").replace(/\D/g, "").slice(0, 6)
       },
       items: items.map((it) => ({
         id: it.id,
         slug: it.slug,
-        name: it.name,
+        name: sanitizeString(it.name),
         color: it.color || "",
         size: it.size || "",
         fabric: it.fabric || "Standard",
@@ -91373,10 +91506,11 @@ orderRouter.post("/", (req, res) => {
       codFee,
       tax,
       total,
-      paymentMethod: paymentMethod || "COD",
-      paymentStatus: paymentMethod === "COD" ? "Pending" : "Paid",
+      paymentMethod: paymentMethod === "COD" ? "COD" : "Online",
+      paymentStatus: "Pending",
+      // Secure: Always Pending on order placement. Only verified via Razorpay webhook or Admin
       status: "Placed",
-      notes: notes || "",
+      notes: sanitizeString(notes || ""),
       timeline: [
         { title: "Order Placed", time: (/* @__PURE__ */ new Date()).toISOString(), desc: "Order confirmed and registered in production system." }
       ]
@@ -91452,19 +91586,23 @@ enquiryRouter.post("/", (req, res) => {
     if (!name2 || !phone) {
       return res.status(400).json({ success: false, message: "Name and phone are required" });
     }
+    const cleanPhone = String(phone).replace(/\D/g, "").slice(0, 10);
+    if (cleanPhone.length !== 10) {
+      return res.status(400).json({ success: false, message: "Please enter a valid 10-digit mobile number" });
+    }
     const list = db.getEnquiries();
     const newEnquiry = {
       id: `ENQ-${Date.now().toString().slice(-4)}`,
       createdAt: (/* @__PURE__ */ new Date()).toISOString(),
-      name: name2,
-      phone,
-      email: email || "",
-      sport: sport || "Cricket",
-      teamName: teamName || "Not specified",
-      quantity: Number(quantity) || 11,
-      fabricPreference: fabricPreference || "Any",
-      budgetPerPiece: budgetPerPiece || "Standard",
-      notes: notes || "",
+      name: sanitizeString(name2),
+      phone: cleanPhone,
+      email: email ? String(email).trim().toLowerCase().slice(0, 80) : "",
+      sport: sanitizeString(sport || "Cricket"),
+      teamName: sanitizeString(teamName || "Not specified"),
+      quantity: Math.min(1e4, Math.max(1, Number(quantity) || 11)),
+      fabricPreference: sanitizeString(fabricPreference || "Any"),
+      budgetPerPiece: sanitizeString(budgetPerPiece || "Standard"),
+      notes: sanitizeString(notes || "").slice(0, 500),
       status: "New"
     };
     list.unshift(newEnquiry);
@@ -91552,17 +91690,17 @@ couponRouter.post("/validate", (req, res) => {
 // routes/admin.js
 var import_express5 = __toESM(require_express2());
 var adminRouter = (0, import_express5.Router)();
-adminRouter.post("/login", (req, res) => {
+adminRouter.post("/login", authRateLimiter, (req, res) => {
   try {
     const { pin } = req.body;
     const settings = db.getSettings();
-    if (String(pin).trim() === String(settings.adminPin).trim()) {
+    if (pin && String(pin).trim() === String(settings.adminPin).trim()) {
       const token = generateToken({ role: "admin", name: "Store Admin" }, "7d");
       return res.json({
         success: true,
         message: "Admin access granted",
         token,
-        adminToken: `rs_adm_${Date.now()}_token`
+        adminToken: token
       });
     }
     res.status(401).json({ success: false, message: "Invalid Admin PIN" });
@@ -91610,9 +91748,7 @@ adminRouter.get("/stats", requireAdmin, (req, res) => {
 adminRouter.get("/settings", (req, res) => {
   try {
     const settings = { ...db.getSettings() };
-    const authHeader = req.headers.authorization;
-    const pinHeader = req.headers["x-admin-pin"];
-    const isAdmin = pinHeader && String(pinHeader).trim() === String(settings.adminPin).trim() || authHeader && (authHeader.includes("rs_adm_") || authHeader.startsWith("Bearer "));
+    const isAdmin = isAdminRequest(req);
     if (!isAdmin) {
       delete settings.adminPin;
     }
@@ -91667,25 +91803,31 @@ try {
   }
 } catch {
 }
+var ALLOWED_EXTENSIONS = /* @__PURE__ */ new Set([".jpg", ".jpeg", ".png", ".webp"]);
+var ALLOWED_MIMES = /* @__PURE__ */ new Set(["image/jpeg", "image/png", "image/webp"]);
 var storage = import_multer.default.diskStorage({
   destination: (req, file, cb) => {
     cb(null, UPLOAD_DIR);
   },
   filename: (req, file, cb) => {
-    const ext = import_path3.default.extname(file.originalname);
-    const base2 = import_path3.default.basename(file.originalname, ext).replace(/[^a-z0-9]/gi, "-").toLowerCase();
-    cb(null, `${base2}-${Date.now()}${ext}`);
+    let ext = import_path3.default.extname(file.originalname).toLowerCase();
+    if (!ALLOWED_EXTENSIONS.has(ext)) {
+      ext = ".jpg";
+    }
+    const base2 = import_path3.default.basename(file.originalname, ext).replace(/[^a-z0-9]/gi, "-").toLowerCase().slice(0, 50);
+    cb(null, `${base2 || "img"}-${Date.now()}${ext}`);
   }
 });
 var upload = (0, import_multer.default)({
   storage,
-  limits: { fileSize: 25 * 1024 * 1024 },
-  // 25MB limit
+  limits: { fileSize: 10 * 1024 * 1024 },
+  // 10MB limit
   fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith("image/")) {
+    const ext = import_path3.default.extname(file.originalname).toLowerCase();
+    if (ALLOWED_EXTENSIONS.has(ext) && ALLOWED_MIMES.has(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error("Only image files are allowed"));
+      cb(new Error("Security violation: Only JPG, PNG, and WEBP image files are permitted."));
     }
   }
 });
@@ -91694,10 +91836,11 @@ uploadRouter.post("/", requireAdmin, (req, res) => {
   if (req.body && req.body.base64) {
     try {
       const { base64, filename } = req.body;
-      const matches = base64.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+      const matches = base64.match(/^data:image\/(jpeg|jpg|png|webp);base64,(.+)$/i);
       if (matches && matches.length === 3) {
-        const ext = matches[1].split("/")[1] || "jpg";
-        const cleanName = (filename || "upload").replace(/[^a-z0-9]/gi, "-").toLowerCase();
+        let ext = matches[1].toLowerCase();
+        if (ext === "jpeg") ext = "jpg";
+        const cleanName = (filename || "upload").replace(/[^a-z0-9]/gi, "-").toLowerCase().slice(0, 40);
         const fname = `${cleanName}-${Date.now()}.${ext}`;
         const fpath = import_path3.default.join(UPLOAD_DIR, fname);
         import_fs2.default.writeFileSync(fpath, Buffer.from(matches[2], "base64"));
@@ -91709,13 +91852,12 @@ uploadRouter.post("/", requireAdmin, (req, res) => {
           filename: fname
         });
       }
-      return res.json({
-        success: true,
-        message: "Image processed successfully",
-        url: base64
+      return res.status(400).json({
+        success: false,
+        message: "Invalid image format. Allowed formats: JPG, PNG, WEBP."
       });
-    } catch {
-      return res.json({ success: true, url: req.body.base64 });
+    } catch (err) {
+      return res.status(500).json({ success: false, message: "Image processing failed: " + err.message });
     }
   }
   upload.single("image")(req, res, (err) => {
@@ -93463,15 +93605,23 @@ var bcryptjs_default = {
 
 // routes/auth.js
 var authRouter = (0, import_express8.Router)();
-authRouter.post("/register", async (req, res) => {
+var EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+authRouter.post("/register", authRateLimiter, async (req, res) => {
   try {
     const { name: name2, email, phone, password } = req.body;
     if (!name2 || !email || !password || !phone) {
       return res.status(400).json({ success: false, message: "All fields (name, email, phone, password) are required" });
     }
-    const cleanEmail = email.trim().toLowerCase();
-    const cleanPhone = phone.trim();
-    if (password.length < 6) {
+    const cleanEmail = String(email).trim().toLowerCase();
+    const cleanPhone = String(phone).replace(/\D/g, "").slice(0, 10);
+    const cleanName = sanitizeString(name2);
+    if (!EMAIL_REGEX.test(cleanEmail)) {
+      return res.status(400).json({ success: false, message: "Please provide a valid email address" });
+    }
+    if (cleanPhone.length !== 10) {
+      return res.status(400).json({ success: false, message: "Please enter a valid 10-digit mobile number" });
+    }
+    if (String(password).length < 6) {
       return res.status(400).json({ success: false, message: "Password must be at least 6 characters long" });
     }
     const users = db.getUsers();
@@ -93513,21 +93663,21 @@ authRouter.post("/register", async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 });
-authRouter.post("/login", async (req, res) => {
+authRouter.post("/login", authRateLimiter, async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
       return res.status(400).json({ success: false, message: "Email and password are required" });
     }
-    const cleanEmail = email.trim().toLowerCase();
+    const cleanEmail = String(email).trim().toLowerCase();
     const users = db.getUsers();
     const user = users.find((u) => u.email.toLowerCase() === cleanEmail);
     if (!user) {
-      return res.status(401).json({ success: false, message: "No account found with this email" });
+      return res.status(401).json({ success: false, message: "Invalid email or password" });
     }
     const isMatch = await bcryptjs_default.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ success: false, message: "Invalid password" });
+      return res.status(401).json({ success: false, message: "Invalid email or password" });
     }
     const token = generateToken({
       id: user.id,
@@ -93567,8 +93717,8 @@ authRouter.put("/profile", requireAuth, async (req, res) => {
       return res.status(404).json({ success: false, message: "User not found" });
     }
     const { name: name2, phone, addresses } = req.body;
-    if (name2) users[index].name = name2.trim();
-    if (phone) users[index].phone = phone.trim();
+    if (name2) users[index].name = sanitizeString(name2);
+    if (phone) users[index].phone = String(phone).replace(/\D/g, "").slice(0, 10);
     if (addresses && Array.isArray(addresses)) users[index].addresses = addresses;
     db.saveUsers(users);
     const { password: _, ...userWithoutPass } = users[index];
@@ -93577,11 +93727,11 @@ authRouter.put("/profile", requireAuth, async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 });
-authRouter.post("/admin-login", (req, res) => {
+authRouter.post("/admin-login", authRateLimiter, (req, res) => {
   try {
     const { pin } = req.body;
     const settings = db.getSettings();
-    if (String(pin).trim() === String(settings.adminPin).trim()) {
+    if (pin && String(pin).trim() === String(settings.adminPin).trim()) {
       const token = generateToken(
         { role: "admin", name: "Store Admin", sub: "rishikar_admin" },
         "7d"
@@ -93806,6 +93956,8 @@ paymentRouter.post("/verify", async (req, res) => {
 var _dirname4 = typeof __dirname !== "undefined" ? __dirname : process.cwd();
 var app = (0, import_express10.default)();
 var PORT = process.env.PORT || 5e3;
+app.disable("x-powered-by");
+app.use(securityHeaders);
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
@@ -93820,8 +93972,9 @@ app.use((0, import_cors.default)({
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization", "x-admin-pin"]
 }));
-app.use(import_express10.default.json({ limit: "50mb" }));
-app.use(import_express10.default.urlencoded({ limit: "50mb", extended: true }));
+app.use(import_express10.default.json({ limit: "8mb" }));
+app.use(import_express10.default.urlencoded({ limit: "8mb", extended: true }));
+app.use("/api", generalApiLimiter);
 app.use((req, res, next) => {
   const start = Date.now();
   res.on("finish", () => {
@@ -93833,8 +93986,14 @@ app.use((req, res, next) => {
   next();
 });
 var uploadDir = process.env.VERCEL ? import_path4.default.join("/tmp", "uploads") : import_path4.default.resolve(_dirname4, "uploads");
-app.use("/uploads", import_express10.default.static(uploadDir));
-app.use("/api/uploads", import_express10.default.static(uploadDir));
+var staticOptions = {
+  maxAge: "7d",
+  setHeaders: (res) => {
+    res.setHeader("X-Content-Type-Options", "nosniff");
+  }
+};
+app.use("/uploads", import_express10.default.static(uploadDir, staticOptions));
+app.use("/api/uploads", import_express10.default.static(uploadDir, staticOptions));
 app.get("/", (req, res) => {
   res.json({
     status: "online",

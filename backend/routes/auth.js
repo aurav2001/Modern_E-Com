@@ -3,11 +3,15 @@ import bcrypt from 'bcryptjs'
 import { db } from '../db.js'
 import { generateToken, requireAuth } from '../middleware/auth.js'
 import { sendWelcomeEmail } from '../utils/mailer.js'
+import { authRateLimiter, sanitizeString } from '../middleware/security.js'
 
 export const authRouter = Router()
 
+// Simple email regex for validation
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
 // POST /api/auth/register - Register a new customer
-authRouter.post('/register', async (req, res) => {
+authRouter.post('/register', authRateLimiter, async (req, res) => {
   try {
     const { name, email, phone, password } = req.body
 
@@ -15,10 +19,19 @@ authRouter.post('/register', async (req, res) => {
       return res.status(400).json({ success: false, message: 'All fields (name, email, phone, password) are required' })
     }
 
-    const cleanEmail = email.trim().toLowerCase()
-    const cleanPhone = phone.trim()
+    const cleanEmail = String(email).trim().toLowerCase()
+    const cleanPhone = String(phone).replace(/\D/g, '').slice(0, 10)
+    const cleanName = sanitizeString(name)
 
-    if (password.length < 6) {
+    if (!EMAIL_REGEX.test(cleanEmail)) {
+      return res.status(400).json({ success: false, message: 'Please provide a valid email address' })
+    }
+
+    if (cleanPhone.length !== 10) {
+      return res.status(400).json({ success: false, message: 'Please enter a valid 10-digit mobile number' })
+    }
+
+    if (String(password).length < 6) {
       return res.status(400).json({ success: false, message: 'Password must be at least 6 characters long' })
     }
 
@@ -72,8 +85,8 @@ authRouter.post('/register', async (req, res) => {
   }
 })
 
-// POST /api/auth/login - User login
-authRouter.post('/login', async (req, res) => {
+// POST /api/auth/login - User login (Protected by rate limiting)
+authRouter.post('/login', authRateLimiter, async (req, res) => {
   try {
     const { email, password } = req.body
 
@@ -81,18 +94,18 @@ authRouter.post('/login', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Email and password are required' })
     }
 
-    const cleanEmail = email.trim().toLowerCase()
+    const cleanEmail = String(email).trim().toLowerCase()
     const users = db.getUsers()
     const user = users.find((u) => u.email.toLowerCase() === cleanEmail)
 
     if (!user) {
-      return res.status(401).json({ success: false, message: 'No account found with this email' })
+      return res.status(401).json({ success: false, message: 'Invalid email or password' })
     }
 
     // Check password
     const isMatch = await bcrypt.compare(password, user.password)
     if (!isMatch) {
-      return res.status(401).json({ success: false, message: 'Invalid password' })
+      return res.status(401).json({ success: false, message: 'Invalid email or password' })
     }
 
     // Generate JWT token
@@ -143,8 +156,8 @@ authRouter.put('/profile', requireAuth, async (req, res) => {
     }
 
     const { name, phone, addresses } = req.body
-    if (name) users[index].name = name.trim()
-    if (phone) users[index].phone = phone.trim()
+    if (name) users[index].name = sanitizeString(name)
+    if (phone) users[index].phone = String(phone).replace(/\D/g, '').slice(0, 10)
     if (addresses && Array.isArray(addresses)) users[index].addresses = addresses
 
     db.saveUsers(users)
@@ -157,12 +170,12 @@ authRouter.put('/profile', requireAuth, async (req, res) => {
 })
 
 // POST /api/auth/admin-login - Admin authentication via PIN
-authRouter.post('/admin-login', (req, res) => {
+authRouter.post('/admin-login', authRateLimiter, (req, res) => {
   try {
     const { pin } = req.body
     const settings = db.getSettings()
 
-    if (String(pin).trim() === String(settings.adminPin).trim()) {
+    if (pin && String(pin).trim() === String(settings.adminPin).trim()) {
       const token = generateToken(
         { role: 'admin', name: 'Store Admin', sub: 'rishikar_admin' },
         '7d'

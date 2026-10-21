@@ -12,41 +12,51 @@ try {
   }
 } catch {}
 
+// Strict whitelist of allowed extensions & mimetypes
+const ALLOWED_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp'])
+const ALLOWED_MIMES = new Set(['image/jpeg', 'image/png', 'image/webp'])
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, UPLOAD_DIR)
   },
   filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname)
-    const base = path.basename(file.originalname, ext).replace(/[^a-z0-9]/gi, '-').toLowerCase()
-    cb(null, `${base}-${Date.now()}${ext}`)
+    let ext = path.extname(file.originalname).toLowerCase()
+    if (!ALLOWED_EXTENSIONS.has(ext)) {
+      ext = '.jpg'
+    }
+    const base = path.basename(file.originalname, ext).replace(/[^a-z0-9]/gi, '-').toLowerCase().slice(0, 50)
+    cb(null, `${base || 'img'}-${Date.now()}${ext}`)
   },
 })
 
 const upload = multer({
   storage,
-  limits: { fileSize: 25 * 1024 * 1024 }, // 25MB limit
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
   fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) {
+    const ext = path.extname(file.originalname).toLowerCase()
+    if (ALLOWED_EXTENSIONS.has(ext) && ALLOWED_MIMES.has(file.mimetype)) {
       cb(null, true)
     } else {
-      cb(new Error('Only image files are allowed'))
+      cb(new Error('Security violation: Only JPG, PNG, and WEBP image files are permitted.'))
     }
   },
 })
 
 export const uploadRouter = Router()
 
-// POST /api/upload - Single image upload (Admin only)
+// POST /api/upload - Single image upload (Strict Admin Only)
 uploadRouter.post('/', requireAdmin, (req, res) => {
   // If base64 JSON is sent
   if (req.body && req.body.base64) {
     try {
       const { base64, filename } = req.body
-      const matches = base64.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/)
+      // Strictly match only jpg, jpeg, png, webp
+      const matches = base64.match(/^data:image\/(jpeg|jpg|png|webp);base64,(.+)$/i)
       if (matches && matches.length === 3) {
-        const ext = matches[1].split('/')[1] || 'jpg'
-        const cleanName = (filename || 'upload').replace(/[^a-z0-9]/gi, '-').toLowerCase()
+        let ext = matches[1].toLowerCase()
+        if (ext === 'jpeg') ext = 'jpg'
+        const cleanName = (filename || 'upload').replace(/[^a-z0-9]/gi, '-').toLowerCase().slice(0, 40)
         const fname = `${cleanName}-${Date.now()}.${ext}`
         const fpath = path.join(UPLOAD_DIR, fname)
         fs.writeFileSync(fpath, Buffer.from(matches[2], 'base64'))
@@ -58,13 +68,12 @@ uploadRouter.post('/', requireAdmin, (req, res) => {
           filename: fname,
         })
       }
-      return res.json({
-        success: true,
-        message: 'Image processed successfully',
-        url: base64,
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid image format. Allowed formats: JPG, PNG, WEBP.',
       })
-    } catch {
-      return res.json({ success: true, url: req.body.base64 })
+    } catch (err) {
+      return res.status(500).json({ success: false, message: 'Image processing failed: ' + err.message })
     }
   }
 
