@@ -1,7 +1,37 @@
 import { getProducts, getMenu } from './db'
 
+const SUB_PARENT_MAP = {
+  'sublimation-jerseys': 'jerseys',
+  'football-jerseys': 'jerseys',
+  'cricket-jerseys': 'jerseys',
+  'polo-tshirts': 'tshirts',
+  'round-neck-tees': 'tshirts',
+  'sleeveless-tees': 'tshirts',
+  'tracksuits': 'teamwear',
+  'track-jackets': 'teamwear',
+  'hoodies': 'teamwear',
+  'lowers': 'teamwear',
+  'shorts': 'teamwear',
+  'kit-bags': 'accessories',
+  'caps': 'accessories',
+  'bottles': 'accessories',
+}
+
 // Live catalogue: base data in src/data, overridden by anything saved from the admin panel.
-const products = getProducts().map((p) => ({ ...p, sizes: (p.sizes || []).filter((s) => s !== 'UN'), gallery: (p.gallery || [p.image]).slice(0, 6) }))
+const rawProducts = getProducts()
+const products = rawProducts.map((p) => {
+  const cats = new Set(p.categories || [])
+  for (const s of (p.subs || [])) {
+    if (SUB_PARENT_MAP[s]) cats.add(SUB_PARENT_MAP[s])
+  }
+  return {
+    ...p,
+    categories: Array.from(cats),
+    sizes: (p.sizes || []).filter((s) => s !== 'UN'),
+    gallery: (p.gallery || [p.image]).slice(0, 6)
+  }
+})
+
 const menu = getMenu()
 export const PRODUCTS = products
 export const MENU = menu
@@ -27,15 +57,23 @@ export function subMeta(subSlug) {
 export function subsForCategory(catSlug) {
   const cat = menu.find((c) => c.slug === catSlug)
   if (!cat) return []
-  return cat.groups.flatMap((g) => g.items.filter((i) => i.count > 0))
+  return cat.groups.flatMap((g) =>
+    g.items.map((i) => ({
+      ...i,
+      count: queryProducts({ category: catSlug, sub: i.slug }).length,
+    })).filter((i) => i.count > 0)
+  )
 }
 
 const pct = (p) => (p.mrp && p.mrp > p.price ? (p.mrp - p.price) / p.mrp : 0)
 
 export function queryProducts({ category, sub, q, colors = [], sizes = [], minPrice, maxPrice, sort = 'popular', onlyNew, onlySale } = {}) {
   let list = products
-  if (category) list = list.filter((p) => p.categories.includes(category))
-  if (sub) list = list.filter((p) => p.subs.includes(sub))
+  if (sub) {
+    list = list.filter((p) => p.subs && p.subs.includes(sub))
+  } else if (category) {
+    list = list.filter((p) => p.categories && p.categories.includes(category))
+  }
   if (onlyNew) list = list.filter((p) => p.isNew)
   if (onlySale) list = list.filter((p) => p.mrp && p.mrp > p.price)
   if (q) {

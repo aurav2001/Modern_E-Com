@@ -10,11 +10,10 @@ productRouter.get('/', (req, res) => {
     let list = db.getProducts()
     const { category, sub, q, sort, minPrice, maxPrice, inStock } = req.query
 
-    if (category) {
-      list = list.filter((p) => p.categories && p.categories.includes(category))
-    }
     if (sub) {
       list = list.filter((p) => p.subs && p.subs.includes(sub))
+    } else if (category) {
+      list = list.filter((p) => p.categories && p.categories.includes(category))
     }
     if (q) {
       const query = q.toLowerCase().trim()

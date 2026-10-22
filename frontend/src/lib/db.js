@@ -149,7 +149,11 @@ export const resetProducts = () => { localStorage.removeItem(KEYS.products); not
 // ── Menu (read-only, but counts follow the live catalogue) ─
 export function getMenu() {
   const products = getProducts()
-  const count = (sub) => products.filter((p) => p.subs.includes(sub)).length
+  const count = (sub, catSlug) => products.filter((p) => {
+    const hasSub = p.subs && p.subs.includes(sub)
+    if (!catSlug) return hasSub
+    return hasSub && (p.categories ? p.categories.includes(catSlug) : true)
+  }).length
   const { cats, subs } = getCategories()
   const baseSlugs = new Set(baseMenu.map((m) => m.slug))
   const extraCats = cats.filter((c) => !baseSlugs.has(c.slug)).map((c) => ({
@@ -161,7 +165,7 @@ export function getMenu() {
         items: (subs[c.slug] || []).map((s) => ({
           name: s.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
           slug: s,
-          count: count(s),
+          count: count(s, c.slug),
         })),
       },
     ],
@@ -169,7 +173,7 @@ export function getMenu() {
   const fullMenu = [...baseMenu, ...extraCats]
   return fullMenu.map((cat) => ({
     ...cat,
-    groups: cat.groups.map((g) => ({ ...g, items: g.items.map((it) => ({ ...it, count: count(it.slug) })) })),
+    groups: cat.groups.map((g) => ({ ...g, items: g.items.map((it) => ({ ...it, count: count(it.slug, cat.slug) })) })),
   }))
 }
 
