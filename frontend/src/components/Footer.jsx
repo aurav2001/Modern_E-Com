@@ -1,22 +1,82 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Logo } from './Header'
-import { Instagram, Facebook, Youtube, Twitter } from './Icons'
+import {
+  Instagram,
+  Facebook,
+  Youtube,
+  Twitter,
+  Factory,
+  ShieldCheck,
+  Truck,
+  Phone,
+  Mail,
+  MapPin,
+} from './Icons'
 import { useStore } from '../context/StoreContext'
 import { BRAND } from '../data/content'
 
 export default function Footer() {
   return (
     <footer className="footer">
+      {/* ── Trust & Factory Badges Strip ── */}
+      <div className="footer__features">
+        <div className="container footer__features-inner">
+          <div className="footer__feature-item">
+            <div className="footer__feature-icon">
+              <Factory width={20} height={20} />
+            </div>
+            <div>
+              <b>Direct Manufacturing Unit</b>
+              <span>In-house sublimation & stitching in Chapra</span>
+            </div>
+          </div>
+          <div className="footer__feature-item">
+            <div className="footer__feature-icon">
+              <ShieldCheck width={20} height={20} />
+            </div>
+            <div>
+              <b>100% Sublimation Verified</b>
+              <span>Anti-fade colors with pro athletic fabrics</span>
+            </div>
+          </div>
+          <div className="footer__feature-item">
+            <div className="footer__feature-icon">
+              <Truck width={20} height={20} />
+            </div>
+            <div>
+              <b>Pan-India Courier Dispatch</b>
+              <span>Fast express delivery to all pin codes</span>
+            </div>
+          </div>
+          <div className="footer__feature-item">
+            <div className="footer__feature-icon">
+              <Phone width={20} height={20} />
+            </div>
+            <div>
+              <b>Instant WhatsApp Support</b>
+              <span>Direct factory quotes & order tracking</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="container">
         <div className="footer__top">
-          <div>
+          <div className="footer__brand-col">
             <Logo />
             <p className="footer__about">{BRAND.about}</p>
-            <p className="footer__about" style={{ marginTop: 10 }}>
-              <a href={'tel:' + BRAND.phoneIntl}>{BRAND.phone}</a> · <a href={'mailto:' + BRAND.email}>{BRAND.email}</a><br />
-              {BRAND.addressShort}
-            </p>
+            <div className="footer__contact-list">
+              <a href={'tel:' + BRAND.phoneIntl} className="footer__contact-link">
+                <Phone width={14} height={14} /> {BRAND.phone}
+              </a>
+              <a href={'mailto:' + BRAND.email} className="footer__contact-link">
+                <Mail width={14} height={14} /> {BRAND.email}
+              </a>
+              <span className="footer__contact-link">
+                <MapPin width={14} height={14} /> {BRAND.addressShort}
+              </span>
+            </div>
             <div className="footer__social">
               <a href="#" aria-label="Instagram"><Instagram /></a>
               <a href="#" aria-label="Facebook"><Facebook /></a>
@@ -24,6 +84,7 @@ export default function Footer() {
               <a href="#" aria-label="X"><Twitter /></a>
             </div>
           </div>
+
           <div>
             <h4>Shop</h4>
             <ul className="footer__links">
@@ -32,12 +93,13 @@ export default function Footer() {
               <li><Link to="/c/teamwear">Teamwear</Link></li>
               <li><Link to="/c/accessories">Accessories</Link></li>
               <li><Link to="/custom">Custom kits</Link></li>
-              <li><Link to="/rate-list" style={{ color: 'var(--accent)', fontWeight: 600 }}>Rate List (Excel)</Link></li>
-              <li><Link to="/sale">Offers</Link></li>
+              <li><Link to="/rate-list" style={{ color: 'var(--orange)', fontWeight: 700 }}>Rate List (Excel)</Link></li>
+              <li><Link to="/sale">Offers & Combos</Link></li>
             </ul>
           </div>
+
           <div>
-            <h4>Help</h4>
+            <h4>Help & Support</h4>
             <ul className="footer__links">
               <li><Link to="/account/orders">Track order</Link></li>
               <li><Link to="/policies/shipping-returns">Shipping & returns</Link></li>
@@ -46,6 +108,7 @@ export default function Footer() {
               <li><Link to="/contact">Contact us</Link></li>
             </ul>
           </div>
+
           <div>
             <h4>Company</h4>
             <ul className="footer__links">
@@ -55,6 +118,7 @@ export default function Footer() {
               <li><Link to="/contact">Visit our unit</Link></li>
             </ul>
           </div>
+
           <div>
             <h4>Legal</h4>
             <ul className="footer__links">
@@ -65,13 +129,15 @@ export default function Footer() {
             </ul>
           </div>
         </div>
+
         <div className="footer__bottom">
           <span>© {new Date().getFullYear()} Rishikar Sports LLP · Chapra, Bihar. All rights reserved.</span>
           <div className="footer__pay">
-            {['UPI', 'VISA', 'MC', 'RuPay', 'COD'].map((p) => <span key={p}>{p}</span>)}
+            {['UPI', 'VISA', 'Mastercard', 'RuPay', 'NetBanking', 'COD'].map((p) => (
+              <span key={p}>{p}</span>
+            ))}
           </div>
         </div>
-        <div className="footer__word" aria-hidden="true">RISHIKAR</div>
       </div>
     </footer>
   )
