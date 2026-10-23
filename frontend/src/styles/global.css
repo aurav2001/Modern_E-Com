@@ -983,10 +983,6 @@ ul { margin: 0; padding: 0; list-style: none; }
   display: flex;
   flex-direction: column;
   gap: 10px;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.card:hover {
-  transform: translateY(-6px);
 }
 .card__media {
   position: relative;
@@ -996,10 +992,10 @@ ul { margin: 0; padding: 0; list-style: none; }
   border: 1.5px solid rgba(213, 219, 228, 0.85);
   aspect-ratio: 4/5;
   box-shadow: 0 4px 12px -2px rgba(18, 21, 26, 0.05);
-  transition: border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 .card:hover .card__media {
-  border-color: rgba(245, 130, 31, 0.55);
+  border-color: rgba(245, 130, 31, 0.65);
   box-shadow: 0 16px 36px -8px rgba(18, 21, 26, 0.13), 0 0 18px rgba(245, 130, 31, 0.14);
 }
 .card__media img {
@@ -1010,13 +1006,21 @@ ul { margin: 0; padding: 0; list-style: none; }
   object-fit: contain;
   padding: 6%;
   filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.08));
-  transition: opacity 0.35s var(--ease), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s ease;
+  transition: opacity 0.35s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s ease;
+  pointer-events: none;
 }
-.card__media img.alt { opacity: 0; }
-.card:hover .card__media img.alt { opacity: 1; }
-.card:hover .card__media img.main.has-alt { opacity: 0; }
+.card__media img.alt {
+  opacity: 0;
+  pointer-events: none;
+}
+.card:hover .card__media img.alt {
+  opacity: 1;
+}
+.card:hover .card__media img.main.has-alt {
+  opacity: 0;
+}
 .card:hover .card__media img {
-  transform: scale(1.06) translateY(-2px);
+  transform: scale(1.05);
   filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.12));
 }
 .card__badges { position: absolute; top: 10px; left: 10px; display: flex; flex-direction: column; gap: 6px; z-index: 2; }
@@ -1040,7 +1044,7 @@ ul { margin: 0; padding: 0; list-style: none; }
   100% { left: 200%; }
 }
 .badge--low { background: #fff4e0; color: var(--warn); border-color: #f6dcae; }
-.card__wish { position: absolute; top: 8px; right: 8px; z-index: 2; width: 36px; height: 36px; border-radius: 10px; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(4px); display: grid; place-items: center; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.2s, box-shadow 0.2s; }
+.card__wish { position: absolute; top: 8px; right: 8px; z-index: 3; width: 36px; height: 36px; border-radius: 10px; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(4px); display: grid; place-items: center; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.2s, box-shadow 0.2s; }
 .card__wish:hover { transform: scale(1.14); background: #fff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12); }
 .card__wish:active { transform: scale(0.92); }
 .card__wish svg { width: 18px; height: 18px; transition: transform 0.2s ease; }
@@ -1051,9 +1055,33 @@ ul { margin: 0; padding: 0; list-style: none; }
   50% { transform: scale(1.3); }
   100% { transform: scale(1); }
 }
-.card__quick { position: absolute; right: 10px; bottom: 10px; z-index: 2; height: 40px; padding: 0 14px 0 10px; border-radius: 10px; background: var(--ink); color: #fff; font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(14, 22, 38, 0.25); transform: translateY(10px); opacity: 0; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.card__quick {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 3;
+  height: 40px;
+  padding: 0 14px 0 10px;
+  border-radius: 10px;
+  background: var(--ink);
+  color: #fff;
+  font-weight: 600;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(14, 22, 38, 0.25);
+  transform: translateY(6px);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
 .card__quick svg { width: 16px; height: 16px; color: var(--orange); transition: transform 0.2s ease; }
-.card:hover .card__quick { transform: translateY(0); opacity: 1; }
+.card:hover .card__quick {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
 .card__quick:hover { background: linear-gradient(135deg, var(--orange), #ff9838); color: #fff; box-shadow: 0 6px 18px rgba(245, 130, 31, 0.4); transform: translateY(-2px); }
 .card__quick:hover svg { color: #fff; transform: rotate(-8deg); }
 .card__body { display: flex; flex-direction: column; gap: 4px; padding: 0 2px; }
