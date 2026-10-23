@@ -58,8 +58,13 @@ export default function CartDrawer() {
                 <div className="line" key={l.key}>
                   <Link to={`/product/${l.slug}`}><img src={l.image} alt="" /></Link>
                   <div>
-                    <Link to={`/product/${l.slug}`} className="line__name">{l.name}</Link>
-                    <div className="line__meta">{[l.color, l.size && l.size.replace('UK-', 'UK ')].filter(Boolean).join(' · ')}</div>
+                    {l.customDetails && (
+                      <div style={{ fontSize: 10, fontWeight: 800, background: 'var(--lime-soft)', color: 'var(--lime-ink)', padding: '2px 6px', borderRadius: 4, display: 'inline-block', marginBottom: 4 }}>
+                        ⚡ Custom Squad Kit ({l.customDetails.roster?.length || l.qty} Players)
+                      </div>
+                    )}
+                    <Link to={l.customDetails ? '/customizer' : `/product/${l.slug}`} className="line__name">{l.name}</Link>
+                    <div className="line__meta">{l.customDetails?.rosterSummary || [l.color, l.size && l.size.replace('UK-', 'UK ')].filter(Boolean).join(' · ')}</div>
                     <div className="line__row">
                       <Qty small value={l.qty} onChange={(q) => setQty(l.key, q)} />
                       <b>{formatPrice(l.price * l.qty)}</b>

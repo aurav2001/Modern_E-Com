@@ -18,6 +18,7 @@ import Admin from './pages/Admin'
 import { Login, Signup } from './pages/Auth'
 import { Wishlist, About, Contact, FAQ, SizeChartPage, Policy, NotFound, CustomKits } from './pages/Static'
 import RateList from './pages/RateList'
+import JerseyCustomizer from './pages/JerseyCustomizer'
 import SessionPulse from './components/SessionPulse'
 
 const waHref = () => {
@@ -53,7 +54,9 @@ function Shell() {
           <Route path="/account/:tab" element={<Account />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/:tab" element={<Admin />} />
-          <Route path="/custom" element={<CustomKits />} />
+          <Route path="/custom" element={<JerseyCustomizer />} />
+          <Route path="/customizer" element={<JerseyCustomizer />} />
+          <Route path="/custom-quote" element={<CustomKits />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/faq" element={<FAQ />} />

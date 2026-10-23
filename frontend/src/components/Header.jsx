@@ -241,7 +241,11 @@ export default function Header() {
                 </div>
               </div>
             ))}
-            <div className="nav__item"><NavLink to="/custom" onClick={closeMega} className={({ isActive }) => cx('nav__link', isActive && 'active')}>Custom Kits</NavLink></div>
+            <div className="nav__item">
+              <NavLink to="/custom" onClick={closeMega} className={({ isActive }) => cx('nav__link', isActive && 'active')}>
+                Custom Kits <span style={{ fontSize: 9, background: 'var(--orange)', color: '#fff', padding: '2px 6px', borderRadius: 8, marginLeft: 4, letterSpacing: '0.05em', fontWeight: 800 }}>3D STUDIO</span>
+              </NavLink>
+            </div>
             <div className="nav__item"><NavLink to="/sale" onClick={closeMega} className={({ isActive }) => cx('nav__link nav__link--hot', isActive && 'active')}>Offers</NavLink></div>
           </nav>
           <div className="header__actions">

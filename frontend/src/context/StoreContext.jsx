@@ -39,31 +39,39 @@ const lineKey = (slug, color, size, fabric) => `${slug}__${color || '-'}__${size
 function reducer(state, action) {
   switch (action.type) {
     case 'ADD': {
-      const { product, color, size, qty = 1, fabric, price } = action
+      const { product, color, size, qty = 1, fabric, price, customDetails } = action
       const unitPrice = price != null ? price : product.price
-      const key = lineKey(product.slug, color, size, fabric)
+      const key = customDetails?.id || lineKey(product.slug, color, size, fabric)
       const existing = state.cart.find((l) => l.key === key)
       const cart = existing
-        ? state.cart.map((l) => (l.key === key ? { ...l, qty: Math.min(10, l.qty + qty) } : l))
+        ? state.cart.map((l) => (l.key === key ? { ...l, qty: l.customDetails ? l.qty + qty : Math.min(10, l.qty + qty) } : l))
         : [
             ...state.cart,
             {
               key,
               slug: product.slug,
-              name: fabric ? `${product.name} (${fabric})` : product.name,
+              name: customDetails?.teamName ? `${product.name}` : (fabric ? `${product.name} (${fabric})` : product.name),
               price: unitPrice,
-              mrp: product.mrp,
-              image: product.colors.find((c) => c.name === color)?.image || product.image,
+              mrp: product.mrp || unitPrice,
+              image: customDetails?.previewImage || product.colors?.find((c) => c.name === color)?.image || product.image,
               color,
               size,
               fabric,
               qty,
+              customDetails,
             },
           ]
       return { ...state, cart }
     }
     case 'SET_QTY':
-      return { ...state, cart: state.cart.map((l) => (l.key === action.key ? { ...l, qty: Math.max(1, Math.min(10, action.qty)) } : l)) }
+      return {
+        ...state,
+        cart: state.cart.map((l) =>
+          l.key === action.key
+            ? { ...l, qty: Math.max(1, l.customDetails ? action.qty : Math.min(10, action.qty)) }
+            : l
+        ),
+      }
     case 'REMOVE':
       return { ...state, cart: state.cart.filter((l) => l.key !== action.key) }
     case 'CLEAR_CART':
@@ -165,10 +173,10 @@ export function StoreProvider({ children }) {
       toasts,
       cartOpen, setCartOpen, searchOpen, setSearchOpen, menuOpen, setMenuOpen,
       toast,
-      addToCart(product, color, size, qty = 1, { open = true, fabric, price } = {}) {
-        dispatch({ type: 'ADD', product, color, size, qty, fabric, price })
+      addToCart(product, color, size, qty = 1, { open = true, fabric, price, customDetails } = {}) {
+        dispatch({ type: 'ADD', product, color, size, qty, fabric, price, customDetails })
         if (open) setCartOpen(true)
-        else toast(`${product.name}${fabric ? ` (${fabric})` : ''} added to bag`)
+        else toast(`${product.name}${customDetails?.teamName ? ` (${customDetails.teamName})` : ''} added to bag`)
       },
       setQty: (key, qty) => dispatch({ type: 'SET_QTY', key, qty }),
       removeLine: (key) => dispatch({ type: 'REMOVE', key }),

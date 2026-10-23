@@ -5,7 +5,7 @@ import { useStore } from '../context/StoreContext'
 import { formatPrice, discountPct, cx, deliveryDate } from '../lib/utils'
 import { SIZE_CHART } from '../data/content'
 import { Crumbs, Stars, Qty, Accordion, Rail, Modal } from '../components/Shared'
-import { Heart, HeartFill, ChevronLeft, ChevronRight, Truck, Refresh, Shield, Check, MapPin, Zap } from '../components/Icons'
+import { Heart, HeartFill, ChevronLeft, ChevronRight, Truck, Refresh, Shield, Check, MapPin, Zap, Sparkles } from '../components/Icons'
 import NotFound from './NotFound'
 
 const REVIEW_NAMES = ['Aarav', 'Priya', 'Karan', 'Sneha', 'Rahul', 'Meera', 'Vikram', 'Isha']
@@ -136,6 +136,37 @@ export default function Product() {
                 Inclusive of GST · Free shipping above ₹999 · <Link to="/rate-list" style={{ color: 'var(--accent)', textDecoration: 'underline', fontWeight: 600 }}>View Excel Rate List</Link>
               </div>
             </div>
+
+            {p.categories?.includes('jerseys') && (
+              <div
+                style={{
+                  background: 'linear-gradient(135deg, #0e1626 0%, #1e2c42 100%)',
+                  color: '#fff',
+                  padding: '14px 18px',
+                  borderRadius: 'var(--radius)',
+                  margin: '16px 0',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 12,
+                  flexWrap: 'wrap',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  boxShadow: '0 8px 20px -8px rgba(14,22,38,0.3)',
+                }}
+              >
+                <div>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 800, color: 'var(--orange)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                    <Sparkles width={13} height={13} /> 3D Team Kit Builder
+                  </div>
+                  <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2, color: '#f8fafc' }}>
+                    Customize with Team Name, Crest & 11+ Player Roster!
+                  </div>
+                </div>
+                <Link to="/customizer" className="btn btn--accent btn--sm" style={{ padding: '0 16px', height: 36, whiteSpace: 'nowrap' }}>
+                  Open Studio →
+                </Link>
+              </div>
+            )}
 
             {p.fabricOptions?.length > 0 && (
               <div className="opt">
