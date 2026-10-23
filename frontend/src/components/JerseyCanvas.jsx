@@ -195,7 +195,7 @@ export const JerseyCanvas = forwardRef(function JerseyCanvas(
       <ellipse cx="250" cy="466" rx="140" ry="12" fill="rgba(0,0,0,0.5)" filter="blur(6px)" />
 
       {/* ───────────────── BASE JERSEY SILHOUETTE ───────────────── */}
-      <g filter="url(#pro-shadow)">
+      <g className="jersey-base-silhouette">
         {/* Left Sleeve Body */}
         <path
           d="M 170 85 L 125 220 L 65 195 L 105 85 Z"
