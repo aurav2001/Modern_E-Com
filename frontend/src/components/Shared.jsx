@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Link, useLocation } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
 import { ChevronLeft, ChevronRight, Star, StarHalf, Check, X, Minus, Plus, Play, Pause, ArrowRight } from './Icons'
@@ -389,7 +390,7 @@ export function Modal({ title, onClose, children, width, className, style }) {
     document.body.classList.add('no-scroll')
     return () => { window.removeEventListener('keydown', onKey); document.body.classList.remove('no-scroll') }
   }, [onClose])
-  return (
+  return createPortal(
     <div className="modal-backdrop" onClick={onClose}>
       <div className={cx('modal', className)} style={{ ...(width ? { maxWidth: width } : {}), ...style }} onClick={(e) => e.stopPropagation()} role="dialog" aria-label={title}>
         <div className="modal__head">
@@ -398,6 +399,7 @@ export function Modal({ title, onClose, children, width, className, style }) {
         </div>
         {children}
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }

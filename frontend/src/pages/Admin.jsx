@@ -27,13 +27,18 @@ function useDb() {
 export default function Admin() {
   const { tab = 'dashboard' } = useParams()
   const [authed, setAuthed] = useState(db.isAdmin())
+  const mainRef = useRef(null)
   useDb()
   useEffect(() => { document.title = 'Admin – Rishikar Sports'; return () => { document.title = 'Rishikar Sports – Quality You Trust, Performance You Deserve' } }, [])
+  useEffect(() => {
+    if (mainRef.current) mainRef.current.scrollTo({ top: 0, behavior: 'instant' })
+  }, [tab])
+
   if (!authed) return <AdminLogin onDone={() => setAuthed(true)} />
   return (
     <div className="admin">
       <AdminNav />
-      <div className="admin__main">
+      <div className="admin__main" ref={mainRef}>
         {tab === 'dashboard' && <Dashboard />}
         {tab === 'orders' && <Orders />}
         {tab === 'products' && <Products />}

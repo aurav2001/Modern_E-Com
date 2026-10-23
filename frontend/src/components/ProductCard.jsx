@@ -27,7 +27,16 @@ export default function ProductCard({ p, showCat = true }) {
         <button className={cx('card__wish', wished && 'on')} onClick={() => toggleWish(p.slug, p.name)} aria-label={wished ? 'Remove from wishlist' : 'Add to wishlist'}>
           {wished ? <HeartFill /> : <Heart />}
         </button>
-        <button className="card__quick" onClick={() => setQuick(true)} aria-label="Quick add">
+        <button
+          type="button"
+          className="card__quick"
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            setQuick(true)
+          }}
+          aria-label="Quick add"
+        >
           <Bag /> <span>Quick add</span>
         </button>
       </div>

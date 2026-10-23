@@ -54,17 +54,17 @@ const FABRIC_OPTIONS = [
 
 // Default 11-player squad template
 const DEFAULT_XI = [
-  { id: 1, name: 'ROHIT SHARMA', number: '45', size: 'XL', sleeve: 'Half', role: 'Captain (C)' },
-  { id: 2, name: 'VIRAT KOHLI', number: '18', size: 'L', sleeve: 'Full', role: 'Player' },
-  { id: 3, name: 'SHUBMAN GILL', number: '77', size: 'M', sleeve: 'Half', role: 'Player' },
-  { id: 4, name: 'SURYAKUMAR YADAV', number: '63', size: 'L', sleeve: 'Half', role: 'Vice-Captain (VC)' },
-  { id: 5, name: 'RISHABH PANT', number: '17', size: 'L', sleeve: 'Half', role: 'Wicketkeeper (WK)' },
-  { id: 6, name: 'HARDIK PANDYA', number: '33', size: 'L', sleeve: 'Half', role: 'Player' },
-  { id: 7, name: 'RAVINDRA JADEJA', number: '08', size: 'M', sleeve: 'Full', role: 'Player' },
-  { id: 8, name: 'AXAR PATEL', number: '20', size: 'M', sleeve: 'Full', role: 'Player' },
-  { id: 9, name: 'KULDEEP YADAV', number: '23', size: 'M', sleeve: 'Half', role: 'Player' },
-  { id: 10, name: 'JASPRIT BUMRAH', number: '93', size: 'L', sleeve: 'Half', role: 'Player' },
-  { id: 11, name: 'MOHAMMED SIRAJ', number: '13', size: 'M', sleeve: 'Half', role: 'Player' },
+  { id: 1, name: 'GULSHAN KUMAR', number: '45', size: 'XL', sleeve: 'Half', role: 'Captain (C)' },
+  { id: 2, name: 'Manish KOHLI', number: '10', size: 'L', sleeve: 'Full', role: 'Player' },
+  { id: 3, name: 'Mehra GILL', number: '77', size: 'M', sleeve: 'Half', role: 'Player' },
+  { id: 4, name: 'Sevaklal YADAV', number: '63', size: 'L', sleeve: 'Half', role: 'Vice-Captain (VC)' },
+  { id: 5, name: 'Anuj PANT', number: '17', size: 'L', sleeve: 'Half', role: 'Wicketkeeper (WK)' },
+  { id: 6, name: 'Sourav PANDYA', number: '33', size: 'L', sleeve: 'Half', role: 'Player' },
+  { id: 7, name: 'Jian JADEJA', number: '08', size: 'M', sleeve: 'Full', role: 'Player' },
+  { id: 8, name: 'Axar PATIL', number: '20', size: 'M', sleeve: 'Full', role: 'Player' },
+  { id: 9, name: 'Aukhvinder YADAV', number: '23', size: 'M', sleeve: 'Half', role: 'Player' },
+  { id: 10, name: 'JASPRIT Kumar', number: '93', size: 'L', sleeve: 'Half', role: 'Player' },
+  { id: 11, name: 'Arjun YADAV', number: '13', size: 'M', sleeve: 'Half', role: 'Player' },
 ]
 
 export default function JerseyCustomizer() {
@@ -253,8 +253,7 @@ export default function JerseyCustomizer() {
     const rosterLines = roster
       .map(
         (p, i) =>
-          `${i + 1}. ${p.name} | #${p.number} | Size: ${p.size} | ${p.sleeve} Sleeve${
-            p.role !== 'Player' ? ` (${p.role})` : ''
+          `${i + 1}. ${p.name} | #${p.number} | Size: ${p.size} | ${p.sleeve} Sleeve${p.role !== 'Player' ? ` (${p.role})` : ''
           }`
       )
       .join('%0A')
@@ -289,7 +288,7 @@ export default function JerseyCustomizer() {
         const exported = await canvasRef.current.exportToImage()
         if (exported) previewImage = exported
       }
-    } catch {}
+    } catch { }
 
     const customProduct = {
       id: 9901,
@@ -515,12 +514,12 @@ export default function JerseyCustomizer() {
                               p.id === 'cricket-pro'
                                 ? `linear-gradient(135deg, ${primaryColor} 40%, ${accentColor} 41%, ${primaryColor} 60%)`
                                 : p.id === 'classic-stripes'
-                                ? `repeating-linear-gradient(90deg, ${primaryColor}, ${primaryColor} 12px, ${accentColor} 12px, ${accentColor} 24px)`
-                                : p.id === 'cyber-waves'
-                                ? `radial-gradient(circle, ${accentColor} 10%, ${primaryColor} 90%)`
-                                : p.id === 'hex-armor'
-                                ? `linear-gradient(180deg, ${primaryColor} 0%, ${accentColor} 100%)`
-                                : `linear-gradient(90deg, ${accentColor} 30%, ${primaryColor} 30%)`,
+                                  ? `repeating-linear-gradient(90deg, ${primaryColor}, ${primaryColor} 12px, ${accentColor} 12px, ${accentColor} 24px)`
+                                  : p.id === 'cyber-waves'
+                                    ? `radial-gradient(circle, ${accentColor} 10%, ${primaryColor} 90%)`
+                                    : p.id === 'hex-armor'
+                                      ? `linear-gradient(180deg, ${primaryColor} 0%, ${accentColor} 100%)`
+                                      : `linear-gradient(90deg, ${accentColor} 30%, ${primaryColor} 30%)`,
                           }}
                         />
                         <div className="pattern-card-title">{p.name}</div>
