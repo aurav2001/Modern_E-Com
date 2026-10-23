@@ -330,7 +330,12 @@ export default function JerseyCustomizer() {
   }
 
   const handlePrintSheet = () => {
+    const prevTitle = document.title
+    document.title = `Rishikar_Sports_Factory_Spec_Sheet_${teamName.replace(/[^a-zA-Z0-9]/g, '_')}`
     window.print()
+    setTimeout(() => {
+      document.title = prevTitle
+    }, 1500)
   }
 
   return (
@@ -1121,6 +1126,177 @@ export default function JerseyCustomizer() {
           </div>
         </div>
       )}
+      {/* ──────── PRINTABLE FACTORY PRODUCTION SPEC SHEET (PRINT ONLY) ──────── */}
+      <div className="print-production-sheet">
+        <div className="pps-header">
+          <div className="pps-brand">
+            <img src="/logo.png" alt="Rishikar Sports" className="pps-logo" />
+            <div>
+              <h1 className="pps-brand-title">RISHIKAR SPORTS</h1>
+              <p className="pps-brand-sub">Official Custom Teamwear Factory Production Spec Sheet</p>
+            </div>
+          </div>
+          <div className="pps-meta">
+            <div className="pps-meta-row">Order Ref: <b>RS-{teamName.replace(/[^a-zA-Z0-9]/g, '').slice(0, 8).toUpperCase() || 'CUSTOM'}</b></div>
+            <div className="pps-meta-row">Date: <b>{new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</b></div>
+            <div className="pps-meta-badge">100% Sublimation Verified</div>
+          </div>
+        </div>
+
+        {/* 3-Box Spec Overview */}
+        <div className="pps-specs-grid">
+          <div className="pps-spec-card">
+            <div className="pps-spec-heading">Team & Kit Details</div>
+            <div className="pps-spec-row"><span>Team Name:</span> <b>{teamName}</b></div>
+            <div className="pps-spec-row"><span>Squad Size:</span> <b>{totalCount} Jerseys</b></div>
+            <div className="pps-spec-row"><span>Fabric:</span> <b>{selectedFabric.name} ({selectedFabric.gsm})</b></div>
+            <div className="pps-spec-row"><span>Collar Style:</span> <b>{collar === 'polo' ? 'Sports Polo Collar' : collar === 'vneck' ? 'Athletic V-Neck' : 'Round Crew Neck'}</b></div>
+          </div>
+
+          <div className="pps-spec-card">
+            <div className="pps-spec-heading">Color & Design Specs</div>
+            <div className="pps-spec-row"><span>Pattern:</span> <b>{pattern.replace(/-/g, ' ').toUpperCase()}</b></div>
+            <div className="pps-spec-row">
+              <span>Primary Body:</span>
+              <span className="pps-color-preview">
+                <i style={{ background: primaryColor }} /> {primaryColor}
+              </span>
+            </div>
+            <div className="pps-spec-row">
+              <span>Accent Color:</span>
+              <span className="pps-color-preview">
+                <i style={{ background: accentColor }} /> {accentColor}
+              </span>
+            </div>
+            <div className="pps-spec-row">
+              <span>Collar Color:</span>
+              <span className="pps-color-preview">
+                <i style={{ background: collarColor }} /> {collarColor}
+              </span>
+            </div>
+          </div>
+
+          <div className="pps-spec-card">
+            <div className="pps-spec-heading">Commercial Estimate</div>
+            <div className="pps-spec-row"><span>Pricing Tier:</span> <b>{tierName}</b></div>
+            <div className="pps-spec-row"><span>Unit Rate:</span> <b>₹{unitRate} / piece</b></div>
+            <div className="pps-spec-row"><span>Total Amount:</span> <b className="pps-price-highlight">₹{totalAmount.toLocaleString('en-IN')}</b></div>
+            <div className="pps-spec-row"><span>Status:</span> <b style={{ color: '#16a34a' }}>Approved for Production</b></div>
+          </div>
+        </div>
+
+        {/* Dual Jersey Mockup Previews */}
+        <div className="pps-visual-section">
+          <div className="pps-section-title">Jersey Visual Specifications</div>
+          <div className="pps-mockups-row">
+            <div className="pps-mockup-card">
+              <div className="pps-mockup-tag">FRONT VIEW · CHEST PRINT & CREST</div>
+              <div className="pps-mockup-canvas">
+                <JerseyCanvas
+                  pattern={pattern}
+                  collar={collar}
+                  primaryColor={primaryColor}
+                  accentColor={accentColor}
+                  collarColor={collarColor}
+                  view="front"
+                  teamName={teamName}
+                  customLogoUrl={customLogoUrl}
+                  selectedCrest={selectedCrest}
+                />
+              </div>
+            </div>
+            <div className="pps-mockup-card">
+              <div className="pps-mockup-tag">BACK VIEW · NAME & NUMBER TEMPLATE</div>
+              <div className="pps-mockup-canvas">
+                <JerseyCanvas
+                  pattern={pattern}
+                  collar={collar}
+                  primaryColor={primaryColor}
+                  accentColor={accentColor}
+                  collarColor={collarColor}
+                  view="back"
+                  playerName={roster[0]?.name || playerName}
+                  playerNumber={roster[0]?.number || playerNumber}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Size & Sleeve Breakdown Bar */}
+        <div className="pps-breakdown-bar">
+          <div className="pps-breakdown-col">
+            <span className="pps-breakdown-label">SIZE BREAKDOWN:</span>
+            <span className="pps-breakdown-vals">
+              {Object.entries(sizeDistribution)
+                .map(([sz, cnt]) => `${sz}: ${cnt}`)
+                .join('   |   ')}
+            </span>
+          </div>
+          <div className="pps-breakdown-col">
+            <span className="pps-breakdown-label">SLEEVE BREAKDOWN:</span>
+            <span className="pps-breakdown-vals">
+              Half Sleeve: {roster.filter((p) => p.sleeve === 'Half').length} &nbsp;|&nbsp; Full Sleeve: {roster.filter((p) => p.sleeve === 'Full').length}
+            </span>
+          </div>
+        </div>
+
+        {/* Complete Squad Roster Checklist Table */}
+        <div className="pps-roster-section">
+          <div className="pps-section-title">
+            Team Squad Roster & Tailoring Checklist ({totalCount} Jerseys)
+          </div>
+          <table className="pps-table">
+            <thead>
+              <tr>
+                <th style={{ width: '35px' }}>#</th>
+                <th>Player Name (Printed on Back)</th>
+                <th style={{ width: '65px', textAlign: 'center' }}>Jersey #</th>
+                <th style={{ width: '55px', textAlign: 'center' }}>Size</th>
+                <th style={{ width: '85px' }}>Sleeve</th>
+                <th>Role</th>
+                <th style={{ width: '125px', textAlign: 'center' }}>QC Checklist</th>
+              </tr>
+            </thead>
+            <tbody>
+              {roster.map((p, idx) => (
+                <tr key={p.id}>
+                  <td style={{ fontWeight: 'bold' }}>{idx + 1}</td>
+                  <td className="pps-player-name">{p.name}</td>
+                  <td style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '12px' }}>#{p.number}</td>
+                  <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{p.size}</td>
+                  <td>{p.sleeve} Sleeve</td>
+                  <td>{p.role}</td>
+                  <td style={{ textAlign: 'center', fontSize: '9px', color: '#64748b' }}>
+                    [ &nbsp; ] Sublimated &nbsp; [ &nbsp; ] Pass
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Factory Footer & Signatures */}
+        <div className="pps-footer">
+          <div className="pps-signatures">
+            <div className="pps-sig-box">
+              <div className="pps-sig-line" />
+              <span>Client / Team Representative</span>
+            </div>
+            <div className="pps-sig-box">
+              <div className="pps-sig-line" />
+              <span>Sublimation Master</span>
+            </div>
+            <div className="pps-sig-box">
+              <div className="pps-sig-line" />
+              <span>Quality Control Inspector</span>
+            </div>
+          </div>
+          <div className="pps-factory-note">
+            Rishikar Sports Manufacturing Unit · Chapra, Saran, Bihar 841301 · Helpline: {BRAND.phone} · WhatsApp: {BRAND.phoneIntl} · Email: {BRAND.email}
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

@@ -874,3 +874,366 @@
   gap: 10px;
   margin-top: 16px;
 }
+
+/* ──────────────── Printable Production Spec Sheet ──────────────── */
+.print-production-sheet {
+  display: none;
+}
+
+@media print {
+  /* Completely hide all website chrome and screen interactive UI */
+  header,
+  footer,
+  nav,
+  .header,
+  .footer,
+  .wa,
+  .mobile-nav,
+  .toasts,
+  .cart-drawer,
+  .search-overlay,
+  .crumbs,
+  .studio-header,
+  .customizer-grid,
+  .customizer-checkout-bar,
+  .custom-modal-overlay {
+    display: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    visibility: hidden !important;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 8mm 10mm;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    font-size: 10.5pt !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .customizer-page {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .print-production-sheet {
+    display: block !important;
+    visibility: visible !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    box-sizing: border-box !important;
+  }
+
+  .pps-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #0f172a;
+    margin-bottom: 10px;
+    page-break-inside: avoid;
+  }
+
+  .pps-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .pps-logo {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+  }
+
+  .pps-brand-title {
+    font-size: 17px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    color: #0f172a;
+    margin: 0;
+    line-height: 1.1;
+  }
+
+  .pps-brand-sub {
+    font-size: 9.5px;
+    font-weight: 700;
+    color: #f5821f;
+    letter-spacing: 0.04em;
+    margin: 2px 0 0;
+    text-transform: uppercase;
+  }
+
+  .pps-meta {
+    text-align: right;
+    font-size: 9.5px;
+  }
+
+  .pps-meta-row {
+    color: #475569;
+    margin-bottom: 2px;
+  }
+
+  .pps-meta-row b {
+    color: #0f172a;
+    margin-left: 3px;
+  }
+
+  .pps-meta-badge {
+    display: inline-block;
+    background: #0f172a;
+    color: #ffffff;
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-top: 2px;
+    text-transform: uppercase;
+  }
+
+  /* 3-card Spec Grid */
+  .pps-specs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+    page-break-inside: avoid;
+  }
+
+  .pps-spec-card {
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 7px 9px;
+    background: #f8fafc;
+  }
+
+  .pps-spec-heading {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #64748b;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 3px;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+  }
+
+  .pps-spec-row {
+    font-size: 10px;
+    margin-bottom: 3px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .pps-spec-row span {
+    color: #64748b;
+  }
+
+  .pps-spec-row b {
+    color: #0f172a;
+  }
+
+  .pps-color-preview {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 700;
+    font-size: 9.5px;
+  }
+
+  .pps-color-preview i {
+    display: inline-block;
+    width: 11px;
+    height: 11px;
+    border-radius: 2.5px;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+  }
+
+  .pps-price-highlight {
+    font-size: 12px;
+    color: #0f172a;
+    font-weight: 900;
+  }
+
+  /* Dual Mockup Section */
+  .pps-visual-section {
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 8px 10px;
+    margin-bottom: 10px;
+    background: #ffffff;
+    page-break-inside: avoid;
+  }
+
+  .pps-section-title {
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #0f172a;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 4px;
+    margin-bottom: 7px;
+    text-transform: uppercase;
+  }
+
+  .pps-mockups-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .pps-mockup-card {
+    border: 1px dashed #cbd5e1;
+    border-radius: 6px;
+    padding: 5px;
+    text-align: center;
+    background: #fafafa;
+  }
+
+  .pps-mockup-tag {
+    font-size: 8.5px;
+    font-weight: 800;
+    color: #475569;
+    letter-spacing: 0.05em;
+    margin-bottom: 3px;
+  }
+
+  .pps-mockup-canvas {
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pps-mockup-canvas svg {
+    max-height: 150px;
+    width: auto !important;
+  }
+
+  /* Breakdown bar */
+  .pps-breakdown-bar {
+    display: flex;
+    justify-content: space-between;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    font-size: 9.5px;
+    page-break-inside: avoid;
+  }
+
+  .pps-breakdown-col {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .pps-breakdown-label {
+    font-weight: 800;
+    color: #475569;
+    font-size: 9px;
+    letter-spacing: 0.05em;
+  }
+
+  .pps-breakdown-vals {
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  /* Table */
+  .pps-roster-section {
+    margin-bottom: 10px;
+    page-break-inside: avoid;
+  }
+
+  .pps-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9.5px;
+  }
+
+  .pps-table th {
+    background: #0f172a !important;
+    color: #ffffff !important;
+    padding: 5px 6px;
+    font-size: 8.5px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-align: left;
+    border: 1px solid #0f172a;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .pps-table td {
+    padding: 4px 6px;
+    border: 1px solid #cbd5e1;
+    vertical-align: middle;
+  }
+
+  .pps-table tr:nth-child(even) {
+    background: #f8fafc !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .pps-player-name {
+    font-weight: 800;
+    letter-spacing: 0.02em;
+  }
+
+  /* Footer & Signatures */
+  .pps-footer {
+    margin-top: 8px;
+    page-break-inside: avoid;
+  }
+
+  .pps-signatures {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 6px;
+    padding-top: 2px;
+  }
+
+  .pps-sig-box {
+    text-align: center;
+  }
+
+  .pps-sig-line {
+    border-bottom: 1.5px solid #64748b;
+    height: 22px;
+    margin-bottom: 3px;
+  }
+
+  .pps-sig-box span {
+    font-size: 8px;
+    color: #64748b;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .pps-factory-note {
+    text-align: center;
+    font-size: 8px;
+    color: #94a3b8;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 5px;
+  }
+}

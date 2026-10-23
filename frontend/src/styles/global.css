@@ -2667,3 +2667,23 @@ table.chart td:first-child { font-weight: 700; }
   *, *::before, *::after { animation-duration: 0.001s !important; transition-duration: 0.001s !important; }
   .reveal { opacity: 1; transform: none; }
 }
+
+@media print {
+  header,
+  footer,
+  nav,
+  .header,
+  .footer,
+  .wa,
+  .mobile-nav,
+  .toasts,
+  .cart-drawer,
+  .search-overlay,
+  .buybar {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+}
