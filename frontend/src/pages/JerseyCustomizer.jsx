@@ -9,13 +9,26 @@ import {
   WhatsApp,
   ArrowRight,
   Check,
-  Sparkles,
   Zap,
   Trash,
   Plus,
   Refresh,
   Shield,
+  ShieldCheck,
   Truck,
+  Shirt,
+  RotateCcw,
+  Palette,
+  Users,
+  Tag,
+  Printer,
+  Type,
+  Upload,
+  Clipboard,
+  Eye,
+  Info,
+  X,
+  Cube3D,
 } from '../components/Icons'
 import '../styles/customizer.css'
 
@@ -348,7 +361,7 @@ export default function JerseyCustomizer() {
             <div className="studio-title-wrap">
               <h1 className="studio-title">Rishikar Pro Kit Studio</h1>
               <span className="studio-pill-badge">
-                <Sparkles width={13} height={13} /> Live 3D Sublimation
+                <Cube3D width={13} height={13} /> Live 3D Sublimation
               </span>
             </div>
           </div>
@@ -392,14 +405,14 @@ export default function JerseyCustomizer() {
                   className={`stage-toggle-btn ${view === 'front' ? 'active' : ''}`}
                   onClick={() => setView('front')}
                 >
-                  👕 Front View
+                  <Shirt width={14} height={14} /> Front View
                 </button>
                 <button
                   type="button"
                   className={`stage-toggle-btn ${view === 'back' ? 'active' : ''}`}
                   onClick={() => setView('back')}
                 >
-                  🔄 Back View
+                  <RotateCcw width={14} height={14} /> Back View
                 </button>
               </div>
 
@@ -465,28 +478,28 @@ export default function JerseyCustomizer() {
                 className={`customizer-tab-btn ${activeTab === 'visual' ? 'active' : ''}`}
                 onClick={() => setActiveTab('visual')}
               >
-                🎨 1. Style
+                <Palette width={14} height={14} /> 1. Style
               </button>
               <button
                 type="button"
                 className={`customizer-tab-btn ${activeTab === 'identity' ? 'active' : ''}`}
                 onClick={() => setActiveTab('identity')}
               >
-                🏷️ 2. Badges
+                <ShieldCheck width={14} height={14} /> 2. Badges
               </button>
               <button
                 type="button"
                 className={`customizer-tab-btn ${activeTab === 'roster' ? 'active' : ''}`}
                 onClick={() => setActiveTab('roster')}
               >
-                📋 3. Roster <span className="badge-count">{roster.length}</span>
+                <Users width={14} height={14} /> 3. Roster <span className="badge-count">{roster.length}</span>
               </button>
               <button
                 type="button"
                 className={`customizer-tab-btn ${activeTab === 'pricing' ? 'active' : ''}`}
                 onClick={() => setActiveTab('pricing')}
               >
-                💰 4. Pricing
+                <Tag width={14} height={14} /> 4. Pricing
               </button>
             </div>
 
@@ -496,7 +509,9 @@ export default function JerseyCustomizer() {
                 {/* Patterns Card */}
                 <div className="customizer-card">
                   <div className="card-title-row">
-                    <h3>⚡ Sublimation Pattern Design</h3>
+                    <h3>
+                      <Zap width={16} height={16} style={{ color: 'var(--orange)' }} /> Sublimation Pattern Design
+                    </h3>
                     <span>5 Pro Sport Templates</span>
                   </div>
                   <div className="pattern-grid">
@@ -537,7 +552,9 @@ export default function JerseyCustomizer() {
                 {/* Color Schemes Card */}
                 <div className="customizer-card">
                   <div className="card-title-row">
-                    <h3>🎨 Sportswear Colorways</h3>
+                    <h3>
+                      <Palette width={16} height={16} style={{ color: 'var(--orange)' }} /> Sportswear Colorways
+                    </h3>
                     <span>Curated Team Shades</span>
                   </div>
 
@@ -660,7 +677,9 @@ export default function JerseyCustomizer() {
                 {/* Team & Player Identity Card */}
                 <div className="customizer-card">
                   <div className="card-title-row">
-                    <h3>🏷️ Team Name & Player Typography</h3>
+                    <h3>
+                      <Type width={16} height={16} style={{ color: 'var(--orange)' }} /> Team Name & Player Typography
+                    </h3>
                     <span>Rendered live on front & back</span>
                   </div>
 
@@ -713,7 +732,9 @@ export default function JerseyCustomizer() {
                 {/* Team Crest & Sponsor Logo */}
                 <div className="customizer-card">
                   <div className="card-title-row">
-                    <h3>🛡️ Team Crest / Logo (Left Chest)</h3>
+                    <h3>
+                      <Shield width={16} height={16} style={{ color: 'var(--orange)' }} /> Team Crest / Logo (Left Chest)
+                    </h3>
                     <span>Pick a pre-made vector badge or upload PNG</span>
                   </div>
 
@@ -740,7 +761,9 @@ export default function JerseyCustomizer() {
                         style={{ display: 'none' }}
                         onChange={handleLogoUpload}
                       />
-                      <span>📁 {customLogoUrl ? 'Change Uploaded Logo' : 'Upload Club Logo (PNG)'}</span>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                        <Upload width={14} height={14} /> {customLogoUrl ? 'Change Uploaded Logo' : 'Upload Club Logo (PNG)'}
+                      </span>
                     </label>
                   </div>
                 </div>
@@ -770,7 +793,9 @@ export default function JerseyCustomizer() {
                 <div className="customizer-card">
                   <div className="roster-header-bar">
                     <div>
-                      <h3 style={{ margin: 0 }}>📋 Team Squad Roster</h3>
+                      <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <Users width={16} height={16} style={{ color: 'var(--orange)' }} /> Team Squad Roster
+                      </h3>
                       <p className="muted small" style={{ marginTop: 2 }}>
                         Enter player names and numbers. Minimum {BRAND.moq} pieces qualifies for team wholesale pricing.
                       </p>
@@ -782,14 +807,14 @@ export default function JerseyCustomizer() {
                         className="btn btn--outline btn--sm"
                         onClick={() => setPasteModalOpen(true)}
                       >
-                        📋 Fast Paste
+                        <Clipboard width={13} height={13} /> Fast Paste
                       </button>
                       <button
                         type="button"
                         className="btn btn--ghost btn--sm"
                         onClick={() => setRoster(DEFAULT_XI)}
                       >
-                        ⚡ Reset 11 XI
+                        <Refresh width={13} height={13} /> Reset 11 XI
                       </button>
                       <button
                         type="button"
@@ -882,7 +907,7 @@ export default function JerseyCustomizer() {
                                   title="Preview on Jersey Back"
                                   onClick={() => previewPlayer(p)}
                                 >
-                                  👁️
+                                  <Eye width={14} height={14} />
                                 </button>
                                 <button
                                   type="button"
@@ -939,7 +964,9 @@ export default function JerseyCustomizer() {
                 {/* Fabric Selector Card */}
                 <div className="customizer-card">
                   <div className="card-title-row">
-                    <h3>👕 Sportswear Fabric Selection</h3>
+                    <h3>
+                      <Shirt width={16} height={16} style={{ color: 'var(--orange)' }} /> Sportswear Fabric Selection
+                    </h3>
                     <span>Direct Factory Unit Pricing</span>
                   </div>
 
@@ -1024,8 +1051,8 @@ export default function JerseyCustomizer() {
                     ))}
                   </div>
 
-                  <p className="small" style={{ opacity: 0.85, marginTop: 10 }}>
-                    💡 All custom orders include free 3D design proof, individual name/number printing, and club crest sublimation.
+                  <p className="small" style={{ opacity: 0.85, marginTop: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <Info width={14} height={14} style={{ color: 'var(--orange)', flexShrink: 0 }} /> All custom orders include free 3D design proof, individual name/number printing, and club crest sublimation.
                   </p>
                 </div>
               </div>
@@ -1054,7 +1081,7 @@ export default function JerseyCustomizer() {
                   onClick={handlePrintSheet}
                   title="Print Factory Order Sheet"
                 >
-                  🖨️ Print Sheet
+                  <Printer width={15} height={15} /> Print Sheet
                 </button>
 
                 <a
@@ -1084,13 +1111,15 @@ export default function JerseyCustomizer() {
         <div className="custom-modal-overlay" onClick={() => setPasteModalOpen(false)}>
           <div className="custom-modal-box" onClick={(e) => e.stopPropagation()}>
             <div className="custom-modal-head">
-              <h3>📋 Fast Paste Player List</h3>
+              <h3 style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Clipboard width={16} height={16} style={{ color: 'var(--orange)' }} /> Fast Paste Player List
+              </h3>
               <button
                 type="button"
                 className="icon-btn"
                 onClick={() => setPasteModalOpen(false)}
               >
-                ✕
+                <X width={16} height={16} />
               </button>
             </div>
             <div className="custom-modal-body">
