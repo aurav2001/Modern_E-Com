@@ -68,6 +68,8 @@ export const JerseyCanvas = forwardRef(function JerseyCanvas(
     customLogoUrl = null,
     selectedCrest = 'lion',
     showFlag = true,
+    fontStyle = 'impact',
+    sponsorText = '',
   },
   ref
 ) {
@@ -127,6 +129,36 @@ export const JerseyCanvas = forwardRef(function JerseyCanvas(
   }))
 
   const crestObj = PRESET_CRESTS.find((c) => c.id === selectedCrest) || PRESET_CRESTS[0]
+
+  const fontAttr = (() => {
+    switch (fontStyle) {
+      case 'collegiate':
+        return {
+          family: "'Trebuchet MS', 'Arial Black', sans-serif",
+          style: 'normal',
+          letterSpacing: '0.12em',
+        }
+      case 'cyber':
+        return {
+          family: "'Impact', 'Arial Black', sans-serif",
+          style: 'italic',
+          letterSpacing: '0.08em',
+        }
+      case 'stencil':
+        return {
+          family: "'Impact', 'Courier New', monospace",
+          style: 'normal',
+          letterSpacing: '0.16em',
+        }
+      case 'impact':
+      default:
+        return {
+          family: "'Impact', 'Arial Black', sans-serif",
+          style: 'normal',
+          letterSpacing: '0.06em',
+        }
+    }
+  })()
 
   return (
     <svg
@@ -457,8 +489,10 @@ export const JerseyCanvas = forwardRef(function JerseyCanvas(
               y="2"
               fill="rgba(0,0,0,0.5)"
               fontSize="36"
-              fontFamily="'Impact', sans-serif"
+              fontFamily={fontAttr.family}
+              fontStyle={fontAttr.style}
               fontWeight="900"
+              letterSpacing={fontAttr.letterSpacing}
               textAnchor="middle"
             >
               {playerNumber || '07'}
@@ -468,8 +502,10 @@ export const JerseyCanvas = forwardRef(function JerseyCanvas(
               y="0"
               fill="#090d14"
               fontSize="36"
-              fontFamily="'Impact', sans-serif"
+              fontFamily={fontAttr.family}
+              fontStyle={fontAttr.style}
               fontWeight="900"
+              letterSpacing={fontAttr.letterSpacing}
               textAnchor="middle"
               stroke="#090d14"
               strokeWidth="4"
@@ -482,13 +518,44 @@ export const JerseyCanvas = forwardRef(function JerseyCanvas(
               y="0"
               fill={accentColor}
               fontSize="36"
-              fontFamily="'Impact', sans-serif"
+              fontFamily={fontAttr.family}
+              fontStyle={fontAttr.style}
               fontWeight="900"
+              letterSpacing={fontAttr.letterSpacing}
               textAnchor="middle"
             >
               {playerNumber || '07'}
             </text>
           </g>
+
+          {/* Front Belly / Club Sponsor Banner (IPL Style) */}
+          {sponsorText && (
+            <g transform="translate(250, 360)" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.45))">
+              <rect
+                x="-85"
+                y="-13"
+                width="170"
+                height="26"
+                rx="4"
+                fill="rgba(9, 13, 20, 0.85)"
+                stroke={accentColor}
+                strokeWidth="1.2"
+              />
+              <text
+                x="0"
+                y="5"
+                fill="#ffffff"
+                fontSize="12.5"
+                fontFamily={fontAttr.family}
+                fontStyle={fontAttr.style}
+                fontWeight="900"
+                letterSpacing="0.14em"
+                textAnchor="middle"
+              >
+                {sponsorText.toUpperCase()}
+              </text>
+            </g>
+          )}
 
           {/* Lower Right Hem: Metallic Woven Authentic Patch */}
           <g transform="translate(178, 440)" filter="drop-shadow(0 1px 3px rgba(0,0,0,0.4))">
@@ -509,9 +576,10 @@ export const JerseyCanvas = forwardRef(function JerseyCanvas(
             <text
               fill="#090d14"
               fontSize="24"
-              fontFamily="'Impact', 'Arial Black', sans-serif"
+              fontFamily={fontAttr.family}
+              fontStyle={fontAttr.style}
               fontWeight="900"
-              letterSpacing="0.14em"
+              letterSpacing={fontAttr.letterSpacing}
               stroke="#090d14"
               strokeWidth="4.5"
               strokeLinejoin="round"
@@ -524,9 +592,10 @@ export const JerseyCanvas = forwardRef(function JerseyCanvas(
             <text
               fill="#ffffff"
               fontSize="24"
-              fontFamily="'Impact', 'Arial Black', sans-serif"
+              fontFamily={fontAttr.family}
+              fontStyle={fontAttr.style}
               fontWeight="900"
-              letterSpacing="0.14em"
+              letterSpacing={fontAttr.letterSpacing}
             >
               <textPath href="#name-arch-path" startOffset="50%" textAnchor="middle">
                 {(playerName || 'PLAYER').toUpperCase()}
@@ -542,8 +611,10 @@ export const JerseyCanvas = forwardRef(function JerseyCanvas(
               y="4"
               fill="#000000"
               fontSize="114"
-              fontFamily="'Impact', 'Arial Black', sans-serif"
+              fontFamily={fontAttr.family}
+              fontStyle={fontAttr.style}
               fontWeight="900"
+              letterSpacing={fontAttr.letterSpacing}
               textAnchor="middle"
               stroke="#000000"
               strokeWidth="10"
@@ -559,8 +630,10 @@ export const JerseyCanvas = forwardRef(function JerseyCanvas(
               y="0"
               fill="#ffffff"
               fontSize="114"
-              fontFamily="'Impact', 'Arial Black', sans-serif"
+              fontFamily={fontAttr.family}
+              fontStyle={fontAttr.style}
               fontWeight="900"
+              letterSpacing={fontAttr.letterSpacing}
               textAnchor="middle"
               stroke="#ffffff"
               strokeWidth="6"
@@ -575,8 +648,10 @@ export const JerseyCanvas = forwardRef(function JerseyCanvas(
               y="0"
               fill={accentColor}
               fontSize="114"
-              fontFamily="'Impact', 'Arial Black', sans-serif"
+              fontFamily={fontAttr.family}
+              fontStyle={fontAttr.style}
               fontWeight="900"
+              letterSpacing={fontAttr.letterSpacing}
               textAnchor="middle"
             >
               {playerNumber || '07'}

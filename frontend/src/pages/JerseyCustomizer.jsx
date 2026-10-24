@@ -1,5 +1,6 @@
 import { useState, useRef, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import * as XLSX from 'xlsx'
 import { useStore } from '../context/StoreContext'
 import { BRAND } from '../data/content'
 import { formatPrice } from '../lib/utils'
@@ -29,6 +30,9 @@ import {
   Info,
   X,
   Cube3D,
+  Ruler,
+  Download,
+  Share,
 } from '../components/Icons'
 import '../styles/customizer.css'
 
@@ -63,6 +67,51 @@ const FABRIC_OPTIONS = [
   { id: 'pmc', name: 'PMC Poly Mesh', baseRate: 400, gsm: '150 GSM', tag: 'Ultra-Light Training' },
   { id: 'lycra', name: '4-Way Lycra Stretch', baseRate: 450, gsm: '190 GSM', tag: 'Athletic Muscle Fit' },
   { id: 'jacquard', name: 'Jacquard Pro Weave', baseRate: 550, gsm: '210 GSM', tag: 'Elite Sublimation Finish' },
+]
+
+// Kit Package Options (Jersey Only vs Full Kit with Lower/Pant & Cap)
+const KIT_PACKAGES = [
+  {
+    id: 'jersey',
+    name: 'Match Jersey Only',
+    badge: 'Standard Top',
+    extraPrice: 0,
+    desc: 'Sublimated Pro Match Jersey with Name & Number',
+  },
+  {
+    id: 'kit',
+    name: 'Jersey + Lower Set',
+    badge: 'Best Seller for Clubs',
+    extraPrice: 320,
+    desc: 'Matching Dry-Fit Athletic Track Pant / Lower with Team Piping',
+  },
+  {
+    id: 'pro',
+    name: 'Full Pro Kit (+ Cap)',
+    badge: 'Complete Match Pro Kit',
+    extraPrice: 440,
+    desc: 'Jersey + Lower + Custom Sublimated Athletic Team Cap',
+  },
+]
+
+// Jersey Number & Name Font Styles
+const FONT_OPTIONS = [
+  { id: 'impact', name: 'Pro Athletic', desc: 'Bold Solid' },
+  { id: 'collegiate', name: 'Varsity Block', desc: 'Classic College' },
+  { id: 'cyber', name: 'Cyber Speed', desc: 'Dynamic Italic' },
+  { id: 'stencil', name: 'Tactical Stencil', desc: 'Combat Tech' },
+]
+
+// Accurate Size Chart Guide Data
+const SIZE_GUIDE_DATA = [
+  { size: 'XS', chest: '34"', length: '26"', lowerLength: '37"', fit: 'Youth / Slim Fit' },
+  { size: 'S', chest: '36"', length: '27"', lowerLength: '38"', fit: 'Height 5\'2" – 5\'5"' },
+  { size: 'M', chest: '38"', length: '28"', lowerLength: '39"', fit: 'Height 5\'5" – 5\'8"' },
+  { size: 'L', chest: '40"', length: '29"', lowerLength: '40"', fit: 'Standard Men (5\'8" – 5\'11")' },
+  { size: 'XL', chest: '42"', length: '30"', lowerLength: '41"', fit: 'Broad Athletic (5\'11" – 6\'2")' },
+  { size: 'XXL', chest: '44"', length: '31"', lowerLength: '42"', fit: 'Heavy Build (6\'0"+)' },
+  { size: '3XL', chest: '46"', length: '32"', lowerLength: '43"', fit: 'Extra Plus Fit' },
+  { size: '4XL', chest: '48"', length: '33"', lowerLength: '44"', fit: 'Jumbo Match Fit' },
 ]
 
 // Default 11-player squad template
@@ -101,10 +150,14 @@ export default function JerseyCustomizer() {
   const [customLogoUrl, setCustomLogoUrl] = useState(null)
   const [selectedCrest, setSelectedCrest] = useState('lion')
   const [selectedFabric, setSelectedFabric] = useState(FABRIC_OPTIONS[0])
+  const [selectedKit, setSelectedKit] = useState(KIT_PACKAGES[0])
+  const [fontStyle, setFontStyle] = useState('impact')
+  const [sponsorText, setSponsorText] = useState('')
 
   // Squad Roster State
   const [roster, setRoster] = useState(DEFAULT_XI)
   const [pasteModalOpen, setPasteModalOpen] = useState(false)
+  const [sizeChartOpen, setSizeChartOpen] = useState(false)
   const [rawPasteText, setRawPasteText] = useState('')
   const [downloadingImg, setDownloadingImg] = useState(false)
 
@@ -152,7 +205,7 @@ export default function JerseyCustomizer() {
 
   // Dynamic Tiered Volume Pricing Calculations
   const totalCount = roster.length
-  const baseRate = selectedFabric.baseRate
+  const baseRate = selectedFabric.baseRate + selectedKit.extraPrice
 
   const { discountPct, tierName, unitRate, totalAmount, totalSavings } = useMemo(() => {
     let pct = 0
@@ -181,6 +234,56 @@ export default function JerseyCustomizer() {
       totalSavings: savings,
     }
   }, [totalCount, baseRate])
+
+  // Quick 1-Click Primary & Accent Color Swap
+  const handleSwapColors = () => {
+    const temp = primaryColor
+    setPrimaryColor(accentColor)
+    setAccentColor(temp)
+    toast('Swapped Primary and Accent Colors!')
+  }
+
+  // Export Roster Directly to Excel (.xlsx)
+  const handleExportExcel = () => {
+    try {
+      const data = roster.map((p, idx) => ({
+        '#': idx + 1,
+        'Player Name': p.name,
+        'Jersey No': p.number,
+        'Size': p.size,
+        'Sleeve': p.sleeve,
+        'Role': p.role,
+        'Team': teamName,
+        'Kit Package': selectedKit.name,
+        'Fabric': selectedFabric.name,
+        'Sponsor': sponsorText || 'N/A',
+      }))
+      const ws = XLSX.utils.json_to_sheet(data)
+      const wb = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(wb, ws, 'Squad Roster')
+      XLSX.writeFile(wb, `${teamName.replace(/\s+/g, '_')}_Squad_Roster.xlsx`)
+      toast('Squad roster exported to Excel (.xlsx)!')
+    } catch {
+      toast('Failed to export Excel. Please try again.', { tone: 'error' })
+    }
+  }
+
+  // Share Design Link / WhatsApp Preview
+  const handleShareDesign = () => {
+    const shareText =
+      `🏏 *${teamName} Custom Team Kit Design — Rishikar Sports*%0A` +
+      `━━━━━━━━━━━━━━━━━━━━━━━━━%0A` +
+      `• *Kit Type:* ${selectedKit.name}%0A` +
+      `• *Fabric:* ${selectedFabric.name} (${selectedFabric.gsm})%0A` +
+      `• *Colors:* ${primaryColor} & ${accentColor}%0A` +
+      `• *Squad Size:* ${totalCount} Players%0A` +
+      `• *Tier Rate:* ₹${unitRate}/pc (${discountPct}% Team Discount)%0A` +
+      (sponsorText ? `• *Sponsor:* ${sponsorText}%0A` : '') +
+      `%0ADesigned with 3D Sublimation at Rishikar Sports Studio.`
+    const url = `https://wa.me/?text=${shareText}`
+    window.open(url, '_blank')
+    toast('Opening WhatsApp to share design!')
+  }
 
   // Custom logo image upload handler
   const handleLogoUpload = (e) => {
@@ -279,11 +382,14 @@ export default function JerseyCustomizer() {
       `🏏 *RISHIKAR SPORTS — PRO TEAM ORDER SPECIFICATION*%0A` +
       `━━━━━━━━━━━━━━━━━━━━━━━━━%0A` +
       `*Team Name:* ${teamName}%0A` +
+      `*Kit Package:* ${selectedKit.name}%0A` +
+      (sponsorText ? `*Front Sponsor:* ${sponsorText}%0A` : '') +
       `*Pattern Style:* ${pattern.toUpperCase()}%0A` +
       `*Collar:* ${collar.toUpperCase()}%0A` +
+      `*Number Font:* ${FONT_OPTIONS.find((f) => f.id === fontStyle)?.name || 'Pro Athletic'}%0A` +
       `*Colors:* Primary ${primaryColor} | Accent ${accentColor} | Collar ${collarColor}%0A` +
       `*Fabric:* ${selectedFabric.name} (${selectedFabric.gsm})%0A` +
-      `*Total Quantity:* ${totalCount} Jerseys%0A` +
+      `*Total Quantity:* ${totalCount} Sets%0A` +
       `*Tier Rate:* ₹${unitRate}/pc (${tierName})%0A` +
       `*Estimated Order Value:* ${formatPrice(totalAmount)}%0A` +
       `*Sizes Summary:* ${sizeSummary}%0A%0A` +
@@ -306,7 +412,7 @@ export default function JerseyCustomizer() {
     const customProduct = {
       id: 9901,
       slug: 'rs-custom-team-jersey-kit',
-      name: `Custom Team Kit (${teamName})`,
+      name: `Custom Team Kit (${teamName}) - ${selectedKit.name}`,
       price: unitRate,
       mrp: Math.round(unitRate * 1.4),
       image: previewImage,
@@ -319,6 +425,9 @@ export default function JerseyCustomizer() {
     const customDetails = {
       id: `custom_team_${Date.now()}`,
       teamName,
+      kitPackage: selectedKit.name,
+      fontStyle,
+      sponsorText: sponsorText || 'N/A',
       pattern,
       collar,
       primaryColor,
@@ -332,14 +441,14 @@ export default function JerseyCustomizer() {
       previewImage,
     }
 
-    addToCart(customProduct, `${primaryColor} / ${accentColor}`, 'Team Set', totalCount, {
+    addToCart(customProduct, `${primaryColor} / ${accentColor}`, selectedKit.name, totalCount, {
       open: true,
       fabric: selectedFabric.name,
       price: unitRate,
       customDetails,
     })
 
-    toast(`Team Kit for ${teamName} (${totalCount} Jerseys) added to bag!`)
+    toast(`Team Kit for ${teamName} (${totalCount} Sets · ${selectedKit.name}) added to bag!`)
   }
 
   const handlePrintSheet = () => {
@@ -383,6 +492,9 @@ export default function JerseyCustomizer() {
                 setCollarColor('#F5821F')
                 setPattern('cricket-pro')
                 setCollar('polo')
+                setSelectedKit(KIT_PACKAGES[0])
+                setFontStyle('impact')
+                setSponsorText('')
                 setRoster(DEFAULT_XI)
                 toast('Studio reset to default template')
               }}
@@ -428,6 +540,14 @@ export default function JerseyCustomizer() {
                 <button
                   type="button"
                   className="stage-icon-btn"
+                  title="Share Team Design on WhatsApp"
+                  onClick={handleShareDesign}
+                >
+                  <Share width={15} height={15} />
+                </button>
+                <button
+                  type="button"
+                  className="stage-icon-btn"
                   title="Download High-Res Mockup PNG"
                   onClick={handleDownloadMockup}
                   disabled={downloadingImg}
@@ -452,6 +572,8 @@ export default function JerseyCustomizer() {
                 playerName={playerName}
                 customLogoUrl={customLogoUrl}
                 selectedCrest={selectedCrest}
+                fontStyle={fontStyle}
+                sponsorText={sponsorText}
               />
             </div>
 
@@ -555,7 +677,15 @@ export default function JerseyCustomizer() {
                     <h3>
                       <Palette width={16} height={16} style={{ color: 'var(--orange)' }} /> Sportswear Colorways
                     </h3>
-                    <span>Curated Team Shades</span>
+                    <button
+                      type="button"
+                      className="btn btn--outline btn--sm"
+                      onClick={handleSwapColors}
+                      title="Swap Primary & Accent Colors"
+                      style={{ padding: '4px 10px', fontSize: 11 }}
+                    >
+                      ⇄ Swap Colors
+                    </button>
                   </div>
 
                   {/* Quick Preset Combos */}
@@ -607,6 +737,14 @@ export default function JerseyCustomizer() {
                           onClick={() => setPrimaryColor(c.hex)}
                         />
                       ))}
+                      <label className="color-swatch-custom" title="Choose custom color hex">
+                        <input
+                          type="color"
+                          value={primaryColor}
+                          onChange={(e) => setPrimaryColor(e.target.value)}
+                        />
+                        <span>+</span>
+                      </label>
                     </div>
                   </div>
 
@@ -631,6 +769,14 @@ export default function JerseyCustomizer() {
                           onClick={() => setAccentColor(c.hex)}
                         />
                       ))}
+                      <label className="color-swatch-custom" title="Choose custom color hex">
+                        <input
+                          type="color"
+                          value={accentColor}
+                          onChange={(e) => setAccentColor(e.target.value)}
+                        />
+                        <span>+</span>
+                      </label>
                     </div>
                   </div>
 
@@ -655,6 +801,14 @@ export default function JerseyCustomizer() {
                           onClick={() => setCollarColor(c.hex)}
                         />
                       ))}
+                      <label className="color-swatch-custom" title="Choose custom color hex">
+                        <input
+                          type="color"
+                          value={collarColor}
+                          onChange={(e) => setCollarColor(e.target.value)}
+                        />
+                        <span>+</span>
+                      </label>
                     </div>
                   </div>
                 </div>
@@ -695,6 +849,16 @@ export default function JerseyCustomizer() {
                       />
                     </div>
                     <div className="field">
+                      <label>Belly Sponsor Banner (Optional)</label>
+                      <input
+                        className="input"
+                        value={sponsorText}
+                        maxLength={18}
+                        onChange={(e) => setSponsorText(e.target.value.toUpperCase())}
+                        placeholder="e.g. DREAM11 / TATA / JIO"
+                      />
+                    </div>
+                    <div className="field">
                       <label>Front Chest Number</label>
                       <input
                         className="input"
@@ -726,6 +890,32 @@ export default function JerseyCustomizer() {
                         <option value="round">Crew Round Neck</option>
                       </select>
                     </div>
+                  </div>
+                </div>
+
+                {/* Number & Name Font Typography Style Card */}
+                <div className="customizer-card">
+                  <div className="card-title-row">
+                    <h3>
+                      <Type width={16} height={16} style={{ color: 'var(--orange)' }} /> Jersey Number Font Style
+                    </h3>
+                    <span>4 Pro Sports Typography Styles</span>
+                  </div>
+                  <div className="font-options-grid">
+                    {FONT_OPTIONS.map((f) => {
+                      const isSel = fontStyle === f.id
+                      return (
+                        <div
+                          key={f.id}
+                          className={`font-option-card ${isSel ? 'active' : ''}`}
+                          onClick={() => setFontStyle(f.id)}
+                        >
+                          <div className={`font-option-sample font-sample--${f.id}`}>07</div>
+                          <div className="font-option-name">{f.name}</div>
+                          <div className="font-option-sub">{f.desc}</div>
+                        </div>
+                      )
+                    })}
                   </div>
                 </div>
 
@@ -805,6 +995,22 @@ export default function JerseyCustomizer() {
                       <button
                         type="button"
                         className="btn btn--outline btn--sm"
+                        onClick={() => setSizeChartOpen(true)}
+                        title="View Measurements & Size Guide"
+                      >
+                        <Ruler width={13} height={13} /> Size Guide
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn--outline btn--sm"
+                        onClick={handleExportExcel}
+                        title="Export Squad Roster to Excel (.xlsx)"
+                      >
+                        <Download width={13} height={13} /> Excel (.xlsx)
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn--outline btn--sm"
                         onClick={() => setPasteModalOpen(true)}
                       >
                         <Clipboard width={13} height={13} /> Fast Paste
@@ -814,7 +1020,7 @@ export default function JerseyCustomizer() {
                         className="btn btn--ghost btn--sm"
                         onClick={() => setRoster(DEFAULT_XI)}
                       >
-                        <Refresh width={13} height={13} /> Reset 11 XI
+                        <Refresh width={13} height={13} /> Reset 11
                       </button>
                       <button
                         type="button"
@@ -961,6 +1167,42 @@ export default function JerseyCustomizer() {
             {/* ──────── STEP 4: FABRIC & BULK PRICING ──────── */}
             {activeTab === 'pricing' && (
               <div className="tab-pane">
+                {/* Kit Package Level Selector Card */}
+                <div className="customizer-card">
+                  <div className="card-title-row">
+                    <h3>
+                      <Shirt width={16} height={16} style={{ color: 'var(--orange)' }} /> Kit Package Level
+                    </h3>
+                    <span>Match Jersey vs Full Team Kit</span>
+                  </div>
+
+                  <div className="kit-packages-grid">
+                    {KIT_PACKAGES.map((kit) => {
+                      const isSel = selectedKit.id === kit.id
+                      return (
+                        <div
+                          key={kit.id}
+                          className={`kit-package-card ${isSel ? 'active' : ''}`}
+                          onClick={() => setSelectedKit(kit)}
+                        >
+                          <div className="kit-package-top">
+                            <span className="kit-package-badge">{kit.badge}</span>
+                            <span className="kit-package-price">
+                              {kit.extraPrice === 0 ? 'Base Rate' : `+₹${kit.extraPrice}/pc`}
+                            </span>
+                          </div>
+                          <div className="kit-package-name">{kit.name}</div>
+                          <div className="kit-package-desc">{kit.desc}</div>
+                          <div className="kit-package-check">
+                            <span className={`kit-radio-circle ${isSel ? 'checked' : ''}`} />
+                            <b>{isSel ? 'Selected Package' : 'Select'}</b>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+
                 {/* Fabric Selector Card */}
                 <div className="customizer-card">
                   <div className="card-title-row">
@@ -1000,8 +1242,8 @@ export default function JerseyCustomizer() {
                             <div className="small muted" style={{ marginTop: 2 }}>{f.tag}</div>
                           </div>
                           <div style={{ textAlign: 'right' }}>
-                            <b style={{ fontSize: 16, color: 'var(--ink)' }}>₹{f.baseRate}</b>
-                            <span className="small muted" style={{ display: 'block' }}>/piece (retail)</span>
+                            <b style={{ fontSize: 16, color: 'var(--ink)' }}>₹{f.baseRate + selectedKit.extraPrice}</b>
+                            <span className="small muted" style={{ display: 'block' }}>/set ({selectedKit.name})</span>
                           </div>
                         </div>
                       )
@@ -1014,10 +1256,10 @@ export default function JerseyCustomizer() {
                   <div className="tier-stats-row">
                     <div className="tier-stat-box">
                       <span>Total Squad</span>
-                      <b>{totalCount} Jerseys</b>
+                      <b>{totalCount} Sets</b>
                     </div>
                     <div className="tier-stat-box">
-                      <span>Rate Per Jersey</span>
+                      <span>Rate Per Set</span>
                       <b style={{ color: '#86efac' }}>₹{unitRate}</b>
                     </div>
                     <div className="tier-stat-box">
@@ -1062,7 +1304,7 @@ export default function JerseyCustomizer() {
             <div className="customizer-checkout-bar">
               <div className="checkout-totals-summary">
                 <span>
-                  {teamName} Kit ({totalCount} Jerseys · {selectedFabric.name})
+                  {teamName} ({totalCount} Sets · {selectedFabric.name} · {selectedKit.name})
                 </span>
                 <b>
                   {formatPrice(totalAmount)}{' '}
@@ -1075,6 +1317,15 @@ export default function JerseyCustomizer() {
               </div>
 
               <div className="checkout-buttons-group">
+                <button
+                  type="button"
+                  className="btn btn--outline"
+                  onClick={handleShareDesign}
+                  title="Share Team Design on WhatsApp"
+                >
+                  <Share width={15} height={15} /> Share
+                </button>
+
                 <button
                   type="button"
                   className="btn btn--outline"
@@ -1155,6 +1406,77 @@ export default function JerseyCustomizer() {
           </div>
         </div>
       )}
+
+      {/* ──────── PRO SIZE GUIDE & MEASUREMENTS MODAL ──────── */}
+      {sizeChartOpen && (
+        <div className="custom-modal-overlay" onClick={() => setSizeChartOpen(false)}>
+          <div className="custom-modal-box custom-modal-box--wide" onClick={(e) => e.stopPropagation()}>
+            <div className="custom-modal-head">
+              <h3 style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Ruler width={18} height={18} style={{ color: 'var(--orange)' }} /> Rishikar Athletic Pro Size Guide & Measurements
+              </h3>
+              <button
+                type="button"
+                className="icon-btn"
+                onClick={() => setSizeChartOpen(false)}
+              >
+                <X width={16} height={16} />
+              </button>
+            </div>
+            <div className="custom-modal-body">
+              <p className="small muted" style={{ marginBottom: 14 }}>
+                All measurements are in inches. Standard Indian athletic match-cut tailoring with zero color fade guarantee.
+              </p>
+
+              <div className="size-guide-table-wrap">
+                <table className="size-guide-table">
+                  <thead>
+                    <tr>
+                      <th>Size</th>
+                      <th>Chest (Around)</th>
+                      <th>Jersey Length</th>
+                      <th>Lower (Pant) Length</th>
+                      <th>Recommended Fit / Height</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {SIZE_GUIDE_DATA.map((row) => (
+                      <tr key={row.size}>
+                        <td><b>{row.size}</b></td>
+                        <td>{row.chest}</td>
+                        <td>{row.length}</td>
+                        <td>{row.lowerLength}</td>
+                        <td><span className="fit-pill">{row.fit}</span></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="size-guide-tips">
+                <div className="size-tip-box">
+                  <b>📐 How to Measure Chest:</b>
+                  <span>Measure around the fullest part of your chest, keeping the measuring tape flat under the armpits.</span>
+                </div>
+                <div className="size-tip-box">
+                  <b>🏏 Match Fit vs Pad Room:</b>
+                  <span>For active batting & fielding, choose your exact size. For loose comfort over thigh/chest pads, pick 1 size larger.</span>
+                </div>
+              </div>
+            </div>
+            <div className="custom-modal-foot">
+              <button
+                type="button"
+                className="btn btn--primary btn--sm"
+                onClick={() => setSizeChartOpen(false)}
+              >
+                Got It, Return to Roster
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ──────── PRINTABLE FACTORY PRODUCTION SPEC SHEET (PRINT ONLY) ──────── */}
       <div className="print-production-sheet">
         <div className="pps-header">
@@ -1177,7 +1499,8 @@ export default function JerseyCustomizer() {
           <div className="pps-spec-card">
             <div className="pps-spec-heading">Team & Kit Details</div>
             <div className="pps-spec-row"><span>Team Name:</span> <b>{teamName}</b></div>
-            <div className="pps-spec-row"><span>Squad Size:</span> <b>{totalCount} Jerseys</b></div>
+            <div className="pps-spec-row"><span>Kit Package:</span> <b>{selectedKit.name}</b></div>
+            <div className="pps-spec-row"><span>Squad Size:</span> <b>{totalCount} Sets</b></div>
             <div className="pps-spec-row"><span>Fabric:</span> <b>{selectedFabric.name} ({selectedFabric.gsm})</b></div>
             <div className="pps-spec-row"><span>Collar Style:</span> <b>{collar === 'polo' ? 'Sports Polo Collar' : collar === 'vneck' ? 'Athletic V-Neck' : 'Round Crew Neck'}</b></div>
           </div>
@@ -1185,6 +1508,8 @@ export default function JerseyCustomizer() {
           <div className="pps-spec-card">
             <div className="pps-spec-heading">Color & Design Specs</div>
             <div className="pps-spec-row"><span>Pattern:</span> <b>{pattern.replace(/-/g, ' ').toUpperCase()}</b></div>
+            <div className="pps-spec-row"><span>Number Font:</span> <b>{FONT_OPTIONS.find((f) => f.id === fontStyle)?.name || 'Pro Athletic'}</b></div>
+            <div className="pps-spec-row"><span>Belly Sponsor:</span> <b>{sponsorText || 'N/A'}</b></div>
             <div className="pps-spec-row">
               <span>Primary Body:</span>
               <span className="pps-color-preview">
@@ -1231,6 +1556,8 @@ export default function JerseyCustomizer() {
                   teamName={teamName}
                   customLogoUrl={customLogoUrl}
                   selectedCrest={selectedCrest}
+                  fontStyle={fontStyle}
+                  sponsorText={sponsorText}
                 />
               </div>
             </div>
@@ -1246,6 +1573,7 @@ export default function JerseyCustomizer() {
                   view="back"
                   playerName={roster[0]?.name || playerName}
                   playerNumber={roster[0]?.number || playerNumber}
+                  fontStyle={fontStyle}
                 />
               </div>
             </div>

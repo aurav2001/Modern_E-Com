@@ -449,6 +449,315 @@
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.75);
 }
 
+/* Custom Hex Color Picker Swatch */
+.color-swatch-custom {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px dashed #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  background: #ffffff;
+  color: var(--muted);
+  font-weight: 800;
+  font-size: 16px;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.color-swatch-custom:hover {
+  border-color: var(--orange);
+  color: var(--orange);
+  transform: scale(1.15);
+  box-shadow: 0 2px 8px rgba(245, 130, 31, 0.25);
+}
+
+.color-swatch-custom input[type="color"] {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 60px;
+  height: 60px;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Number & Name Font Options Grid */
+.font-options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.font-option-card {
+  padding: 14px 10px;
+  border-radius: 10px;
+  border: 2px solid var(--line);
+  background: #ffffff;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: relative;
+}
+
+.font-option-card:hover {
+  border-color: rgba(245, 130, 31, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.font-option-card.active {
+  border-color: var(--orange);
+  background: #fffaf5;
+  box-shadow: 0 4px 14px rgba(245, 130, 31, 0.15);
+}
+
+.font-option-sample {
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.font-sample--impact {
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  letter-spacing: 0.04em;
+}
+
+.font-sample--collegiate {
+  font-family: 'Trebuchet MS', 'Arial Black', sans-serif;
+  letter-spacing: 0.12em;
+}
+
+.font-sample--cyber {
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  font-style: italic;
+  letter-spacing: 0.08em;
+  color: var(--orange);
+}
+
+.font-sample--stencil {
+  font-family: 'Impact', 'Courier New', monospace;
+  letter-spacing: 0.16em;
+}
+
+.font-option-name {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--ink);
+  font-family: var(--font-head);
+  text-transform: uppercase;
+}
+
+.font-option-sub {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* Kit Package Options Grid */
+.kit-packages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.kit-package-card {
+  padding: 16px;
+  border-radius: 12px;
+  border: 2px solid var(--line);
+  background: #ffffff;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: relative;
+}
+
+.kit-package-card:hover {
+  border-color: rgba(245, 130, 31, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+.kit-package-card.active {
+  border-color: var(--orange);
+  background: #fffaf5;
+  box-shadow: 0 6px 18px rgba(245, 130, 31, 0.14);
+}
+
+.kit-package-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.kit-package-badge {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: #f1f5f9;
+  color: #475569;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.kit-package-card.active .kit-package-badge {
+  background: rgba(245, 130, 31, 0.15);
+  color: #ea580c;
+}
+
+.kit-package-price {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--orange);
+}
+
+.kit-package-name {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--ink);
+  font-family: var(--font-head);
+  margin-bottom: 4px;
+}
+
+.kit-package-desc {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.4;
+  margin: 0 0 12px;
+}
+
+.kit-package-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink);
+  padding-top: 10px;
+  border-top: 1px dashed var(--line);
+}
+
+.kit-radio-circle {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #cbd5e1;
+  display: inline-block;
+  position: relative;
+  transition: all 0.15s ease;
+}
+
+.kit-radio-circle.checked {
+  border-color: var(--orange);
+  background: var(--orange);
+}
+
+.kit-radio-circle.checked::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+/* Wide Modal for Size Guide */
+.custom-modal-box--wide {
+  max-width: 640px !important;
+}
+
+.size-guide-table-wrap {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  margin-bottom: 16px;
+}
+
+.size-guide-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+}
+
+.size-guide-table th {
+  background: #f8fafc;
+  padding: 10px 12px;
+  font-weight: 800;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
+}
+
+.size-guide-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  color: #334155;
+}
+
+.size-guide-table tr:last-child td {
+  border-bottom: none;
+}
+
+.size-guide-table tr:hover td {
+  background: #f8fafc;
+}
+
+.fit-pill {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 700;
+  background: #eff6ff;
+  color: #2563eb;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.size-guide-tips {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 580px) {
+  .size-guide-tips {
+    grid-template-columns: 1fr;
+  }
+}
+
+.size-tip-box {
+  background: #f8fafc;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #475569;
+}
+
+.size-tip-box b {
+  display: block;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
 /* Preset Combos */
 .combo-pills {
   display: flex;
