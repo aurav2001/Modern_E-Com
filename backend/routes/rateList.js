@@ -10,6 +10,7 @@ export const rateListRouter = Router()
 rateListRouter.get('/', (req, res) => {
   try {
     const data = db.getRateList()
+    res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=600, stale-while-revalidate=1200')
     res.json({ success: true, data })
   } catch (err) {
     res.status(500).json({ success: false, message: err.message })

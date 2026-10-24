@@ -15630,7 +15630,7 @@ var require_read = __commonJS({
     var getBody = require_raw_body();
     var iconv = require_lib();
     var onFinished = require_on_finished();
-    var zlib2 = require("node:zlib");
+    var zlib3 = require("node:zlib");
     var hasBody = require_type_is().hasBody;
     var { getCharset } = require_utils();
     module2.exports = read;
@@ -15755,13 +15755,13 @@ var require_read = __commonJS({
       switch (encoding) {
         case "deflate":
           debug("inflate body");
-          return zlib2.createInflate();
+          return zlib3.createInflate();
         case "gzip":
           debug("gunzip body");
-          return zlib2.createGunzip();
+          return zlib3.createGunzip();
         case "br":
           debug("brotli decompress body");
-          return zlib2.createBrotliDecompress();
+          return zlib3.createBrotliDecompress();
         default:
           throw createError(415, 'unsupported content encoding "' + encoding + '"', {
             encoding,
@@ -35108,7 +35108,7 @@ var require_auth_switch = __commonJS({
 var require_compressed_protocol = __commonJS({
   "node_modules/mysql2/lib/compressed_protocol.js"(exports2, module2) {
     "use strict";
-    var zlib2 = require("zlib");
+    var zlib3 = require("zlib");
     var PacketParser = require_packet_parser();
     var MIN_COMPRESS_LENGTH = 50;
     var MAX_SYNC_INFLATE_LENGTH = 16384;
@@ -35150,7 +35150,7 @@ var require_compressed_protocol = __commonJS({
         if (deflatedLength <= MAX_SYNC_INFLATE_LENGTH) {
           let data;
           try {
-            data = zlib2.inflateSync(body, { maxOutputLength: deflatedLength });
+            data = zlib3.inflateSync(body, { maxOutputLength: deflatedLength });
           } catch (err) {
             connection._handleNetworkError(err);
             return;
@@ -35162,7 +35162,7 @@ var require_compressed_protocol = __commonJS({
       }
       if (deflatedLength !== 0) {
         connection.inflateQueue.push((task) => {
-          zlib2.inflate(body, { maxOutputLength: deflatedLength }, (err, data) => {
+          zlib3.inflate(body, { maxOutputLength: deflatedLength }, (err, data) => {
             if (err) {
               connection._handleNetworkError(err);
               return;
@@ -35218,7 +35218,7 @@ var require_compressed_protocol = __commonJS({
         if (packetLen <= MAX_SYNC_DEFLATE_LENGTH) {
           let compressed;
           try {
-            compressed = zlib2.deflateSync(buffer);
+            compressed = zlib3.deflateSync(buffer);
           } catch (err) {
             connection._handleFatalError(err);
             return;
@@ -35234,7 +35234,7 @@ var require_compressed_protocol = __commonJS({
         }
       }
       connection.deflateQueue.push((task) => {
-        zlib2.deflate(buffer, (err, compressed) => {
+        zlib3.deflate(buffer, (err, compressed) => {
           if (err) {
             connection._handleFatalError(err);
             return;
@@ -69490,7 +69490,7 @@ var require_axios = __commonJS({
     var util3 = require("util");
     var path7 = require("path");
     var followRedirects = require_follow_redirects();
-    var zlib2 = require("zlib");
+    var zlib3 = require("zlib");
     var stream = require("stream");
     var events = require("events");
     function bind(fn, thisArg) {
@@ -72243,19 +72243,19 @@ var require_axios = __commonJS({
       return estimateDataURLBytes(url2, estimateBase64BufferAllocation);
     }
     var zlibOptions = {
-      flush: zlib2.constants.Z_SYNC_FLUSH,
-      finishFlush: zlib2.constants.Z_SYNC_FLUSH
+      flush: zlib3.constants.Z_SYNC_FLUSH,
+      finishFlush: zlib3.constants.Z_SYNC_FLUSH
     };
     var brotliOptions = {
-      flush: zlib2.constants.BROTLI_OPERATION_FLUSH,
-      finishFlush: zlib2.constants.BROTLI_OPERATION_FLUSH
+      flush: zlib3.constants.BROTLI_OPERATION_FLUSH,
+      finishFlush: zlib3.constants.BROTLI_OPERATION_FLUSH
     };
     var zstdOptions = {
-      flush: zlib2.constants.ZSTD_e_flush,
-      finishFlush: zlib2.constants.ZSTD_e_flush
+      flush: zlib3.constants.ZSTD_e_flush,
+      finishFlush: zlib3.constants.ZSTD_e_flush
     };
-    var isBrotliSupported = utils$1.isFunction(zlib2.createBrotliDecompress);
-    var isZstdSupported = utils$1.isFunction(zlib2.createZstdDecompress);
+    var isBrotliSupported = utils$1.isFunction(zlib3.createBrotliDecompress);
+    var isZstdSupported = utils$1.isFunction(zlib3.createZstdDecompress);
     var ACCEPT_ENCODING = "gzip, compress, deflate" + (isBrotliSupported ? ", br" : "");
     var ACCEPT_ENCODING_WITH_ZSTD = ACCEPT_ENCODING + (isZstdSupported ? ", zstd" : "");
     var scheduleProgress = typeof process !== "undefined" && process.nextTick ? process.nextTick.bind(process) : utils$1.asap;
@@ -72953,23 +72953,23 @@ var require_axios = __commonJS({
               case "x-gzip":
               case "compress":
               case "x-compress":
-                streams.push(zlib2.createUnzip(zlibOptions));
+                streams.push(zlib3.createUnzip(zlibOptions));
                 delete res.headers["content-encoding"];
                 break;
               case "deflate":
                 streams.push(new ZlibHeaderTransformStream());
-                streams.push(zlib2.createUnzip(zlibOptions));
+                streams.push(zlib3.createUnzip(zlibOptions));
                 delete res.headers["content-encoding"];
                 break;
               case "br":
                 if (isBrotliSupported) {
-                  streams.push(zlib2.createBrotliDecompress(brotliOptions));
+                  streams.push(zlib3.createBrotliDecompress(brotliOptions));
                   delete res.headers["content-encoding"];
                 }
                 break;
               case "zstd":
                 if (isZstdSupported) {
-                  streams.push(zlib2.createZstdDecompress(zstdOptions));
+                  streams.push(zlib3.createZstdDecompress(zstdOptions));
                   delete res.headers["content-encoding"];
                 }
                 break;
@@ -77758,6 +77758,7 @@ var import_express10 = __toESM(require_express2());
 var import_cors = __toESM(require_lib3());
 var import_path4 = __toESM(require("path"));
 var import_fs3 = __toESM(require("fs"));
+var import_zlib = __toESM(require("zlib"));
 
 // routes/products.js
 var import_express = __toESM(require_express2());
@@ -77917,10 +77918,17 @@ async function initMySQL() {
       database: DB_NAME,
       port: DB_PORT,
       waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0,
+      connectionLimit: 15,
+      queueLimit: 100,
       enableKeepAlive: true,
       keepAliveInitialDelay: 1e4
+    });
+    pool.on("error", (err) => {
+      console.warn("[MySQL Pool Warning]", err.code || err.message);
+      if (err.code === "PROTOCOL_CONNECTION_LOST" || err.code === "ECONNRESET") {
+        isConnected = false;
+        setTimeout(initMySQL, 5e3);
+      }
     });
     const conn = await pool.getConnection();
     conn.release();
@@ -78223,7 +78231,10 @@ async function persistUsersToMySQL(users) {
 initMySQL();
 var db = {
   getProducts() {
-    return memoryStore.products || readJsonFile(getFilePath("products"), initialProducts);
+    if (!memoryStore.products || memoryStore.products.length === 0) {
+      memoryStore.products = readJsonFile(getFilePath("products"), initialProducts);
+    }
+    return memoryStore.products;
   },
   saveProducts(data) {
     memoryStore.products = data;
@@ -78440,11 +78451,10 @@ productRouter.get("/", (req, res) => {
   try {
     let list = db.getProducts();
     const { category, sub, q, sort, minPrice, maxPrice, inStock } = req.query;
-    if (category) {
-      list = list.filter((p) => p.categories && p.categories.includes(category));
-    }
     if (sub) {
       list = list.filter((p) => p.subs && p.subs.includes(sub));
+    } else if (category) {
+      list = list.filter((p) => p.categories && p.categories.includes(category));
     }
     if (q) {
       const query = q.toLowerCase().trim();
@@ -78470,6 +78480,7 @@ productRouter.get("/", (req, res) => {
     } else if (sort === "popular") {
       list.sort((a, b) => (b.reviews || 0) - (a.reviews || 0));
     }
+    res.setHeader("Cache-Control", "public, max-age=60, s-maxage=180, stale-while-revalidate=600");
     res.json({
       success: true,
       total: list.length,
@@ -78487,6 +78498,7 @@ productRouter.get("/:slugOrId", (req, res) => {
     if (!product) {
       return res.status(404).json({ success: false, message: "Product not found" });
     }
+    res.setHeader("Cache-Control", "public, max-age=120, s-maxage=300, stale-while-revalidate=600");
     res.json({ success: true, data: product });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -91776,6 +91788,7 @@ var rateListRouter = (0, import_express6.Router)();
 rateListRouter.get("/", (req, res) => {
   try {
     const data = db.getRateList();
+    res.setHeader("Cache-Control", "public, max-age=300, s-maxage=600, stale-while-revalidate=1200");
     res.json({ success: true, data });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -93958,6 +93971,26 @@ var app = (0, import_express10.default)();
 var PORT = process.env.PORT || 5e3;
 app.disable("x-powered-by");
 app.use(securityHeaders);
+app.use((req, res, next) => {
+  const acceptEncoding = req.headers["accept-encoding"] || "";
+  if (!acceptEncoding.includes("gzip")) return next();
+  const originalSend = res.send;
+  res.send = function(body) {
+    if (typeof body === "string" && body.length > 1024 && !res.getHeader("Content-Encoding")) {
+      import_zlib.default.gzip(Buffer.from(body), (err, compressed) => {
+        if (!err && compressed) {
+          res.setHeader("Content-Encoding", "gzip");
+          res.setHeader("Content-Length", compressed.length);
+          return originalSend.call(res, compressed);
+        }
+        return originalSend.call(res, body);
+      });
+    } else {
+      return originalSend.call(res, body);
+    }
+  };
+  next();
+});
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");

@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { StoreProvider } from './context/StoreContext'
 import Header, { MobileNav } from './components/Header'
@@ -12,14 +13,34 @@ import Listing from './pages/Listing'
 import Product from './pages/Product'
 import Cart from './pages/Cart'
 import Checkout from './pages/Checkout'
-import OrderSuccess from './pages/OrderSuccess'
-import Account from './pages/Account'
-import Admin from './pages/Admin'
 import { Login, Signup } from './pages/Auth'
 import { Wishlist, About, Contact, FAQ, SizeChartPage, Policy, NotFound, CustomKits } from './pages/Static'
-import RateList from './pages/RateList'
-import JerseyCustomizer from './pages/JerseyCustomizer'
 import SessionPulse from './components/SessionPulse'
+
+// Code-split heavy routes for lightning-fast initial page load
+const Admin = lazy(() => import('./pages/Admin'))
+const JerseyCustomizer = lazy(() => import('./pages/JerseyCustomizer'))
+const RateList = lazy(() => import('./pages/RateList'))
+const Account = lazy(() => import('./pages/Account'))
+const OrderSuccess = lazy(() => import('./pages/OrderSuccess'))
+
+function PageLoader() {
+  return (
+    <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div
+        style={{
+          width: 36,
+          height: 36,
+          border: '3px solid var(--line, #e2e8f0)',
+          borderTopColor: 'var(--orange, #f5821f)',
+          borderRadius: '50%',
+          animation: 'routeSpin 0.7s linear infinite',
+        }}
+      />
+      <style>{`@keyframes routeSpin { to { transform: rotate(360deg); } }`}</style>
+    </div>
+  )
+}
 
 const waHref = () => {
   const wa = getSettings().phoneIntl.replace('+', '')
@@ -35,36 +56,38 @@ function Shell() {
       {!isAdmin && <Header />}
       {!isAdmin && <MobileNav />}
       <main>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/shop" element={<Listing />} />
-          <Route path="/new" element={<Listing mode="new" />} />
-          <Route path="/sale" element={<Listing mode="sale" />} />
-          <Route path="/search" element={<Listing />} />
-          <Route path="/c/:cat" element={<Listing />} />
-          <Route path="/c/:cat/:sub" element={<Listing />} />
-          <Route path="/product/:slug" element={<Product />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/order/:id" element={<OrderSuccess />} />
-          <Route path="/wishlist" element={<Wishlist />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/account" element={<Account />} />
-          <Route path="/account/:tab" element={<Account />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/admin/:tab" element={<Admin />} />
-          <Route path="/custom" element={<JerseyCustomizer />} />
-          <Route path="/customizer" element={<JerseyCustomizer />} />
-          <Route path="/custom-quote" element={<CustomKits />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/faq" element={<FAQ />} />
-          <Route path="/size-chart" element={<SizeChartPage />} />
-          <Route path="/rate-list" element={<RateList />} />
-          <Route path="/policies/:slug" element={<Policy />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/shop" element={<Listing />} />
+            <Route path="/new" element={<Listing mode="new" />} />
+            <Route path="/sale" element={<Listing mode="sale" />} />
+            <Route path="/search" element={<Listing />} />
+            <Route path="/c/:cat" element={<Listing />} />
+            <Route path="/c/:cat/:sub" element={<Listing />} />
+            <Route path="/product/:slug" element={<Product />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/order/:id" element={<OrderSuccess />} />
+            <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/account" element={<Account />} />
+            <Route path="/account/:tab" element={<Account />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin/:tab" element={<Admin />} />
+            <Route path="/custom" element={<JerseyCustomizer />} />
+            <Route path="/customizer" element={<JerseyCustomizer />} />
+            <Route path="/custom-quote" element={<CustomKits />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/size-chart" element={<SizeChartPage />} />
+            <Route path="/rate-list" element={<RateList />} />
+            <Route path="/policies/:slug" element={<Policy />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
       </main>
       {!isAdmin && <Footer />}
       {!isAdmin && <CartDrawer />}

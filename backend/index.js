@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import path from 'path'
 import fs from 'fs'
+import zlib from 'zlib'
 import { productRouter } from './routes/products.js'
 import { orderRouter } from './routes/orders.js'
 import { enquiryRouter } from './routes/enquiries.js'
@@ -25,6 +26,29 @@ app.disable('x-powered-by')
 
 // Security: Set security headers on all responses
 app.use(securityHeaders)
+
+// High-Performance Native Gzip Compression (Reduces JSON payloads by ~75%)
+app.use((req, res, next) => {
+  const acceptEncoding = req.headers['accept-encoding'] || ''
+  if (!acceptEncoding.includes('gzip')) return next()
+
+  const originalSend = res.send
+  res.send = function (body) {
+    if (typeof body === 'string' && body.length > 1024 && !res.getHeader('Content-Encoding')) {
+      zlib.gzip(Buffer.from(body), (err, compressed) => {
+        if (!err && compressed) {
+          res.setHeader('Content-Encoding', 'gzip')
+          res.setHeader('Content-Length', compressed.length)
+          return originalSend.call(res, compressed)
+        }
+        return originalSend.call(res, body)
+      })
+    } else {
+      return originalSend.call(res, body)
+    }
+  }
+  next()
+})
 
 // Middlewares
 app.use((req, res, next) => {

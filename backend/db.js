@@ -170,10 +170,18 @@ async function initMySQL() {
       database: DB_NAME,
       port: DB_PORT,
       waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0,
+      connectionLimit: 15,
+      queueLimit: 100,
       enableKeepAlive: true,
       keepAliveInitialDelay: 10000,
+    })
+
+    pool.on('error', (err) => {
+      console.warn('[MySQL Pool Warning]', err.code || err.message)
+      if (err.code === 'PROTOCOL_CONNECTION_LOST' || err.code === 'ECONNRESET') {
+        isConnected = false
+        setTimeout(initMySQL, 5000)
+      }
     })
 
     // Test connection
@@ -529,7 +537,10 @@ initMySQL()
 
 export const db = {
   getProducts() {
-    return memoryStore.products || readJsonFile(getFilePath('products'), initialProducts)
+    if (!memoryStore.products || memoryStore.products.length === 0) {
+      memoryStore.products = readJsonFile(getFilePath('products'), initialProducts)
+    }
+    return memoryStore.products
   },
   saveProducts(data) {
     memoryStore.products = data

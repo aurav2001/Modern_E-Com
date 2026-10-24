@@ -1,3 +1,84 @@
+# ─────────────────────────────────────────────────────────────
+# Rishikar Sports — High Performance & Security Config (.htaccess)
+# Designed for cPanel / Apache / LiteSpeed Production Hosting
+# ─────────────────────────────────────────────────────────────
+
+# 1. DISABLE DIRECTORY BROWSING (Security: Prevent file enumeration)
+Options -Indexes
+
+# 2. BLOCK SENSITIVE & HIDDEN FILES
+<FilesMatch "(^\.|\.(env|git|json|sql|log|md|bak|config)$)">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order deny,allow
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# 3. APACHE SECURITY HEADERS (Clickjacking, MIME Sniffing, XSS)
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set X-XSS-Protection "1; mode=block"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+</IfModule>
+
+# 4. GZIP / BROTLI COMPRESSION (High Speed: Shrinks JS/CSS/HTML by ~75%)
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/plain
+  AddOutputFilterByType DEFLATE text/html
+  AddOutputFilterByType DEFLATE text/xml
+  AddOutputFilterByType DEFLATE text/css
+  AddOutputFilterByType DEFLATE text/javascript
+  AddOutputFilterByType DEFLATE application/xml
+  AddOutputFilterByType DEFLATE application/xhtml+xml
+  AddOutputFilterByType DEFLATE application/rss+xml
+  AddOutputFilterByType DEFLATE application/javascript
+  AddOutputFilterByType DEFLATE application/x-javascript
+  AddOutputFilterByType DEFLATE application/json
+  AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# 5. BROWSER CACHING (Instant Repeat Visits & Low Server Load)
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 1 month"
+
+  # HTML: Always revalidate so customers get live updates
+  ExpiresByType text/html "access plus 0 seconds"
+
+  # CSS & JavaScript (Hashed chunks): Cache 1 Year
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType text/javascript "access plus 1 year"
+
+  # Images & Media
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/webp "access plus 1 month"
+  ExpiresByType image/svg+xml "access plus 1 month"
+  ExpiresByType image/x-icon "access plus 1 year"
+
+  # Fonts
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType font/woff "access plus 1 year"
+  ExpiresByType font/ttf "access plus 1 year"
+</IfModule>
+
+# Static Asset Immutable Cache-Control Header
+<IfModule mod_headers.c>
+  <FilesMatch "\.(js|css|woff2|woff|ttf|png|jpg|jpeg|webp|svg)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.(html)$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
+# 6. REACT ROUTER SPA REWRITE RULES (cPanel Clean URLs)
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
@@ -7,3 +88,4 @@
   RewriteCond %{REQUEST_FILENAME} !-l
   RewriteRule . /index.html [L]
 </IfModule>
+

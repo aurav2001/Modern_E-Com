@@ -45,6 +45,7 @@ productRouter.get('/', (req, res) => {
       list.sort((a, b) => (b.reviews || 0) - (a.reviews || 0))
     }
 
+    res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=180, stale-while-revalidate=600')
     res.json({
       success: true,
       total: list.length,
@@ -65,6 +66,7 @@ productRouter.get('/:slugOrId', (req, res) => {
     if (!product) {
       return res.status(404).json({ success: false, message: 'Product not found' })
     }
+    res.setHeader('Cache-Control', 'public, max-age=120, s-maxage=300, stale-while-revalidate=600')
     res.json({ success: true, data: product })
   } catch (err) {
     res.status(500).json({ success: false, message: err.message })
