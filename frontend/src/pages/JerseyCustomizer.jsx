@@ -60,39 +60,8 @@ const PRESET_COMBOS = [
   { name: 'Miami Cyan', primary: '#0E2140', accent: '#06B6D4', collar: '#06B6D4' },
 ]
 
-// Sportswear fabrics manufactured at Rishikar Sports
-const FABRIC_OPTIONS = [
-  { id: 'dotknit', name: 'Dotknit Breathable', baseRate: 420, gsm: '160 GSM', tag: 'Most Popular for Matches' },
-  { id: 'superpoly', name: 'Superpoly Durable', baseRate: 350, gsm: '180 GSM', tag: 'Value & Tough Durability' },
-  { id: 'pmc', name: 'PMC Poly Mesh', baseRate: 400, gsm: '150 GSM', tag: 'Ultra-Light Training' },
-  { id: 'lycra', name: '4-Way Lycra Stretch', baseRate: 450, gsm: '190 GSM', tag: 'Athletic Muscle Fit' },
-  { id: 'jacquard', name: 'Jacquard Pro Weave', baseRate: 550, gsm: '210 GSM', tag: 'Elite Sublimation Finish' },
-]
+import { getCustomizerFabrics, getCustomizerPackages, DEFAULT_FABRIC_OPTIONS, DEFAULT_KIT_PACKAGES } from '../lib/db'
 
-// Kit Package Options (Jersey Only vs Full Kit with Lower/Pant & Cap)
-const KIT_PACKAGES = [
-  {
-    id: 'jersey',
-    name: 'Match Jersey Only',
-    badge: 'Standard Top',
-    extraPrice: 0,
-    desc: 'Sublimated Pro Match Jersey with Name & Number',
-  },
-  {
-    id: 'kit',
-    name: 'Jersey + Lower Set',
-    badge: 'Best Seller for Clubs',
-    extraPrice: 320,
-    desc: 'Matching Dry-Fit Athletic Track Pant / Lower with Team Piping',
-  },
-  {
-    id: 'pro',
-    name: 'Full Pro Kit (+ Cap)',
-    badge: 'Complete Match Pro Kit',
-    extraPrice: 440,
-    desc: 'Jersey + Lower + Custom Sublimated Athletic Team Cap',
-  },
-]
 
 // Jersey Number & Name Font Styles
 const FONT_OPTIONS = [
@@ -138,6 +107,10 @@ export default function JerseyCustomizer() {
   const [view, setView] = useState('front') // 'front' | 'back'
   const [activeTab, setActiveTab] = useState('visual') // 'visual' | 'identity' | 'roster' | 'pricing'
 
+  // Dynamic Fabrics & Kit Packages from Admin Settings
+  const FABRIC_OPTIONS = useMemo(() => getCustomizerFabrics(), [])
+  const KIT_PACKAGES = useMemo(() => getCustomizerPackages(), [])
+
   // Customizer Visual Options
   const [pattern, setPattern] = useState('cricket-pro')
   const [collar, setCollar] = useState('polo')
@@ -149,8 +122,8 @@ export default function JerseyCustomizer() {
   const [playerName, setPlayerName] = useState('ROHIT')
   const [customLogoUrl, setCustomLogoUrl] = useState(null)
   const [selectedCrest, setSelectedCrest] = useState('lion')
-  const [selectedFabric, setSelectedFabric] = useState(FABRIC_OPTIONS[0])
-  const [selectedKit, setSelectedKit] = useState(KIT_PACKAGES[0])
+  const [selectedFabric, setSelectedFabric] = useState(() => getCustomizerFabrics()[0] || DEFAULT_FABRIC_OPTIONS[0])
+  const [selectedKit, setSelectedKit] = useState(() => getCustomizerPackages()[0] || DEFAULT_KIT_PACKAGES[0])
   const [fontStyle, setFontStyle] = useState('impact')
   const [sponsorText, setSponsorText] = useState('')
 

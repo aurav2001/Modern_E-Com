@@ -17,6 +17,38 @@ export const KEYS = {
   categories: 'rs.categories',
 }
 
+export const DEFAULT_FABRIC_OPTIONS = [
+  { id: 'dotknit', name: 'Dotknit Breathable', baseRate: 420, gsm: '160 GSM', tag: 'Most Popular for Matches' },
+  { id: 'superpoly', name: 'Superpoly Durable', baseRate: 350, gsm: '180 GSM', tag: 'Value & Tough Durability' },
+  { id: 'pmc', name: 'PMC Poly Mesh', baseRate: 400, gsm: '150 GSM', tag: 'Ultra-Light Training' },
+  { id: 'lycra', name: '4-Way Lycra Stretch', baseRate: 450, gsm: '190 GSM', tag: 'Athletic Muscle Fit' },
+  { id: 'jacquard', name: 'Jacquard Pro Weave', baseRate: 550, gsm: '210 GSM', tag: 'Elite Sublimation Finish' },
+]
+
+export const DEFAULT_KIT_PACKAGES = [
+  {
+    id: 'jersey',
+    name: 'Match Jersey Only',
+    badge: 'Standard Top',
+    extraPrice: 0,
+    desc: 'Sublimated Pro Match Jersey with Name & Number',
+  },
+  {
+    id: 'kit',
+    name: 'Jersey + Lower Set',
+    badge: 'Best Seller for Clubs',
+    extraPrice: 320,
+    desc: 'Matching Dry-Fit Athletic Track Pant / Lower with Team Piping',
+  },
+  {
+    id: 'pro',
+    name: 'Full Pro Kit (+ Cap)',
+    badge: 'Complete Match Pro Kit',
+    extraPrice: 440,
+    desc: 'Jersey + Lower + Custom Sublimated Athletic Team Cap',
+  },
+]
+
 export const DEFAULT_SETTINGS = {
   phone: BRAND.phone,
   phoneIntl: BRAND.phoneIntl,
@@ -29,6 +61,8 @@ export const DEFAULT_SETTINGS = {
   shippingFee: SHIPPING_FEE,
   codFee: COD_FEE,
   adminPin: '1234',
+  customizerFabrics: DEFAULT_FABRIC_OPTIONS,
+  customizerPackages: DEFAULT_KIT_PACKAGES,
 }
 
 const listeners = new Set()
@@ -254,6 +288,8 @@ export function deleteEnquiry(id) {
 
 // ── Settings ──────────────────────────────────────────────
 export const getSettings = () => ({ ...DEFAULT_SETTINGS, ...loadLS(KEYS.settings, {}) })
+export const getCustomizerFabrics = () => getSettings().customizerFabrics || DEFAULT_FABRIC_OPTIONS
+export const getCustomizerPackages = () => getSettings().customizerPackages || DEFAULT_KIT_PACKAGES
 export function saveSettings(patch) {
   const next = { ...getSettings(), ...patch }
   saveLS(KEYS.settings, next)

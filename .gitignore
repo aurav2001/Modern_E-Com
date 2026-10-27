@@ -10,3 +10,5 @@ WhatsApp Unknown*
 !.env.example
 *.zip
 * (2).*
+~$*
+recovered_*.json

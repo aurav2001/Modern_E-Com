@@ -78,10 +78,15 @@ Options -Indexes
   </FilesMatch>
 </IfModule>
 
-# 6. REACT ROUTER SPA REWRITE RULES (cPanel Clean URLs)
+# 6. FORCE HTTPS & REACT ROUTER SPA REWRITE RULES (cPanel Clean URLs)
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+
+  # Automatically redirect all HTTP traffic to HTTPS (Secure Padlock)
+  RewriteCond %{HTTPS} off
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d

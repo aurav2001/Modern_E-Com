@@ -311,11 +311,7 @@ export function StoreProvider({ children }) {
       markViewed: (slug) => dispatch({ type: 'VIEWED', slug }),
       submitEnquiry: (e) => {
         dbAddEnquiry(e)
-        fetch('/api/enquiries', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(e),
-        }).catch(() => {})
+        backendApi.createEnquiry(e).catch(() => {})
       },
       settings: SETTINGS,
       coupons: COUPONS,

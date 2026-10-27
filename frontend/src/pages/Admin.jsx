@@ -281,10 +281,140 @@ function Orders() {
             </div>
             <div className="mini-lines" style={{ maxHeight: 'none' }}>
               {open.items.map((l) => (
-                <div className="mini-line" key={l.key}>
-                  <img src={l.image} alt="" />
-                  <div><b>{l.name}</b><span>{[l.color, l.size].filter(Boolean).join(' · ')} · Qty {l.qty}</span></div>
-                  <b>{formatPrice(l.price * l.qty)}</b>
+                <div key={l.key} style={{ marginBottom: l.customDetails ? 16 : 6 }}>
+                  <div className="mini-line">
+                    <img src={l.image} alt="" style={{ width: 50, height: 50, objectFit: 'contain', background: '#f8fafc', borderRadius: 6, border: '1px solid #e2e8f0' }} />
+                    <div style={{ flex: 1 }}>
+                      <b>{l.name}</b>
+                      <span>{[l.color, l.size, l.fabric].filter(Boolean).join(' · ')} · Qty {l.qty}</span>
+                    </div>
+                    <b>{formatPrice(l.price * l.qty)}</b>
+                  </div>
+
+                  {l.customDetails && (
+                    <div style={{
+                      marginTop: 8,
+                      padding: '12px 14px',
+                      background: '#f8fafc',
+                      borderRadius: 10,
+                      border: '1px solid #e2e8f0',
+                      fontSize: 12,
+                    }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, flexWrap: 'wrap', gap: 6 }}>
+                        <span style={{ fontWeight: 800, color: '#0e2140', fontSize: 13 }}>
+                          🎽 Team: {l.customDetails.teamName} · {l.customDetails.kitPackage || 'Match Kit'}
+                        </span>
+                        <span style={{ background: '#e0f2fe', color: '#0369a1', padding: '2px 8px', borderRadius: 4, fontWeight: 700, fontSize: 11 }}>
+                          Fabric: {l.customDetails.fabric || 'Standard'}
+                        </span>
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 6, marginBottom: 10, color: '#475569' }}>
+                        <div><b>Collar:</b> {l.customDetails.collar || 'Standard'}</div>
+                        <div><b>Font:</b> {l.customDetails.fontStyle || 'Pro Athletic'}</div>
+                        <div><b>Sponsor:</b> {l.customDetails.sponsorText || 'None'}</div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                          <b>Colors:</b>
+                          {l.customDetails.primaryColor && (
+                            <span style={{ display: 'inline-block', width: 12, height: 12, borderRadius: 2, background: l.customDetails.primaryColor, border: '1px solid #cbd5e1' }} title={`Primary: ${l.customDetails.primaryColor}`} />
+                          )}
+                          {l.customDetails.accentColor && (
+                            <span style={{ display: 'inline-block', width: 12, height: 12, borderRadius: 2, background: l.customDetails.accentColor, border: '1px solid #cbd5e1' }} title={`Accent: ${l.customDetails.accentColor}`} />
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Squad Table if roster exists */}
+                      {Array.isArray(l.customDetails.roster) && l.customDetails.roster.length > 0 && (
+                        <div style={{ marginTop: 8 }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                            <span style={{ fontWeight: 700, color: '#0f172a' }}>
+                              Squad Roster ({l.customDetails.roster.length} Players):
+                            </span>
+                            <button
+                              type="button"
+                              className="btn btn--outline btn--sm"
+                              style={{ height: 26, fontSize: 11, padding: '0 8px' }}
+                              onClick={() => {
+                                const w = window.open('', '_blank')
+                                if (w) {
+                                  w.document.write(`
+                                    <html>
+                                      <head>
+                                        <title>Factory Spec Sheet - ${l.customDetails.teamName}</title>
+                                        <style>
+                                          body { font-family: system-ui, sans-serif; padding: 24px; color: #0f172a; }
+                                          h1 { margin: 0 0 4px; font-size: 22px; }
+                                          table { width: 100%; border-collapse: collapse; margin-top: 14px; }
+                                          th, td { border: 1px solid #cbd5e1; padding: 8px 10px; font-size: 13px; text-align: left; }
+                                          th { background: #f1f5f9; }
+                                          .meta { margin: 12px 0; font-size: 13px; line-height: 1.6; }
+                                        </style>
+                                      </head>
+                                      <body>
+                                        <h1>RISHIKAR SPORTS - FACTORY SPEC SHEET</h1>
+                                        <div class="meta">
+                                          <b>Order #:</b> ${open.id} | <b>Team:</b> ${l.customDetails.teamName}<br/>
+                                          <b>Kit Package:</b> ${l.customDetails.kitPackage || 'Standard'} | <b>Fabric:</b> ${l.customDetails.fabric || 'Standard'}<br/>
+                                          <b>Collar:</b> ${l.customDetails.collar || 'Standard'} | <b>Sponsor:</b> ${l.customDetails.sponsorText || 'N/A'}<br/>
+                                          <b>Primary Color:</b> ${l.customDetails.primaryColor} | <b>Accent Color:</b> ${l.customDetails.accentColor}
+                                        </div>
+                                        <table>
+                                          <thead>
+                                            <tr><th>#</th><th>Player Name</th><th>Jersey Number</th><th>Size</th><th>Sleeve</th></tr>
+                                          </thead>
+                                          <tbody>
+                                            ${l.customDetails.roster.map((p, i) => `
+                                              <tr>
+                                                <td>${i + 1}</td>
+                                                <td><b>${p.name || '-'}</b></td>
+                                                <td><b>${p.number || '-'}</b></td>
+                                                <td><b>${p.size || '-'}</b></td>
+                                                <td>${p.sleeve || 'Half'}</td>
+                                              </tr>
+                                            `).join('')}
+                                          </tbody>
+                                        </table>
+                                        <script>window.print();</script>
+                                      </body>
+                                    </html>
+                                  `)
+                                  w.document.close()
+                                }
+                              }}
+                            >
+                              🖨️ Print Spec Sheet
+                            </button>
+                          </div>
+                          <div style={{ maxHeight: 180, overflowY: 'auto', border: '1px solid #e2e8f0', borderRadius: 6, background: '#fff' }}>
+                            <table style={{ width: '100%', fontSize: 11, borderCollapse: 'collapse', textAlign: 'left' }}>
+                              <thead>
+                                <tr style={{ background: '#f1f5f9', borderBottom: '1px solid #cbd5e1' }}>
+                                  <th style={{ padding: '6px 8px' }}>#</th>
+                                  <th style={{ padding: '6px 8px' }}>Player Name</th>
+                                  <th style={{ padding: '6px 8px' }}>Number</th>
+                                  <th style={{ padding: '6px 8px' }}>Size</th>
+                                  <th style={{ padding: '6px 8px' }}>Sleeve</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {l.customDetails.roster.map((player, pIdx) => (
+                                  <tr key={pIdx} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                                    <td style={{ padding: '5px 8px', color: '#64748b' }}>{pIdx + 1}</td>
+                                    <td style={{ padding: '5px 8px', fontWeight: 600 }}>{player.name}</td>
+                                    <td style={{ padding: '5px 8px', color: '#f97316', fontWeight: 700 }}>{player.number}</td>
+                                    <td style={{ padding: '5px 8px' }}>
+                                      <span style={{ background: '#f1f5f9', padding: '1px 6px', borderRadius: 4, fontWeight: 700 }}>{player.size}</span>
+                                    </td>
+                                    <td style={{ padding: '5px 8px', color: '#64748b' }}>{player.sleeve || 'Half'}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -1767,6 +1897,8 @@ function Settings({ onSignOut }) {
   const [s, setS] = useState(db.getSettings())
   const [coupons, setCoupons] = useState(db.getCoupons())
   const [nc, setNc] = useState({ code: '', type: 'pct', value: 10, min: 999 })
+  const [customFabrics, setCustomFabrics] = useState(() => db.getCustomizerFabrics())
+  const [customPackages, setCustomPackages] = useState(() => db.getCustomizerPackages())
   const set = (k) => (e) => setS({ ...s, [k]: e.target.value })
 
   const saveShop = (e) => {
@@ -1774,6 +1906,13 @@ function Settings({ onSignOut }) {
     db.saveSettings({ ...s, moq: +s.moq, freeShipAbove: +s.freeShipAbove, shippingFee: +s.shippingFee, codFee: +s.codFee })
     toast('Settings saved — refresh the store to see them')
   }
+
+  const saveCustomizerPricing = (e) => {
+    e.preventDefault()
+    db.saveSettings({ customizerFabrics, customizerPackages })
+    toast('✅ Customizer fabric rates and kit package prices saved!')
+  }
+
   const addCoupon = (e) => {
     e.preventDefault()
     const code = nc.code.trim().toUpperCase()
@@ -1791,7 +1930,7 @@ function Settings({ onSignOut }) {
   return (
     <>
       <header className="admin__head">
-        <div><h1>Settings</h1><p className="muted">Business details, shipping rules and coupons</p></div>
+        <div><h1>Settings</h1><p className="muted">Business details, shipping rules, customizer rates and coupons</p></div>
       </header>
 
       <div className="admin__grid">
@@ -1845,6 +1984,85 @@ function Settings({ onSignOut }) {
           </section>
         </div>
       </div>
+
+      {/* ── Custom Team Kit Studio Pricing Management ── */}
+      <form className="acard" style={{ marginTop: 20 }} onSubmit={saveCustomizerPricing}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
+          <div>
+            <h3 style={{ margin: 0, fontSize: 17, display: 'flex', alignItems: 'center', gap: 8 }}>
+              🎽 Custom Team Kit Studio Rates & Pricing
+            </h3>
+            <p className="muted small" style={{ margin: '4px 0 0' }}>
+              Control live base rates and kit upgrade prices for the 3D Jersey Customizer Studio (/custom).
+            </p>
+          </div>
+          <button className="btn btn--primary"><Check width={14} height={14} /> Save Customizer Rates</button>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 20 }}>
+          {/* Fabric Base Rates */}
+          <div style={{ border: '1px solid var(--line)', borderRadius: 10, padding: 16, background: '#fafafa' }}>
+            <h4 style={{ margin: '0 0 12px', fontSize: 14, fontWeight: 700, color: '#0e2140' }}>
+              1. Sportswear Fabric Base Rates (₹ / piece)
+            </h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {customFabrics.map((f, idx) => (
+                <div key={f.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, background: '#fff', padding: '10px 12px', borderRadius: 8, border: '1px solid #e2e8f0' }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 700, fontSize: 13, color: '#0f172a' }}>{f.name}</div>
+                    <div className="small muted">{f.gsm} · {f.tag}</div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <span style={{ fontWeight: 700, fontSize: 13, color: '#475569' }}>₹</span>
+                    <input
+                      type="number"
+                      className="input input--sm"
+                      style={{ width: 85, fontWeight: 700, fontSize: 13, textAlign: 'right' }}
+                      value={f.baseRate}
+                      onChange={(e) => {
+                        const updated = [...customFabrics]
+                        updated[idx] = { ...updated[idx], baseRate: Number(e.target.value) || 0 }
+                        setCustomFabrics(updated)
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Kit Package Upgrade Add-on Rates */}
+          <div style={{ border: '1px solid var(--line)', borderRadius: 10, padding: 16, background: '#fafafa' }}>
+            <h4 style={{ margin: '0 0 12px', fontSize: 14, fontWeight: 700, color: '#0e2140' }}>
+              2. Kit Package Add-on Rates (+₹ / piece)
+            </h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {customPackages.map((pkg, idx) => (
+                <div key={pkg.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, background: '#fff', padding: '10px 12px', borderRadius: 8, border: '1px solid #e2e8f0' }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 700, fontSize: 13, color: '#0f172a' }}>{pkg.name}</div>
+                    <div className="small muted">{pkg.desc}</div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <span style={{ fontWeight: 700, fontSize: 13, color: '#475569' }}>+₹</span>
+                    <input
+                      type="number"
+                      className="input input--sm"
+                      style={{ width: 85, fontWeight: 700, fontSize: 13, textAlign: 'right' }}
+                      value={pkg.extraPrice}
+                      onChange={(e) => {
+                        const updated = [...customPackages]
+                        updated[idx] = { ...updated[idx], extraPrice: Number(e.target.value) || 0 }
+                        setCustomPackages(updated)
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </form>
     </>
   )
 }
