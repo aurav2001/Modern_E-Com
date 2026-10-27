@@ -91308,7 +91308,7 @@ async function sendWelcomeEmail(user) {
           <p>Welcome to the Rishikar Sports family! Your account has been successfully created.</p>
           <p>You can now easily track orders, browse customized team jerseys, athletic wear, and enjoy special tournament rates.</p>
           <div style="text-align: center; margin: 30px 0;">
-            <a href="http://rishikarsports.com" style="background: #d9232d; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Explore Collection</a>
+            <a href="https://rishikarsports.com" style="background: #d9232d; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Explore Collection</a>
           </div>
         </div>
       </div>
