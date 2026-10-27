@@ -154,7 +154,18 @@ export function deleteSubCategory(catSlug, subSlug) {
 }
 
 // ── Products ──────────────────────────────────────────────
-export const getProducts = () => loadLS(KEYS.products, null) || baseProducts
+export const getProducts = () => {
+  const cached = loadLS(KEYS.products, null)
+  const list = (cached && Array.isArray(cached) && cached.length > 0) ? cached : baseProducts
+  return list.map((p) => {
+    let img = p.image || ''
+    if (typeof img === 'string' && img.startsWith('http://rishikarsports.com/')) {
+      img = img.replace('http://rishikarsports.com', '')
+    }
+    const gallery = (p.gallery || []).map((g) => (typeof g === 'string' && g.startsWith('http://rishikarsports.com/') ? g.replace('http://rishikarsports.com', '') : g))
+    return { ...p, image: img, gallery }
+  })
+}
 export function saveProducts(list) {
   saveLS(KEYS.products, list)
   notify()

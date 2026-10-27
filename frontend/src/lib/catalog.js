@@ -160,14 +160,18 @@ export function facets(list) {
 }
 
 export const related = (p, n = 8) => {
-  const same = products.filter((x) => x.slug !== p.slug && x.subs.some((s) => p.subs.includes(s)))
-  const pool = same.length >= n ? same : [...same, ...products.filter((x) => x.slug !== p.slug && !same.includes(x) && x.categories.some((c) => p.categories.includes(c)))]
+  const prods = getCatalogProducts()
+  const same = prods.filter((x) => x.slug !== p.slug && x.subs.some((s) => p.subs.includes(s)))
+  const pool = same.length >= n ? same : [...same, ...prods.filter((x) => x.slug !== p.slug && !same.includes(x) && x.categories.some((c) => p.categories.includes(c)))]
   return pool.slice(0, n)
 }
 
-export const newArrivals = (n = 12) => products.filter((p) => p.isNew).sort((a, b) => b.id - a.id).slice(0, n)
+export const newArrivals = (n = 12) => getCatalogProducts().filter((p) => p.isNew).sort((a, b) => b.id - a.id).slice(0, n)
 export const bestSellers = (n = 8) => queryProducts({ sort: 'popular' }).slice(0, n)
 export const onSale = (n = 8) => queryProducts({ onlySale: true, sort: 'discount' }).slice(0, n)
+
+// Export products alias for backward compatibility
+export const products = PRODUCTS
 
 // Which size-chart applies to a product
 export function sizeChartKey(p) {
