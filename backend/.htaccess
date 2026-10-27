@@ -1,0 +1,21 @@
+# ─────────────────────────────────────────────────────────────
+# Rishikar Sports Backend API (.htaccess)
+# Dedicated cPanel / Phusion Passenger Node.js Subdomain Config
+# ─────────────────────────────────────────────────────────────
+
+# 1. Stop any parent directory rules (e.g. from public_html) from rewriting API calls to index.html
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^index\.html$ - [L]
+  RewriteRule ^ - [L]
+</IfModule>
+
+# 2. CORS Headers
+<IfModule mod_headers.c>
+  Header always set Access-Control-Allow-Origin "*"
+  Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+  Header always set Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, Authorization, x-admin-pin"
+</IfModule>
+
+# 3. Disable Directory Browsing
+Options -Indexes

@@ -49,7 +49,13 @@ async function request(endpoint, options = {}) {
       },
       ...options,
     })
-    const data = await res.json()
+    const text = await res.text()
+    let data
+    try {
+      data = text ? JSON.parse(text) : {}
+    } catch {
+      throw new Error(`Server returned HTML error (${res.status}). Please check API server.`)
+    }
     if (!res.ok) {
       throw new Error(data.message || `Request failed with status ${res.status}`)
     }

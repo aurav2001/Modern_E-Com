@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useReducer, useState, useCallback } from 'react'
 import { loadLS, saveLS, uid, deliveryDate } from '../lib/utils'
-import { getCoupons, getSettings, addEnquiry as dbAddEnquiry } from '../lib/db'
+import { getCoupons, getSettings, addEnquiry as dbAddEnquiry, saveProducts } from '../lib/db'
 import { api as backendApi } from '../lib/api'
 
 const COUPONS = getCoupons()
@@ -142,6 +142,17 @@ export function StoreProvider({ children }) {
           localStorage.removeItem('rs.auth_token')
         })
     }
+  }, [])
+
+  // Auto-fetch products from server on mount so all devices see the latest catalog
+  useEffect(() => {
+    backendApi.getProducts()
+      .then((res) => {
+        if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
+          saveProducts(res.data)
+        }
+      })
+      .catch(() => {})
   }, [])
 
   const toast = useCallback((message, opts = {}) => {

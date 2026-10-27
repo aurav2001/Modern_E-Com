@@ -133,13 +133,22 @@ app.use('/api/upload', uploadRouter)
 app.use('/api/auth', authRouter)
 app.use('/api/payment', paymentRouter)
 
+// Middleware: Recover original URL if Apache mod_rewrite forwarded request as /index.html
+app.use((req, res, next) => {
+  const original = req.headers['x-original-uri'] || req.headers['x-original-url'] || req.headers['x-rewrite-url']
+  if (original && (req.url === '/index.html' || req.path === '/index.html')) {
+    req.url = original
+  }
+  next()
+})
+
 // Optional: If frontend dist is copied to backend/public, serve it
 const distPath = path.resolve(_dirname, 'public')
-if (fs.existsSync(distPath)) {
+const indexPath = path.join(distPath, 'index.html')
+if (fs.existsSync(distPath) && fs.existsSync(indexPath)) {
   app.use(express.static(distPath))
   app.use((req, res, next) => {
     if (req.method === 'GET' && !req.path.startsWith('/api')) {
-      const indexPath = path.join(distPath, 'index.html')
       return res.sendFile(indexPath, (err) => {
         if (err) next()
       })

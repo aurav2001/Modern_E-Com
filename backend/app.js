@@ -94090,12 +94090,19 @@ app.use("/api/rate-list", rateListRouter);
 app.use("/api/upload", uploadRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/payment", paymentRouter);
+app.use((req, res, next) => {
+  const original = req.headers["x-original-uri"] || req.headers["x-original-url"] || req.headers["x-rewrite-url"];
+  if (original && (req.url === "/index.html" || req.path === "/index.html")) {
+    req.url = original;
+  }
+  next();
+});
 var distPath = import_path4.default.resolve(_dirname4, "public");
-if (import_fs3.default.existsSync(distPath)) {
+var indexPath = import_path4.default.join(distPath, "index.html");
+if (import_fs3.default.existsSync(distPath) && import_fs3.default.existsSync(indexPath)) {
   app.use(import_express10.default.static(distPath));
   app.use((req, res, next) => {
     if (req.method === "GET" && !req.path.startsWith("/api")) {
-      const indexPath = import_path4.default.join(distPath, "index.html");
       return res.sendFile(indexPath, (err) => {
         if (err) next();
       });

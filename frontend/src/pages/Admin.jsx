@@ -922,7 +922,10 @@ function Products() {
 
   const list = products.filter((p) => (cat === 'All' || p.categories.includes(cat)) && (!q || p.name.toLowerCase().includes(q.toLowerCase())))
 
-  const quick = (slug, patch) => { db.upsertProduct({ slug, ...patch }) }
+  const quick = (slug, patch) => {
+    const updated = db.upsertProduct({ slug, ...patch })
+    api.syncProducts(updated).catch(() => {})
+  }
 
   return (
     <>
@@ -998,12 +1001,29 @@ function Products() {
         <ProductEditor
           product={edit}
           onClose={() => setEdit(null)}
-          onSave={(p) => { db.upsertProduct(p); setEdit(null); toast('Product saved') }}
-          onDelete={(slug) => {
+          onSave={async (p) => {
+            const updated = db.upsertProduct(p)
+            setEdit(null)
+            toast('Product saved! Auto-syncing to live database...')
+            try {
+              await api.syncProducts(updated)
+              toast('✅ Product saved and live across all devices!')
+            } catch (err) {
+              console.warn('[Auto-sync failed]', err)
+              toast(`⚠️ Saved locally (Database sync: ${err.message})`)
+            }
+          }}
+          onDelete={async (slug) => {
             if (confirm(`Delete “${edit.name}” permanently?`)) {
-              db.deleteProduct(slug)
+              const updated = db.deleteProduct(slug)
               setEdit(null)
-              toast('Product deleted')
+              toast('Product deleted! Auto-syncing...')
+              try {
+                await api.syncProducts(updated)
+                toast('✅ Deleted and synced to live database!')
+              } catch (err) {
+                toast('Product deleted locally')
+              }
             }
           }}
         />

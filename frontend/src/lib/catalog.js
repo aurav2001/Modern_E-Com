@@ -18,26 +18,46 @@ const SUB_PARENT_MAP = {
 }
 
 // Live catalogue: base data in src/data, overridden by anything saved from the admin panel.
-const rawProducts = getProducts()
-const products = rawProducts.map((p) => {
-  const cats = new Set(p.categories || [])
-  for (const s of (p.subs || [])) {
-    if (SUB_PARENT_MAP[s]) cats.add(SUB_PARENT_MAP[s])
-  }
-  return {
-    ...p,
-    categories: Array.from(cats),
-    sizes: (p.sizes || []).filter((s) => s !== 'UN'),
-    gallery: (p.gallery || [p.image]).slice(0, 6)
+export function getCatalogProducts() {
+  const rawProducts = getProducts()
+  return rawProducts.map((p) => {
+    const cats = new Set(p.categories || [])
+    for (const s of (p.subs || [])) {
+      if (SUB_PARENT_MAP[s]) cats.add(SUB_PARENT_MAP[s])
+    }
+    return {
+      ...p,
+      categories: Array.from(cats),
+      sizes: (p.sizes || []).filter((s) => s !== 'UN'),
+      gallery: (p.gallery || [p.image]).slice(0, 6)
+    }
+  })
+}
+
+export const getProduct = (slug) => {
+  const prods = getCatalogProducts()
+  return prods.find((p) => p.slug === slug)
+}
+
+export const PRODUCTS = new Proxy([], {
+  get(target, prop) {
+    const prods = getCatalogProducts()
+    if (prop === 'length') return prods.length
+    if (prop === Symbol.iterator) return prods[Symbol.iterator].bind(prods)
+    if (typeof prods[prop] === 'function') return prods[prop].bind(prods)
+    return prods[prop]
   }
 })
 
-const menu = getMenu()
-export const PRODUCTS = products
-export const MENU = menu
-
-const bySlug = new Map(products.map((p) => [p.slug, p]))
-export const getProduct = (slug) => bySlug.get(slug)
+export const MENU = new Proxy([], {
+  get(target, prop) {
+    const m = getMenu()
+    if (prop === 'length') return m.length
+    if (prop === Symbol.iterator) return m[Symbol.iterator].bind(m)
+    if (typeof m[prop] === 'function') return m[prop].bind(m)
+    return m[prop]
+  }
+})
 
 export const CATEGORY_META = {
   jerseys: { name: 'Jerseys', tagline: 'Full sublimation, your design' },
@@ -47,6 +67,7 @@ export const CATEGORY_META = {
 }
 
 export function subMeta(subSlug) {
+  const menu = getMenu()
   for (const cat of menu)
     for (const g of cat.groups)
       for (const it of g.items)
@@ -55,6 +76,7 @@ export function subMeta(subSlug) {
 }
 
 export function subsForCategory(catSlug) {
+  const menu = getMenu()
   const cat = menu.find((c) => c.slug === catSlug)
   if (!cat) return []
   return cat.groups.flatMap((g) =>
@@ -68,7 +90,7 @@ export function subsForCategory(catSlug) {
 const pct = (p) => (p.mrp && p.mrp > p.price ? (p.mrp - p.price) / p.mrp : 0)
 
 export function queryProducts({ category, sub, q, colors = [], sizes = [], minPrice, maxPrice, sort = 'popular', onlyNew, onlySale } = {}) {
-  let list = products
+  let list = getCatalogProducts()
   if (sub) {
     list = list.filter((p) => p.subs && p.subs.includes(sub))
   } else if (category) {

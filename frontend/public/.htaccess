@@ -87,6 +87,11 @@ Options -Indexes
   RewriteCond %{HTTPS} off
   RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
+  # Never rewrite API requests or api.* subdomain to index.html
+  RewriteCond %{REQUEST_URI} ^/api [NC,OR]
+  RewriteCond %{HTTP_HOST} ^api\. [NC]
+  RewriteRule ^ - [L]
+
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
